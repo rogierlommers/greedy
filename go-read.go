@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	"github.com/golang/glog"
-	"github.com/rogierlommers/readinglist-golang/internal/rest"
+	"github.com/rogierlommers/go-read/internal/rest"
 )
 
 var databasefile = flag.String("databasefile", "database.xml", "XML file where items are stored")
