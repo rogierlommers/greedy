@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>ReadingList</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/html/theme/bootstrap.css" media="screen">
+    <link rel="stylesheet" href="/static/html/theme/usebootstrap.css">
+ 	  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="/static/html/bootstrap/html5shiv.js"></script>
+      <script src="/static/html/bootstrap/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <a href="#" class="navbar-brand">Home</a>
+          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="navbar-collapse collapse" id="navbar-main">
+          
+		  <ul class="nav navbar-nav">
+            <li>
+              <a href="/rss/">RSS feed</a>
+            </li>
+		  </ul>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="page-header" id="banner">
+        <div class="row">
+          <div class="col-lg-4">
+            <h2>ReadingList</h2>
+            <p class="lead">Your own multi-platform ReadingList.</p>
+            <p>Please drag the button below to your bookmarks bar. It is a bookmarklet which redirects to the daemon and stores the current page to your reading list</p>
+            <p>
+              <a href="javascript:location.href='{{ .serverLocation }}'+btoa(window.location.href)">
+                <button type="button" class="btn btn-success">Add to readinglist</button>
+              </a>
+            </p>
+            <p>
+              Next step is to add the <a href="/rss">/rss</a> endpoint to your RSS aggregator.
+            </p>
+          </div>
+        </div>
+      </div>
+	  
+    </div>
+
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="/static/html/bootstrap/bootstrap.min.js"></script>
+	<script src="/static/html/bootstrap/usebootstrap.js"></script>
+
+  </body>
+</html>
