@@ -28,7 +28,7 @@ func main() {
 	// read database
 	database := model.ReadFileIntoSlice()
 
-	// initialize up mux router
+	// initialise mux router
 	r := mux.NewRouter()
 
 	// static files
@@ -36,8 +36,8 @@ func main() {
 
 	// http handles
 	r.HandleFunc("/stats", rest.StatsHandler)
-	r.HandleFunc("/rss", rest.GenerateRSS(database))
 	r.HandleFunc("/add/{base64url}", rest.AddArticle(database))
+	r.HandleFunc("/rss", rest.GenerateRSS(database))
 	r.HandleFunc("/", rest.IndexPage)
 
 	// start server
