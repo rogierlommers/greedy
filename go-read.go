@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/golang/glog"
+	"github.com/gorilla/mux"
 	"github.com/rogierlommers/go-read/internal/common"
 	"github.com/rogierlommers/go-read/internal/model"
 	"github.com/rogierlommers/go-read/internal/rest"
@@ -22,31 +22,26 @@ func init() {
 	model.CreateDatabaseIfNotExists()
 }
 
-// http://www.gorillatoolkit.org/pkg/mux
-
 func main() {
 	defer glog.Flush()
 
 	// read database
 	database := model.ReadFileIntoSlice()
-	spew.Dump(database)
 
-	// serve static files
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+	// initialize up mux router
+	r := mux.NewRouter()
 
-	// selfdiagnose
-	http.HandleFunc("/stats/", rest.StatsHandler)
+	// static files
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static/html"))))
 
-	// rss output
-	http.HandleFunc("/rss/", rest.RSS)
-
-	// add new url
-	http.HandleFunc("/add/:url", rest.AddArticle)
-
-	// serve static files
-	http.HandleFunc("/index", rest.IndexPage)
+	// http handles
+	r.HandleFunc("/stats", rest.StatsHandler)
+	r.HandleFunc("/rss", rest.GenerateRSS(database))
+	r.HandleFunc("/add/{base64url}", rest.AddArticle(database))
+	r.HandleFunc("/", rest.IndexPage)
 
 	// start server
+	http.Handle("/", r)
 	glog.Infof("running on port %d", *port)
 	http.ListenAndServe(":"+strconv.Itoa(*port), nil)
 }
