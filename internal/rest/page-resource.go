@@ -7,17 +7,21 @@ import (
 	"path"
 	"time"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/golang/glog"
 	"github.com/gorilla/feeds"
 	"github.com/gorilla/mux"
 	"github.com/rogierlommers/go-read/internal/model"
 )
 
-func StatsHandler(w http.ResponseWriter, r *http.Request) {
-	glog.Info("stats page")
+func StatsHandler(database *model.ReadingListRecords) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		glog.Info("stats page")
+		spew.Dump(database)
+	}
 }
 
-func GenerateRSS(database model.ReadingListRecords) http.HandlerFunc {
+func GenerateRSS(database *model.ReadingListRecords) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		//	sort.Sort(sort.Reverse(ById(database.Records)))
 
@@ -41,7 +45,7 @@ func GenerateRSS(database model.ReadingListRecords) http.HandlerFunc {
 			feed.Add(&newItem)
 		}
 
-		atom, err := feed.ToAtom()
+		atom, err := feed.ToRss()
 		if err != nil {
 			glog.Errorf("error creating RSS feed -> %s", err)
 			return
@@ -50,7 +54,7 @@ func GenerateRSS(database model.ReadingListRecords) http.HandlerFunc {
 	}
 }
 
-func AddArticle(database model.ReadingListRecords) http.HandlerFunc {
+func AddArticle(database *model.ReadingListRecords) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		base64url := vars["base64url"]
@@ -63,7 +67,7 @@ func AddArticle(database model.ReadingListRecords) http.HandlerFunc {
 
 		url := string(urlByteArray[:])
 
-		database = model.AddRecord(database, url)
+		model.AddRecord(database, url)
 		glog.Infof("add #%d url [%s] --> [%s]: ", len(database.Records), base64url, url)
 		w.Write([]byte("url added..."))
 	}

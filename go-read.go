@@ -35,9 +35,9 @@ func main() {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static/html"))))
 
 	// http handles
-	r.HandleFunc("/stats", rest.StatsHandler)
-	r.HandleFunc("/add/{base64url}", rest.AddArticle(database))
-	r.HandleFunc("/rss", rest.GenerateRSS(database))
+	r.HandleFunc("/stats", rest.StatsHandler(&database))
+	r.HandleFunc("/add/{base64url}", rest.AddArticle(&database))
+	r.HandleFunc("/rss", rest.GenerateRSS(&database))
 	r.HandleFunc("/", rest.IndexPage)
 
 	// start server
