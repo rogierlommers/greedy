@@ -49,7 +49,6 @@ func AddRecord(database *ReadingListRecords, url string) {
 		glog.Errorf("error adding record to db -> %s", err)
 	}
 	saveDatabaseToFile(database)
-	//return database
 }
 
 func saveDatabaseToFile(database *ReadingListRecords) {

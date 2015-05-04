@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"net/http"
 	"path"
+	"sort"
 	"time"
 
 	"github.com/davecgh/go-spew/spew"
@@ -23,7 +24,7 @@ func StatsHandler(database *model.ReadingListRecords) http.HandlerFunc {
 
 func GenerateRSS(database *model.ReadingListRecords) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		//	sort.Sort(sort.Reverse(ById(database.Records)))
+		sort.Sort(sort.Reverse(model.ById(database.Records)))
 
 		now := time.Now()
 		feed := &feeds.Feed{
@@ -35,22 +36,18 @@ func GenerateRSS(database *model.ReadingListRecords) http.HandlerFunc {
 		}
 
 		for _, value := range database.Records {
-			glog.Info("adding feed: ", value.URL)
 			newItem := feeds.Item{Title: value.URL,
 				Link: &feeds.Link{Href: value.URL},
-				//Description: "A discussion on controlled parallelism in golang",
-				//Author:      &feeds.Author{"Rogier Lommers", "jmoiron@jmoiron.net"},
-				//Created:     now,
 			}
 			feed.Add(&newItem)
 		}
 
-		atom, err := feed.ToRss()
+		rss, err := feed.ToRss()
 		if err != nil {
 			glog.Errorf("error creating RSS feed -> %s", err)
 			return
 		}
-		w.Write([]byte(atom))
+		w.Write([]byte(rss))
 	}
 }
 
