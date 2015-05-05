@@ -12,6 +12,9 @@ import (
 	"github.com/rogierlommers/go-read/internal/rest"
 )
 
+// TODO
+// get hostname from request
+
 var databasefile = flag.String("databasefile", "database.xml", "XML file where items are stored")
 var port = flag.Int("port", 8080, "http listener port")
 
@@ -43,5 +46,8 @@ func main() {
 	// start server
 	http.Handle("/", r)
 	glog.Infof("running on port %d", *port)
-	http.ListenAndServe(":"+strconv.Itoa(*port), nil)
+	err := http.ListenAndServe(":"+strconv.Itoa(*port), nil)
+	if err != nil {
+		glog.Fatal(err)
+	}
 }
