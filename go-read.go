@@ -20,7 +20,7 @@ var port = flag.Int("port", 8080, "http listener port")
 
 func init() {
 	flag.Parse()
-	flag.Lookup("logtostderr").Value.Set("true")
+	flag.Lookup("alsologtostderr").Value.Set("true")
 	common.DatabaseFile = *databasefile
 	model.CreateDatabaseIfNotExists()
 }
@@ -45,7 +45,7 @@ func main() {
 
 	// start server
 	http.Handle("/", r)
-	glog.Infof("running on port %d", *port)
+	glog.Errorf("running on port %d", *port)
 	err := http.ListenAndServe(":"+strconv.Itoa(*port), nil)
 	if err != nil {
 		glog.Fatal(err)

@@ -65,7 +65,7 @@ func AddArticle(database *model.ReadingListRecords) http.HandlerFunc {
 		url := string(urlByteArray[:])
 
 		model.AddRecord(database, url)
-		glog.Infof("add #%d url [%s] --> [%s]: ", len(database.Records), base64url, url)
+		glog.Infof("add url #%d --> [%s]: ", len(database.Records), url[0:60])
 		w.Write([]byte("url added..."))
 	}
 }
