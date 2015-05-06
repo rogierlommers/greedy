@@ -8,16 +8,17 @@ import (
 	"sort"
 	"time"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/golang/glog"
 	"github.com/gorilla/feeds"
 	"github.com/gorilla/mux"
+	"github.com/rogierlommers/go-read/internal/common"
 )
 
 func StatsHandler(database *ReadingListRecords) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		glog.Info("stats page")
-		spew.Dump(database)
+		stats := "version: " + common.BuildVersion + ", date: " + common.BuildDate
+		w.Write([]byte(stats))
 	}
 }
 

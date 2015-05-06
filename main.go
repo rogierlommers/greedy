@@ -18,6 +18,11 @@ import (
 // SOURCES
 // http://stackoverflow.com/questions/30037515/adding-element-to-slice-in-handlerfunc-and-return-as-a-whole
 
+// injected by the build process
+var version = "unknown version"
+var builddate = "unknown build date"
+
+// read flags
 var databasefile = flag.String("databasefile", "database.xml", "XML file where items are stored")
 var port = flag.Int("port", 8080, "http listener port")
 
@@ -30,6 +35,10 @@ func init() {
 
 func main() {
 	defer glog.Flush()
+
+	// expost build info
+	common.BuildVersion = version
+	common.BuildDate = builddate
 
 	// read database
 	database := dao.ReadFileIntoSlice()
@@ -48,7 +57,7 @@ func main() {
 
 	// start server
 	http.Handle("/", r)
-	glog.Errorf("running on port %d", *port)
+	glog.Infof("running on port %d", *port)
 	err := http.ListenAndServe(":"+strconv.Itoa(*port), nil)
 	if err != nil {
 		glog.Fatal(err)
