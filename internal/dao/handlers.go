@@ -17,7 +17,7 @@ import (
 func StatsHandler(database *ReadingListRecords) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		glog.Info("stats page")
-		stats := "version: " + common.BuildVersion + ", date: " + common.BuildDate
+		stats := "builddate: " + common.BuildDate
 		w.Write([]byte(stats))
 	}
 }

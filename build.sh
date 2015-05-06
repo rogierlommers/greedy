@@ -18,6 +18,12 @@ else
   error_exit "error while deleting target directory"
 fi
 
+if mkdir -p ./target/logs; then
+  log "logs directory created"
+else
+  error_exit "error while deleting logs directory"
+fi
+
 if mkdir -p ./target; then
   log "new target direcory created"
 else
@@ -34,6 +40,12 @@ if cp -r ./static ./target/static; then
   log "static files copied to target directory"
 else
   error_exit "error while copying static files to target directory"
+fi
+
+if cp ./run.sh ./target/; then
+  log "copy run.sh to target"
+else
+  error_exit "error while copying run.sh to target directory"
 fi
 
 echo "---------------------------------------------------------------------------------------------------"

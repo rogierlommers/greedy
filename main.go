@@ -19,7 +19,6 @@ import (
 // http://stackoverflow.com/questions/30037515/adding-element-to-slice-in-handlerfunc-and-return-as-a-whole
 
 // injected by the build process
-var version = "unknown version"
 var builddate = "unknown build date"
 
 // read flags
@@ -37,7 +36,6 @@ func main() {
 	defer glog.Flush()
 
 	// expost build info
-	common.BuildVersion = version
 	common.BuildDate = builddate
 
 	// read database
