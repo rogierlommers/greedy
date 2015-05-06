@@ -16,6 +16,9 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// base64 for about:blank pages, which we don't want to store
+const AboutBlank = "YWJvdXQ6Ymxhbms="
+
 func StatsHandler(database *ReadingListRecords) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		fp := path.Join("static", "templates", "stats.html")
@@ -80,6 +83,10 @@ func AddArticle(database *ReadingListRecords) http.HandlerFunc {
 		vars := mux.Vars(r)
 		base64url := vars["base64url"]
 
+		if isAboutBlank(base64url) {
+			IndexPage(w, r)
+		}
+
 		urlByteArray, decodeErr := base64.StdEncoding.DecodeString(base64url)
 		if decodeErr != nil {
 			glog.Errorf("error decoding url -> %s", decodeErr)
@@ -140,4 +147,14 @@ func IndexPage(w http.ResponseWriter, r *http.Request) {
 	if err := tmpl.Execute(w, obj); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
+}
+
+func isAboutBlank(url string) bool {
+	return url == AboutBlank
+}
+
+func getStringFromBase64(url string) (string, error) {
+	// validates url and returns string of url
+	glog.Info("check validiry")
+	return "", nil
 }
