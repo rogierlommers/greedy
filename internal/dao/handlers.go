@@ -2,23 +2,48 @@ package dao
 
 import (
 	"encoding/base64"
+	"encoding/json"
 	"html/template"
 	"net/http"
+	"net/url"
 	"path"
 	"sort"
 	"time"
 
+	"github.com/fukata/golang-stats-api-handler"
 	"github.com/golang/glog"
 	"github.com/gorilla/feeds"
 	"github.com/gorilla/mux"
-	"github.com/rogierlommers/go-read/internal/common"
 )
 
 func StatsHandler(database *ReadingListRecords) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		glog.Info("stats page")
-		stats := "builddate: " + common.BuildDate
-		w.Write([]byte(stats))
+		fp := path.Join("static", "templates", "stats.html")
+		tmpl, parseErr := template.ParseFiles(fp)
+		if parseErr != nil {
+			http.Error(w, parseErr.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		var jsonBytes []byte
+		var jsonErr error
+
+		jsonBytes, jsonErr = json.MarshalIndent(stats_api.GetStats(), "", "  ")
+
+		var stats string
+		if jsonErr != nil {
+			stats = jsonErr.Error()
+		} else {
+			stats = string(jsonBytes)
+		}
+
+		obj := map[string]string{"statsmessage": stats}
+
+		if templErr := tmpl.Execute(w, obj); templErr != nil {
+			http.Error(w, templErr.Error(), http.StatusInternalServerError)
+		}
+
 	}
 }
 
@@ -56,23 +81,49 @@ func AddArticle(database *ReadingListRecords) http.HandlerFunc {
 		vars := mux.Vars(r)
 		base64url := vars["base64url"]
 
-		urlByteArray, err := base64.StdEncoding.DecodeString(base64url)
-		if err != nil {
-			glog.Errorf("error decoding url -> %s", err)
+		urlByteArray, decodeErr := base64.StdEncoding.DecodeString(base64url)
+		if decodeErr != nil {
+			glog.Errorf("error decoding url -> %s", decodeErr)
+
+			fp := path.Join("static", "templates", "error.html")
+			tmpl, parseErr := template.ParseFiles(fp)
+			if parseErr != nil {
+				http.Error(w, parseErr.Error(), http.StatusInternalServerError)
+				return
+			}
+
+			obj := map[string]string{"errormessage": decodeErr.Error()}
+
+			if templErr := tmpl.Execute(w, obj); templErr != nil {
+				http.Error(w, templErr.Error(), http.StatusInternalServerError)
+			}
 			return
 		}
 
-		url := string(urlByteArray[:])
+		addedUrl := string(urlByteArray[:])
+		AddRecord(database, addedUrl)
 
-		AddRecord(database, url)
 		var logUrl = ""
-		if len(url) < 60 {
-			logUrl = url
+		if len(addedUrl) < 60 {
+			logUrl = addedUrl
 		} else {
-			logUrl = url[0:60]
+			logUrl = addedUrl[0:60]
 		}
 		glog.Infof("add url #%d --> [%s]", len(database.Records), logUrl)
-		w.Write([]byte("url added..."))
+
+		fp := path.Join("static", "templates", "confirmation.html")
+		tmpl, err := template.ParseFiles(fp)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		u, _ := url.Parse(addedUrl)
+		obj := map[string]string{"url": u.Host}
+
+		if err := tmpl.Execute(w, obj); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
 	}
 }
 

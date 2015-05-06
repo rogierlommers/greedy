@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/fukata/golang-stats-api-handler"
 	"github.com/golang/glog"
 	"github.com/gorilla/mux"
 
@@ -49,6 +50,7 @@ func main() {
 	http.Handle("/logs/", http.StripPrefix("/logs/", http.FileServer(http.Dir("logs"))))
 
 	// http handles
+	r.HandleFunc("/stats/raw", stats_api.Handler)
 	r.HandleFunc("/stats", dao.StatsHandler(&database))
 	r.HandleFunc("/add/{base64url}", dao.AddArticle(&database))
 	r.HandleFunc("/rss", dao.GenerateRSS(&database))
