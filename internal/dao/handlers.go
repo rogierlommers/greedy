@@ -18,7 +18,6 @@ import (
 
 func StatsHandler(database *ReadingListRecords) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		glog.Info("stats page")
 		fp := path.Join("static", "templates", "stats.html")
 		tmpl, parseErr := template.ParseFiles(fp)
 		if parseErr != nil {
@@ -128,7 +127,6 @@ func AddArticle(database *ReadingListRecords) http.HandlerFunc {
 }
 
 func IndexPage(w http.ResponseWriter, r *http.Request) {
-	glog.Info("index page")
 	fp := path.Join("static", "templates", "index.html")
 	tmpl, err := template.ParseFiles(fp)
 	if err != nil {

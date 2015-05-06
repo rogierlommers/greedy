@@ -33,6 +33,13 @@ func init() {
 	dao.CreateDatabaseIfNotExists()
 }
 
+func log(handler http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		glog.Infof("%s %s %s", r.RemoteAddr, r.Method, r.URL)
+		handler.ServeHTTP(w, r)
+	})
+}
+
 func main() {
 	defer glog.Flush()
 
@@ -59,7 +66,7 @@ func main() {
 	// start server
 	http.Handle("/", r)
 	glog.Infof("running on port %d", *port)
-	err := http.ListenAndServe(":"+strconv.Itoa(*port), nil)
+	err := http.ListenAndServe(":"+strconv.Itoa(*port), log(http.DefaultServeMux))
 	if err != nil {
 		glog.Fatal(err)
 	}
