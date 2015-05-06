@@ -7,13 +7,16 @@ import (
 
 	"github.com/golang/glog"
 	"github.com/gorilla/mux"
+
 	"github.com/rogierlommers/go-read/internal/common"
-	"github.com/rogierlommers/go-read/internal/model"
-	"github.com/rogierlommers/go-read/internal/rest"
+	"github.com/rogierlommers/go-read/internal/dao"
 )
 
 // TODO
 // get hostname from request
+
+// SOURCES
+// http://stackoverflow.com/questions/30037515/adding-element-to-slice-in-handlerfunc-and-return-as-a-whole
 
 var databasefile = flag.String("databasefile", "database.xml", "XML file where items are stored")
 var port = flag.Int("port", 8080, "http listener port")
@@ -22,14 +25,14 @@ func init() {
 	flag.Parse()
 	flag.Lookup("alsologtostderr").Value.Set("true")
 	common.DatabaseFile = *databasefile
-	model.CreateDatabaseIfNotExists()
+	dao.CreateDatabaseIfNotExists()
 }
 
 func main() {
 	defer glog.Flush()
 
 	// read database
-	database := model.ReadFileIntoSlice()
+	database := dao.ReadFileIntoSlice()
 
 	// initialise mux router
 	r := mux.NewRouter()
@@ -38,10 +41,10 @@ func main() {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static/html"))))
 
 	// http handles
-	r.HandleFunc("/stats", rest.StatsHandler(&database))
-	r.HandleFunc("/add/{base64url}", rest.AddArticle(&database))
-	r.HandleFunc("/rss", rest.GenerateRSS(&database))
-	r.HandleFunc("/", rest.IndexPage)
+	r.HandleFunc("/stats", dao.StatsHandler(&database))
+	r.HandleFunc("/add/{base64url}", dao.AddArticle(&database))
+	r.HandleFunc("/rss", dao.GenerateRSS(&database))
+	r.HandleFunc("/", dao.IndexPage)
 
 	// start server
 	http.Handle("/", r)

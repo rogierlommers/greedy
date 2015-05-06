@@ -1,4 +1,4 @@
-package rest
+package dao
 
 import (
 	"encoding/base64"
@@ -12,19 +12,18 @@ import (
 	"github.com/golang/glog"
 	"github.com/gorilla/feeds"
 	"github.com/gorilla/mux"
-	"github.com/rogierlommers/go-read/internal/model"
 )
 
-func StatsHandler(database *model.ReadingListRecords) http.HandlerFunc {
+func StatsHandler(database *ReadingListRecords) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		glog.Info("stats page")
 		spew.Dump(database)
 	}
 }
 
-func GenerateRSS(database *model.ReadingListRecords) http.HandlerFunc {
+func GenerateRSS(database *ReadingListRecords) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		sort.Sort(sort.Reverse(model.ById(database.Records)))
+		sort.Sort(sort.Reverse(ById(database.Records)))
 
 		now := time.Now()
 		feed := &feeds.Feed{
@@ -51,7 +50,7 @@ func GenerateRSS(database *model.ReadingListRecords) http.HandlerFunc {
 	}
 }
 
-func AddArticle(database *model.ReadingListRecords) http.HandlerFunc {
+func AddArticle(database *ReadingListRecords) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		base64url := vars["base64url"]
@@ -64,7 +63,7 @@ func AddArticle(database *model.ReadingListRecords) http.HandlerFunc {
 
 		url := string(urlByteArray[:])
 
-		model.AddRecord(database, url)
+		AddRecord(database, url)
 		glog.Infof("add url #%d --> [%s]: ", len(database.Records), url[0:60])
 		w.Write([]byte("url added..."))
 	}
