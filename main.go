@@ -46,6 +46,7 @@ func main() {
 
 	// static files
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static/html"))))
+	http.Handle("/logs/", http.StripPrefix("/logs/", http.FileServer(http.Dir("logs"))))
 
 	// http handles
 	r.HandleFunc("/stats", dao.StatsHandler(&database))
