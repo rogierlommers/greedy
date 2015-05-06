@@ -45,6 +45,7 @@ func main() {
 
 	// expost build info
 	common.BuildDate = builddate
+	glog.Info("go-read version: ", common.BuildDate)
 
 	// read database
 	database := dao.ReadFileIntoSlice()

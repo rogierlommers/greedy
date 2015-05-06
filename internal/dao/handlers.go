@@ -85,6 +85,7 @@ func AddArticle(database *ReadingListRecords) http.HandlerFunc {
 
 		if isAboutBlank(base64url) {
 			IndexPage(w, r)
+			return
 		}
 
 		urlByteArray, decodeErr := base64.StdEncoding.DecodeString(base64url)
