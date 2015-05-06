@@ -65,7 +65,13 @@ func AddArticle(database *ReadingListRecords) http.HandlerFunc {
 		url := string(urlByteArray[:])
 
 		AddRecord(database, url)
-		glog.Infof("add url #%d --> [%s]: ", len(database.Records), url[0:60])
+		var logUrl = ""
+		if len(url) < 60 {
+			logUrl = url
+		} else {
+			logUrl = url[0:60]
+		}
+		glog.Infof("add url #%d --> [%s]", len(database.Records), logUrl)
 		w.Write([]byte("url added..."))
 	}
 }
