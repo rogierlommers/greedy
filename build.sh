@@ -9,7 +9,7 @@ function log {
 }
 
 echo "---------------------------------------------------------------------------------------------------"
-BUILDDATE=`date -u "+%Y:%m:%d %H:%M:%S"`
+BUILDDATE=`date "+%Y:%m:%d %H:%M:%S"`
 log "start building version: ${BUILDDATE}"
 
 if rm -rf ./target; then
