@@ -72,7 +72,6 @@ func AddArticle(database *ReadingListRecords) http.HandlerFunc {
 
 func IndexPage(w http.ResponseWriter, r *http.Request) {
 	glog.Info("index page")
-	glog.Info(r)
 	fp := path.Join("static", "templates", "index.html")
 	tmpl, err := template.ParseFiles(fp)
 	if err != nil {
