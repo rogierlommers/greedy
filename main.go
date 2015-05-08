@@ -17,7 +17,9 @@ import (
 // get hostname from request
 
 // SOURCES
-// http://stackoverflow.com/questions/30037515/adding-element-to-slice-in-handlerfunc-and-return-as-a-whole
+// https://github.com/siadat/eton
+// INIT.D SCRIPT HIER: https://github.com/samwierema/go-url-shortener
+// https://github.com/samwierema?tab=repositories
 
 // injected by the build process
 var builddate = "unknown build date"
