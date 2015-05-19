@@ -134,6 +134,27 @@ func AddArticle(database *ReadingListRecords) http.HandlerFunc {
 	}
 }
 
+func TestUrl(w http.ResponseWriter, r *http.Request) {
+
+	vars := mux.Vars(r)
+	base64url := vars["base64url"]
+	glog.Info("check url: ", base64url)
+
+	urlByteArray, decodeErr := base64.StdEncoding.DecodeString(base64url)
+	if decodeErr != nil {
+		glog.Errorf("error decoding url -> %s", decodeErr)
+	}
+	addedUrl := string(urlByteArray[:])
+
+	var Url *url.URL
+	Url, err := url.Parse(addedUrl)
+	if err != nil {
+		panic("boom")
+	}
+
+	glog.Info("decoded url: ", Url)
+}
+
 func IndexPage(w http.ResponseWriter, r *http.Request) {
 	fp := path.Join("static", "templates", "index.html")
 	tmpl, err := template.ParseFiles(fp)

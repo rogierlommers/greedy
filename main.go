@@ -15,11 +15,13 @@ import (
 
 // TODO
 // get hostname from request
-
+// javascript:location.href='http://read.lommers.org/add/'+btoa(unescape(encodeURIComponent(window.location.href)))
 // SOURCES
 // https://github.com/siadat/eton
 // INIT.D SCRIPT HIER: https://github.com/samwierema/go-url-shortener
 // https://github.com/samwierema?tab=repositories
+
+// werkt niet: https://www.youtube.com/watch?v=TmiK9skef3s
 
 // injected by the build process
 var builddate = "unknown build date"
@@ -63,6 +65,7 @@ func main() {
 	r.HandleFunc("/stats/raw", stats_api.Handler)
 	r.HandleFunc("/stats", dao.StatsHandler(&database))
 	r.HandleFunc("/add/{base64url}", dao.AddArticle(&database))
+	r.HandleFunc("/test/{base64url}", dao.TestUrl)
 	r.HandleFunc("/rss", dao.GenerateRSS(&database))
 	r.HandleFunc("/", dao.IndexPage)
 
