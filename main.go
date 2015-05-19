@@ -15,11 +15,7 @@ import (
 
 // TODO
 // get hostname from request
-
-// SOURCES
 // https://github.com/siadat/eton
-// INIT.D SCRIPT HIER: https://github.com/samwierema/go-url-shortener
-// https://github.com/samwierema?tab=repositories
 
 // injected by the build process
 var builddate = "unknown build date"
