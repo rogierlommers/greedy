@@ -2,10 +2,9 @@ package dao
 
 import (
 	"encoding/json"
-	"html/template"
 	"net/http"
-	"path"
 	"sort"
+	"strconv"
 	"time"
 
 	"github.com/fukata/golang-stats-api-handler"
@@ -16,7 +15,6 @@ import (
 
 func StatsHandler(database *ReadingListRecords) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		var jsonBytes []byte
 		var jsonErr error
 		var stats string
@@ -29,8 +27,8 @@ func StatsHandler(database *ReadingListRecords) http.HandlerFunc {
 			stats = string(jsonBytes)
 		}
 
-		render.DisplayStatsPagefunc(w, r, stats)
-
+		renderObject := map[string]string{"message": stats}
+		render.DisplayPage(w, r, renderObject, "stats.html")
 	}
 }
 
@@ -66,67 +64,29 @@ func GenerateRSS(database *ReadingListRecords) http.HandlerFunc {
 func AddArticle(database *ReadingListRecords) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		queryParam := r.FormValue("url")
-
-		if len(queryParam) == 0 {
-			IndexPage(w, r)
+		glog.Info("len(queryParam): ", len(queryParam))
+		if len(queryParam) == 0 || queryParam == "about:blank" {
+			renderObject := map[string]string{"errorMessage": "unable to insert empty or about:blank page"}
+			render.DisplayPage(w, r, renderObject, "error.html")
 			return
 		}
 
-		AddRecord(database, queryParam)
-		logAddedUrl(queryParam, database)
+		amount := AddRecord(database, queryParam)
+		addedUrl := logAddedUrl(queryParam, database)
 
-		//		urlByteArray, decodeErr := base64.StdEncoding.DecodeString(base64url)
-		//		if decodeErr != nil {
-		//			glog.Errorf("error decoding url -> %s", decodeErr)
+		renderObject := map[string]string{"url": addedUrl, "amount": strconv.Itoa(amount)}
+		render.DisplayPage(w, r, renderObject, "confirmation.html")
 
-		//			fp := path.Join("static", "templates", "error.html")
-		//			tmpl, parseErr := template.ParseFiles(fp)
-		//			if parseErr != nil {
-		//				http.Error(w, parseErr.Error(), http.StatusInternalServerError)
-		//				return
-		//			}
-
-		//			obj := map[string]string{"errormessage": decodeErr.Error()}
-
-		//			if templErr := tmpl.Execute(w, obj); templErr != nil {
-		//				http.Error(w, templErr.Error(), http.StatusInternalServerError)
-		//			}
-		//			return
-		//		}
-
-		//		fp := path.Join("static", "templates", "confirmation.html")
-		//		tmpl, err := template.ParseFiles(fp)
-		//		if err != nil {
-		//			http.Error(w, err.Error(), http.StatusInternalServerError)
-		//			return
-		//		}
-
-		//		u, _ := url.Parse(addedUrl)
-		//		obj := map[string]string{"url": u.Host}
-
-		//		if err := tmpl.Execute(w, obj); err != nil {
-		//			http.Error(w, err.Error(), http.StatusInternalServerError)
-		//		}
 	}
 }
 
 func IndexPage(w http.ResponseWriter, r *http.Request) {
-	fp := path.Join("static", "templates", "index.html")
-	tmpl, err := template.ParseFiles(fp)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
 	// TODO extract serverlocation from header
-	obj := map[string]string{"serverLocation": "http://localhost:8080"}
-
-	if err := tmpl.Execute(w, obj); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
+	renderObject := map[string]string{"serverLocation": "http://localhost:8080"}
+	render.DisplayPage(w, r, renderObject, "index.html")
 }
 
-func logAddedUrl(addedUrl string, database *ReadingListRecords) {
+func logAddedUrl(addedUrl string, database *ReadingListRecords) (rogier string) {
 	var logUrl = ""
 	if len(addedUrl) < 60 {
 		logUrl = addedUrl
@@ -134,4 +94,5 @@ func logAddedUrl(addedUrl string, database *ReadingListRecords) {
 		logUrl = addedUrl[0:60]
 	}
 	glog.Infof("add url #%d --> [%s]", len(database.Records), logUrl)
+	return logUrl
 }

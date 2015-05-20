@@ -42,13 +42,14 @@ func ReadFileIntoSlice() ReadingListRecords {
 	return database
 }
 
-func AddRecord(database *ReadingListRecords, url string) {
+func AddRecord(database *ReadingListRecords, url string) (amountStored int) {
 	common.LastID = common.LastID + 1
 	err := database.Append(Record{xml.Name{"", "record"}, common.LastID, url})
 	if err != nil {
 		glog.Errorf("error adding record to db -> %s", err)
 	}
 	saveDatabaseToFile(database)
+	return len(database.Records)
 }
 
 func saveDatabaseToFile(database *ReadingListRecords) {
