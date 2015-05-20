@@ -10,6 +10,7 @@ import (
 	"github.com/fukata/golang-stats-api-handler"
 	"github.com/golang/glog"
 	"github.com/gorilla/feeds"
+	"github.com/rogierlommers/go-read/internal/common"
 	"github.com/rogierlommers/go-read/internal/render"
 )
 
@@ -82,7 +83,7 @@ func AddArticle(database *ReadingListRecords) http.HandlerFunc {
 
 func IndexPage(w http.ResponseWriter, r *http.Request) {
 	// TODO extract serverlocation from header
-	renderObject := map[string]string{"serverLocation": "http://localhost:8080"}
+	renderObject := map[string]string{"serverLocation": "http://read.lommers.org", "buildversion": common.BuildDate}
 	render.DisplayPage(w, r, renderObject, "index.html")
 }
 
