@@ -11,37 +11,25 @@ import (
 	"github.com/fukata/golang-stats-api-handler"
 	"github.com/golang/glog"
 	"github.com/gorilla/feeds"
+	"github.com/rogierlommers/go-read/internal/render"
 )
-
-// base64 for about:blank pages, which we don't want to store
-const AboutBlank = "YWJvdXQ6Ymxhbms="
 
 func StatsHandler(database *ReadingListRecords) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		fp := path.Join("static", "templates", "stats.html")
-		tmpl, parseErr := template.ParseFiles(fp)
-		if parseErr != nil {
-			http.Error(w, parseErr.Error(), http.StatusInternalServerError)
-			return
-		}
 
 		var jsonBytes []byte
 		var jsonErr error
+		var stats string
 
 		jsonBytes, jsonErr = json.MarshalIndent(stats_api.GetStats(), "", "  ")
 
-		var stats string
 		if jsonErr != nil {
 			stats = jsonErr.Error()
 		} else {
 			stats = string(jsonBytes)
 		}
 
-		obj := map[string]string{"statsmessage": stats}
-
-		if templErr := tmpl.Execute(w, obj); templErr != nil {
-			http.Error(w, templErr.Error(), http.StatusInternalServerError)
-		}
+		render.DisplayStatsPagefunc(w, r, stats)
 
 	}
 }
@@ -86,11 +74,6 @@ func AddArticle(database *ReadingListRecords) http.HandlerFunc {
 
 		AddRecord(database, queryParam)
 		logAddedUrl(queryParam, database)
-
-		//		if isAboutBlank(base64url) {
-		//			IndexPage(w, r)
-		//			return
-		//		}
 
 		//		urlByteArray, decodeErr := base64.StdEncoding.DecodeString(base64url)
 		//		if decodeErr != nil {
@@ -141,16 +124,6 @@ func IndexPage(w http.ResponseWriter, r *http.Request) {
 	if err := tmpl.Execute(w, obj); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
-}
-
-func isAboutBlank(url string) bool {
-	return url == AboutBlank
-}
-
-func getStringFromBase64(url string) (string, error) {
-	// validates url and returns string of url
-	glog.Info("check validiry")
-	return "", nil
 }
 
 func logAddedUrl(addedUrl string, database *ReadingListRecords) {
