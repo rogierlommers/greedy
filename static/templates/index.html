@@ -1,71 +1,55 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>Go-read</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="/static/theme/bootstrap.css" media="screen">
-    <link rel="stylesheet" href="/static/theme/usebootstrap.css">
- 	  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="/static/bootstrap/html5shiv.js"></script>
-      <script src="/static/bootstrap/respond.min.js"></script>
-    <![endif]-->
-  </head>
-  <body>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+  <title>go-read</title>
+  <link rel="stylesheet" href="css/poole.css">
+  <link rel="stylesheet" href="css/syntax.css">
+  <link rel="stylesheet" href="css/hyde.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.ico">
+  <link href="/rss" rel="alternate" type="application/rss+xml" title="go-read RSS feed" />
+</head>
 
-    <div class="navbar navbar-default navbar-fixed-top">
-      <div class="container">
-        <div class="navbar-header">
-          <a href="#" class="navbar-brand">Home</a>
-          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-        </div>
-        <div class="navbar-collapse collapse" id="navbar-main">
+<body>
 
-		  <ul class="nav navbar-nav">
-            <li>
-              <a href="/rss">RSS feed</a>
-            </li>
-            <li>
-              <a href="/stats">Stats</a>
-            </li>
-		  </ul>
-
-        </div>
-      </div>
+<div class="sidebar">
+  <div class="container sidebar-sticky">
+    <div class="sidebar-about">
+      <h1>go-read</h1>
+      <p class="lead">
+      a personal readinglist
+      </p>
     </div>
+    <ul class="sidebar-nav">
+      <li><a href="/">Home</a> </li>
+      <li><a href="/rss">RSS</a> </li>
+      <li><a href="/stats">Stats</a> </li>
+    </ul>
+  </div>
+</div>
 
-    <div class="container">
-
-      <div class="page-header" id="banner">
-        <div class="row">
-          <div class="col-lg-4">
-            <h2>Go-read</h2>
-			<font size="1">(version: {{ .buildversion }})</font>
-            <p class="lead">Your own multi-platform reading list.</p>
-            <p>Drag the button below to your favorites/bookmarks bar. It is a bookmarklet which redirects to the daemon and stores the current page to your reading list.</p>
-            <p>
-              <a href="javascript:location.href='{{ .serverLocation }}/add?url='+encodeURIComponent(window.location.href)">
-                <button type="button" class="btn btn-success">drag me to your favorites/bookmarks bar</button>
-              </a>
-            </p>
-            <p>
-              Next step is to add the <a href="/rss">/rss</a> endpoint to your RSS aggregator.
-            </p>
-          </div>
-        </div>
-      </div>
-
+<div class="content container">
+  <div class="posts">
+    <div class="post">
+    <p>
+	  Drag the button below to your favorites/bookmarks bar. It is a bookmarklet which redirects to the daemon and stores the current page to your reading list.
+	</p>
+    <p>
+      <a href="javascript:location.href='{{ .serverLocation }}/add?url='+encodeURIComponent(window.location.href)">
+        <button type="button">go-read</button>
+      </a>
+    </p>
+    <p>
+      Next step is to add the <a href="/rss">/rss</a> endpoint to your RSS aggregator.
+    </p>
     </div>
+  </div>
+</div>
 
-    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-    <script src="/static/bootstrap/bootstrap.min.js"></script>
-	<script src="/static/bootstrap/usebootstrap.js"></script>
-
-  </body>
+</body>
 </html>
+

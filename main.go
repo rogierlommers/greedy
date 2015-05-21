@@ -61,7 +61,7 @@ func main() {
 	r := mux.NewRouter()
 
 	// static files
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static/html"))))
+	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("static/css"))))
 	http.Handle("/logs/", http.StripPrefix("/logs/", http.FileServer(http.Dir("logs"))))
 
 	// http handles
