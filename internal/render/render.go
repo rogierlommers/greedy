@@ -7,8 +7,12 @@ import (
 )
 
 func DisplayPage(w http.ResponseWriter, r *http.Request, renderObject map[string]string, templateFile string) {
-	fp := path.Join("static", "templates", templateFile)
-	tmpl, parseErr := template.ParseFiles(fp)
+	templateDirectory := path.Join("static", "templates")
+	baseFile := path.Join(templateDirectory, templateFile)
+	headerFile := path.Join(templateDirectory, "_header.html")
+	footerFile := path.Join(templateDirectory, "_footer.html")
+
+	tmpl, parseErr := template.ParseFiles(baseFile, headerFile, footerFile)
 	if parseErr != nil {
 		http.Error(w, parseErr.Error(), http.StatusInternalServerError)
 		return
