@@ -1,4 +1,4 @@
-{{define "base"}}
+{{define "header"}}
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
 <head>
@@ -15,7 +15,7 @@
   <link href="/rss" rel="alternate" type="application/rss+xml" title="go-read RSS feed" />
 </head>
 
-<body>
+<body class="theme-base-08">
 
 <div class="sidebar">
   <div class="container sidebar-sticky">
@@ -26,9 +26,7 @@
       </p>
     </div>
     <ul class="sidebar-nav">
-      <li><a href="/">Home</a> </li>
-      <li><a href="/rss">RSS</a> </li>
-      <li><a href="/stats">Stats</a> </li>
+      <a href="#">Home</a> | <a href="/rss">RSS</a> | <a href="/stats">Stats</a>
     </ul>
   </div>
 </div>
