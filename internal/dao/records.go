@@ -3,6 +3,9 @@ package dao
 import (
 	"encoding/xml"
 	"errors"
+	"time"
+
+	"github.com/golang/glog"
 )
 
 type Record struct {
@@ -37,3 +40,11 @@ type ById []Record
 func (a ById) Len() int           { return len(a) }
 func (a ById) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a ById) Less(i, j int) bool { return a[i].Id < a[j].Id }
+
+func addAdditionalInfo() {
+	// https://github.com/moovweb/gokogiri
+	// https://github.com/PuerkitoBio/goquery
+	glog.Info("starting thread")
+	time.Sleep(10 * time.Second)
+	glog.Info("ending thread")
+}

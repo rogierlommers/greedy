@@ -49,6 +49,7 @@ func AddRecord(database *ReadingListRecords, url string) (amountStored int) {
 		glog.Errorf("error adding record to db -> %s", err)
 	}
 	saveDatabaseToFile(database)
+	go addAdditionalInfo()
 	return len(database.Records)
 }
 
