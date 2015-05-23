@@ -1,27 +1,29 @@
 package main
 
 import (
+	"database/sql"
 	"flag"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/fukata/golang-stats-api-handler"
 	"github.com/golang/glog"
 	"github.com/gorilla/mux"
+	_ "github.com/mattn/go-sqlite3"
 
 	"github.com/rogierlommers/go-read/internal/common"
 	"github.com/rogierlommers/go-read/internal/dao"
 )
 
 // TODO
-// get hostname from request
 // https://github.com/siadat/eton
 
 // injected by the build process
 var builddate = "unknown build date"
 
 // read flags
-var databasefile = flag.String("databasefile", "database.xml", "XML file where items are stored")
+var databasefile = flag.String("databasefile", "database.db", "sqllite ile where items are stored")
 var port = flag.Int("port", 8080, "http listener port")
 
 func init() {
@@ -47,6 +49,29 @@ func main() {
 
 	// read database
 	database := dao.ReadFileIntoSlice()
+
+	// sqlite shit
+	var db *sql.DB
+
+	dbfileExists := false
+	if _, err := os.Stat(*databasefile); err == nil {
+		dbfileExists = true
+	}
+
+	if true {
+		var err error
+		db, err = sql.Open("sqlite3", *databasefile)
+		if err != nil {
+			glog.Fatal(err)
+		}
+		defer db.Close()
+	} else {
+		glog.Fatal("boem")
+	}
+
+	if !dbfileExists {
+		dao.Init(db)
+	}
 
 	// initialise mux router
 	r := mux.NewRouter()
