@@ -14,8 +14,17 @@ import (
 )
 
 // TODO
+
+// WORKING LOCALHOST BOOKMARKLET: javascript:location.href='http://localhost:8080/add?url='+encodeURIComponent(window.location.href)
+
 // get hostname from request
+// javascript:location.href='http://read.lommers.org/add/'+btoa(unescape(encodeURIComponent(window.location.href)))
+// SOURCES
 // https://github.com/siadat/eton
+// INIT.D SCRIPT HIER: https://github.com/samwierema/go-url-shortener
+// https://github.com/samwierema?tab=repositories
+
+// werkt niet: https://www.youtube.com/watch?v=TmiK9skef3s
 
 // injected by the build process
 var builddate = "unknown build date"
