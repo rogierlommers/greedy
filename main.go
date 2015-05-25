@@ -8,36 +8,34 @@ import (
 	"github.com/fukata/golang-stats-api-handler"
 	"github.com/golang/glog"
 	"github.com/gorilla/mux"
+	_ "github.com/mattn/go-sqlite3"
 
 	"github.com/rogierlommers/go-read/internal/common"
 	"github.com/rogierlommers/go-read/internal/dao"
+	"github.com/rogierlommers/go-read/internal/handlers"
 )
 
 // TODO
 
 // WORKING LOCALHOST BOOKMARKLET: javascript:location.href='http://localhost:8080/add?url='+encodeURIComponent(window.location.href)
 
-// get hostname from request
 // javascript:location.href='http://read.lommers.org/add/'+btoa(unescape(encodeURIComponent(window.location.href)))
 // SOURCES
 // https://github.com/siadat/eton
-// INIT.D SCRIPT HIER: https://github.com/samwierema/go-url-shortener
+// sqlite branche wijziging gemaakt op laptop
 // https://github.com/samwierema?tab=repositories
 
 // werkt niet: https://www.youtube.com/watch?v=TmiK9skef3s
-
 // injected by the build process
 var builddate = "unknown build date"
 
 // read flags
-var databasefile = flag.String("databasefile", "database.xml", "XML file where items are stored")
+var databasefile = flag.String("databasefile", "articles.db", "sqllite file where items are stored")
 var port = flag.Int("port", 8080, "http listener port")
 
 func init() {
 	flag.Parse()
 	flag.Lookup("alsologtostderr").Value.Set("true")
-	common.DatabaseFile = *databasefile
-	dao.CreateDatabaseIfNotExists()
 }
 
 func log(handler http.Handler) http.Handler {
@@ -54,8 +52,9 @@ func main() {
 	common.BuildDate = builddate
 	glog.Info("go-read version: ", common.BuildDate)
 
-	// read database
-	database := dao.ReadFileIntoSlice()
+	// initialize sqlite storage
+	db := dao.Init(*databasefile)
+	defer db.Close()
 
 	// initialise mux router
 	r := mux.NewRouter()
@@ -66,10 +65,10 @@ func main() {
 
 	// http handles
 	r.HandleFunc("/stats/raw", stats_api.Handler)
-	r.HandleFunc("/stats", dao.StatsHandler(&database))
-	r.HandleFunc("/add", dao.AddArticle(&database))
-	r.HandleFunc("/rss", dao.GenerateRSS(&database))
-	r.HandleFunc("/", dao.IndexPage)
+	r.HandleFunc("/stats", handlers.StatsHandler(db))
+	r.HandleFunc("/add", handlers.AddArticle(db))
+	r.HandleFunc("/rss", handlers.GenerateRSS(db))
+	r.HandleFunc("/", handlers.IndexPage)
 
 	// start server
 	http.Handle("/", r)
