@@ -14,6 +14,7 @@ import (
 
 	"github.com/rogierlommers/go-read/internal/common"
 	"github.com/rogierlommers/go-read/internal/dao"
+	"github.com/rogierlommers/go-read/internal/handlers"
 )
 
 // TODO
@@ -23,14 +24,12 @@ import (
 var builddate = "unknown build date"
 
 // read flags
-var databasefile = flag.String("databasefile", "database.db", "sqllite ile where items are stored")
+var databasefile = flag.String("databasefile", "articles.db", "sqllite file where items are stored")
 var port = flag.Int("port", 8080, "http listener port")
 
 func init() {
 	flag.Parse()
 	flag.Lookup("alsologtostderr").Value.Set("true")
-	common.DatabaseFile = *databasefile
-	dao.CreateDatabaseIfNotExists()
 }
 
 func log(handler http.Handler) http.Handler {
@@ -47,9 +46,6 @@ func main() {
 	common.BuildDate = builddate
 	glog.Info("go-read version: ", common.BuildDate)
 
-	// read database
-	database := dao.ReadFileIntoSlice()
-
 	// sqlite shit
 	var db *sql.DB
 
@@ -58,6 +54,8 @@ func main() {
 		dbfileExists = true
 	}
 
+	glog.Info("does dbfile exist? ", dbfileExists)
+
 	if true {
 		var err error
 		db, err = sql.Open("sqlite3", *databasefile)
@@ -65,8 +63,6 @@ func main() {
 			glog.Fatal(err)
 		}
 		defer db.Close()
-	} else {
-		glog.Fatal("boem")
 	}
 
 	if !dbfileExists {
@@ -82,10 +78,10 @@ func main() {
 
 	// http handles
 	r.HandleFunc("/stats/raw", stats_api.Handler)
-	r.HandleFunc("/stats", dao.StatsHandler(&database))
-	r.HandleFunc("/add", dao.AddArticle(&database))
-	r.HandleFunc("/rss", dao.GenerateRSS(&database))
-	r.HandleFunc("/", dao.IndexPage)
+	r.HandleFunc("/stats", handlers.StatsHandler(db))
+	r.HandleFunc("/add", handlers.AddArticle(db))
+	r.HandleFunc("/rss", handlers.GenerateRSS(db))
+	r.HandleFunc("/", handlers.IndexPage)
 
 	// start server
 	http.Handle("/", r)

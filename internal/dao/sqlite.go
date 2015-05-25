@@ -2,50 +2,44 @@ package dao
 
 import (
 	"database/sql"
+	"time"
 
 	"github.com/golang/glog"
 )
 
+const sqlSelect = "id, name, url, description, created"
+
+// articleStruct holds the data fetched from a row
+type ArticleStruct struct {
+	ID          sql.NullInt64
+	Name        sql.NullString
+	Url         sql.NullString
+	Description sql.NullString
+	Created     time.Time
+}
+
+func check(e error) {
+	if e != nil {
+		glog.Error(e)
+	}
+}
+
 func Init(db *sql.DB) bool {
-	glog.Info("initializing databse")
+	glog.Info("initializing database")
 	initializeDatabase(db)
 	return true
 }
 
 func initializeDatabase(db *sql.DB) bool {
 	sqlStmt := `
-  DROP TABLE IF EXISTS attributes;
-	CREATE TABLE attributes (
+  DROP TABLE IF EXISTS articles;
+	CREATE TABLE articles (
 		id          INTEGER NOT NULL PRIMARY KEY,
 		name        TEXT,
-		alias       TEXT,
-		parent_id   INTEGER,
-		frequency   INTEGER DEFAULT 0,
-		mark        INTEGER DEFAULT 0,
-		-- pwd      TEXT,
-
-		value_text  TEXT,
-		value_blob  BLOB,
-		value_int   INTEGER,
-		value_real  REAL,
-		value_time  DATETIME,
-
-		accessed_at DATETIME,
-		updated_at  DATETIME,
-		deleted_at  DATETIME,
-		created_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+		url         TEXT,
+		description TEXT,
+		created     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 	);
-
-  CREATE UNIQUE INDEX IF NOT EXISTS index_on_alias        ON attributes (alias);
-  CREATE        INDEX IF NOT EXISTS index_on_name         ON attributes (name);
-  CREATE        INDEX IF NOT EXISTS index_on_value_text   ON attributes (value_text);
-  CREATE        INDEX IF NOT EXISTS index_on_value_blob   ON attributes (value_blob);
-  CREATE        INDEX IF NOT EXISTS index_on_value_int    ON attributes (value_int);
-  CREATE        INDEX IF NOT EXISTS index_on_value_real   ON attributes (value_real);
-  CREATE        INDEX IF NOT EXISTS index_on_accessed_at  ON attributes (accessed_at);
-  CREATE        INDEX IF NOT EXISTS index_on_deleted_at   ON attributes (deleted_at);
-  CREATE        INDEX IF NOT EXISTS index_on_frequency    ON attributes (frequency);
-  CREATE        INDEX IF NOT EXISTS index_on_mark         ON attributes (mark);
 	`
 	_, err := db.Exec(sqlStmt)
 	if err != nil {
@@ -54,4 +48,49 @@ func initializeDatabase(db *sql.DB) bool {
 	}
 	glog.Info("repository initiated")
 	return true
+}
+
+func SaveArticle(db *sql.DB, url string) (lastInsertID int64) {
+	stmt, err := db.Prepare("INSERT INTO articles (url) VALUES (?)")
+	check(err)
+
+	result, err := stmt.Exec(url)
+	check(err)
+
+	lastInsertID, err = result.LastInsertId()
+
+	check(err)
+	return
+}
+
+func GetLastArticles(db *sql.DB) (articleList []ArticleStruct) {
+	var stmt *sql.Stmt
+	var rows *sql.Rows
+
+	tx, err := db.Begin()
+	check(err)
+
+	stmt, err = tx.Prepare("SELECT " + sqlSelect + " FROM articles ORDER BY id DESC")
+	check(err)
+	defer stmt.Close()
+
+	rows, err = stmt.Query()
+	check(err)
+	defer rows.Close()
+
+	articleList = make([]ArticleStruct, 0, 0)
+
+	for rows.Next() {
+		article := ArticleStruct{}
+		err = rows.Scan(&article.ID, &article.Name, &article.Url, &article.Description, &article.Created)
+		check(err)
+		articleList = append(articleList, article)
+	}
+
+	tx.Commit()
+	return
+}
+
+func ScrapeArticle(id int64) {
+	glog.Info("Scraping article with id --> ", id)
 }

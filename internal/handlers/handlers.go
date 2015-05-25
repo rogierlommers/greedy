@@ -1,20 +1,20 @@
-package dao
+package handlers
 
 import (
+	"database/sql"
 	"encoding/json"
 	"net/http"
-	"sort"
-	"strconv"
 	"time"
 
 	"github.com/fukata/golang-stats-api-handler"
 	"github.com/golang/glog"
 	"github.com/gorilla/feeds"
 	"github.com/rogierlommers/go-read/internal/common"
+	"github.com/rogierlommers/go-read/internal/dao"
 	"github.com/rogierlommers/go-read/internal/render"
 )
 
-func StatsHandler(database *ReadingListRecords) http.HandlerFunc {
+func StatsHandler(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var jsonBytes []byte
 		var jsonErr error
@@ -33,9 +33,9 @@ func StatsHandler(database *ReadingListRecords) http.HandlerFunc {
 	}
 }
 
-func GenerateRSS(database *ReadingListRecords) http.HandlerFunc {
+func GenerateRSS(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		sort.Sort(sort.Reverse(ById(database.Records)))
+		//sort.Sort(sort.Reverse(ById(database.Records)))
 
 		now := time.Now()
 		feed := &feeds.Feed{
@@ -46,9 +46,15 @@ func GenerateRSS(database *ReadingListRecords) http.HandlerFunc {
 			Created:     now,
 		}
 
-		for _, value := range database.Records {
-			newItem := feeds.Item{Title: value.URL,
-				Link: &feeds.Link{Href: value.URL},
+		var articles []dao.ArticleStruct
+		articles = dao.GetLastArticles(db)
+
+		for _, value := range articles {
+			newItem := feeds.Item{
+				Title:       value.Name.String,
+				Link:        &feeds.Link{Href: value.Url.String},
+				Description: value.Description.String,
+				Created:     value.Created,
 			}
 			feed.Add(&newItem)
 		}
@@ -62,22 +68,24 @@ func GenerateRSS(database *ReadingListRecords) http.HandlerFunc {
 	}
 }
 
-func AddArticle(database *ReadingListRecords) http.HandlerFunc {
+func AddArticle(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		queryParam := r.FormValue("url")
-		glog.Info("len(queryParam): ", len(queryParam))
 		if len(queryParam) == 0 || queryParam == "about:blank" {
 			renderObject := map[string]string{"errorMessage": "unable to insert empty or about:blank page"}
 			render.DisplayPage(w, r, renderObject, "error.html")
 			return
 		}
 
-		amount := AddRecord(database, queryParam)
-		addedUrl := logAddedUrl(queryParam, database)
+		insertedId := dao.SaveArticle(db, queryParam)
+		addedUrl := logAddedUrl(queryParam, insertedId)
 
-		renderObject := map[string]string{"url": addedUrl, "amount": strconv.Itoa(amount)}
+		// start routine which scrapes url
+		dao.ScrapeArticle(insertedId)
+
+		// finally output confirmation page
+		renderObject := map[string]string{"url": addedUrl, "amount": "1"}
 		render.DisplayPage(w, r, renderObject, "confirmation.html")
-
 	}
 }
 
@@ -87,13 +95,13 @@ func IndexPage(w http.ResponseWriter, r *http.Request) {
 	render.DisplayPage(w, r, renderObject, "index.html")
 }
 
-func logAddedUrl(addedUrl string, database *ReadingListRecords) (rogier string) {
+func logAddedUrl(addedUrl string, insertedId int64) (rogier string) {
 	var logUrl = ""
 	if len(addedUrl) < 60 {
 		logUrl = addedUrl
 	} else {
 		logUrl = addedUrl[0:60]
 	}
-	glog.Infof("add url #%d --> [%s]", len(database.Records), logUrl)
+	glog.Infof("add url (id: %s) --> [%d]", logUrl, insertedId)
 	return logUrl
 }
