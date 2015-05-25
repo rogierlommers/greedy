@@ -1,10 +1,8 @@
 package main
 
 import (
-	"database/sql"
 	"flag"
 	"net/http"
-	"os"
 	"strconv"
 
 	"github.com/fukata/golang-stats-api-handler"
@@ -46,28 +44,9 @@ func main() {
 	common.BuildDate = builddate
 	glog.Info("go-read version: ", common.BuildDate)
 
-	// sqlite shit
-	var db *sql.DB
-
-	dbfileExists := false
-	if _, err := os.Stat(*databasefile); err == nil {
-		dbfileExists = true
-	}
-
-	glog.Info("does dbfile exist? ", dbfileExists)
-
-	if true {
-		var err error
-		db, err = sql.Open("sqlite3", *databasefile)
-		if err != nil {
-			glog.Fatal(err)
-		}
-		defer db.Close()
-	}
-
-	if !dbfileExists {
-		dao.Init(db)
-	}
+	// initialize sqlite storage
+	db := dao.Init(*databasefile)
+	defer db.Close()
 
 	// initialise mux router
 	r := mux.NewRouter()

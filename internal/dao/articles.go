@@ -2,6 +2,7 @@ package dao
 
 import (
 	"database/sql"
+	"os"
 	"time"
 
 	"github.com/golang/glog"
@@ -24,23 +25,40 @@ func check(e error) {
 	}
 }
 
-func Init(db *sql.DB) bool {
-	glog.Info("initializing database")
-	initializeDatabase(db)
-	return true
+func Init(databasefile string) (db *sql.DB) {
+	//	var db *sql.DB
+
+	dbfileExists := false
+	if _, err := os.Stat(databasefile); err == nil {
+		dbfileExists = true
+	}
+
+	glog.Info("does dbfile exist? ", dbfileExists)
+
+	if true {
+		var err error
+		db, err = sql.Open("sqlite3", databasefile)
+		if err != nil {
+			glog.Fatal(err)
+		}
+
+	}
+
+	if !dbfileExists {
+		initializeDatabase(db)
+	}
+	return
 }
 
 func initializeDatabase(db *sql.DB) bool {
-	sqlStmt := `
-  DROP TABLE IF EXISTS articles;
-	CREATE TABLE articles (
-		id          INTEGER NOT NULL PRIMARY KEY,
-		name        TEXT,
-		url         TEXT,
-		description TEXT,
-		created     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-	);
-	`
+	sqlStmt := `DROP TABLE IF EXISTS articles;
+				CREATE TABLE articles (
+					id          INTEGER NOT NULL PRIMARY KEY,
+					name        TEXT,
+					url         TEXT,
+					description TEXT,
+					created     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+				);`
 	_, err := db.Exec(sqlStmt)
 	if err != nil {
 		glog.Fatal(err)
