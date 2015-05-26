@@ -69,10 +69,10 @@ func initializeDatabase(db *sql.DB) bool {
 }
 
 func SaveArticle(db *sql.DB, url string) (lastInsertID int64) {
-	stmt, err := db.Prepare("INSERT INTO articles (url) VALUES (?)")
+	stmt, err := db.Prepare("INSERT INTO articles (url, name) VALUES (?, ?)")
 	check(err)
 
-	result, err := stmt.Exec(url)
+	result, err := stmt.Exec(url, url)
 	check(err)
 
 	lastInsertID, err = result.LastInsertId()
