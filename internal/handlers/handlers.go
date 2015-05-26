@@ -54,7 +54,7 @@ func GenerateRSS(db *sql.DB) http.HandlerFunc {
 				Title:       value.Name.String,
 				Link:        &feeds.Link{Href: value.Url.String},
 				Description: value.Description.String,
-				Created:     value.Created,
+				Created:     now,
 			}
 			feed.Add(&newItem)
 		}
@@ -81,7 +81,7 @@ func AddArticle(db *sql.DB) http.HandlerFunc {
 		addedUrl := logAddedUrl(queryParam, insertedId)
 
 		// start routine which scrapes url
-		dao.ScrapeArticle(insertedId)
+		go dao.ScrapeArticle(db, insertedId)
 
 		// finally output confirmation page
 		renderObject := map[string]string{"url": addedUrl, "amount": "1"}

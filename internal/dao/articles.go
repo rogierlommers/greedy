@@ -2,9 +2,11 @@ package dao
 
 import (
 	"database/sql"
+	"log"
 	"os"
 	"time"
 
+	"github.com/PuerkitoBio/goquery"
 	"github.com/golang/glog"
 )
 
@@ -109,6 +111,54 @@ func GetLastArticles(db *sql.DB) (articleList []ArticleStruct) {
 	return
 }
 
-func ScrapeArticle(id int64) {
-	glog.Info("Scraping article with id --> ", id)
+func getArticleById(db *sql.DB, id int64) (updatedArticle ArticleStruct) {
+	var err error
+	var stmt *sql.Stmt
+
+	stmt, err = db.Prepare("SELECT " + sqlSelect + " FROM articles WHERE id = ?")
+	check(err)
+
+	err = stmt.QueryRow(id).Scan(&updatedArticle.ID, &updatedArticle.Name, &updatedArticle.Url, &updatedArticle.Description, &updatedArticle.Created)
+	if err != nil {
+		glog.Error("no record found with id --> ", id, err)
+	}
+	return
+}
+
+func updateArticle(db *sql.DB, updatedArticle ArticleStruct) {
+	glog.Info("title after scraping --> ", updatedArticle.Name.String)
+	//	var err error
+	//	var stmt *sql.Stmt
+
+	//	stmt, err = db.Prepare("SELECT " + sqlSelect + " FROM articles WHERE id = ?")
+	//	check(err)
+
+	//	err = stmt.QueryRow(id).Scan(&updatedArticle.ID, &updatedArticle.Name, &updatedArticle.Url, &updatedArticle.Description, &updatedArticle.Created)
+	//	if err != nil {
+	//		glog.Error("No record found with id --> ", id, err)
+	//	}
+	//	return
+}
+
+func ScrapeArticle(db *sql.DB, id int64) {
+	glog.Info("scraping article with id --> ", id)
+
+	// storedArticle contains information stored in db
+	storedArticle := getArticleById(db, id)
+	glog.Info("title before scraping --> ", storedArticle.Name.String)
+
+	// start scraping html
+	doc, err := goquery.NewDocument(storedArticle.Url.String)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	doc.Find("head").Each(func(i int, s *goquery.Selection) {
+		pageTitle := s.Find("title").Text()
+		glog.Info("scraped title: ", pageTitle)
+		storedArticle.Name = sql.NullString{String: pageTitle, Valid: true}
+	})
+
+	// after succesfull scraping, add page title (and more?) to article in db
+	updateArticle(db, storedArticle)
 }

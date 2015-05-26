@@ -15,22 +15,11 @@ import (
 	"github.com/rogierlommers/go-read/internal/handlers"
 )
 
-// TODO
-
-// WORKING LOCALHOST BOOKMARKLET: javascript:location.href='http://localhost:8080/add?url='+encodeURIComponent(window.location.href)
-
-// javascript:location.href='http://read.lommers.org/add/'+btoa(unescape(encodeURIComponent(window.location.href)))
-// SOURCES
-// https://github.com/siadat/eton
-// sqlite branche wijziging gemaakt op laptop
-// https://github.com/samwierema?tab=repositories
-
-// werkt niet: https://www.youtube.com/watch?v=TmiK9skef3s
 // injected by the build process
 var builddate = "unknown build date"
 
 // read flags
-var databasefile = flag.String("databasefile", "articles.db", "sqllite file where items are stored")
+var databasefile = flag.String("databasefile", "articles.db", "sqlite file where items are stored")
 var port = flag.Int("port", 8080, "http listener port")
 
 func init() {
