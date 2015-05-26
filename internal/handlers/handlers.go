@@ -35,13 +35,12 @@ func StatsHandler(db *sql.DB) http.HandlerFunc {
 
 func GenerateRSS(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		//sort.Sort(sort.Reverse(ById(database.Records)))
 
 		now := time.Now()
 		feed := &feeds.Feed{
 			Title:       "Go-read",
-			Link:        &feeds.Link{Href: "http://bla.com"},
-			Description: "personal RSS feed with articles to be read",
+			Link:        &feeds.Link{Href: "http://read.lommers.org/"},
+			Description: "personal feed with saved articles",
 			Author:      &feeds.Author{"Rogier Lommers", "rogier@lommers.org"},
 			Created:     now,
 		}
@@ -54,12 +53,12 @@ func GenerateRSS(db *sql.DB) http.HandlerFunc {
 				Title:       value.Name.String,
 				Link:        &feeds.Link{Href: value.Url.String},
 				Description: value.Description.String,
-				Created:     now,
+				Created:     value.Created,
 			}
 			feed.Add(&newItem)
 		}
 
-		rss, err := feed.ToRss()
+		rss, err := feed.ToAtom()
 		if err != nil {
 			glog.Errorf("error creating RSS feed -> %s", err)
 			return
