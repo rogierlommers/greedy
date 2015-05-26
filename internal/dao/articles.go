@@ -136,16 +136,15 @@ func updateArticle(db *sql.DB, updatedArticle ArticleStruct) (rowsAffected int64
 	rowsAffected, err = result.RowsAffected()
 	check(err)
 
-	glog.Infof("scraping article %d completed, %d rows affected", updatedArticle.ID.Int64, rowsAffected)
 	return
 }
 
 func ScrapeArticle(db *sql.DB, id int64) {
-	glog.Info("scraping article with id --> ", id)
+	// time function duration
+	start := time.Now()
 
 	// storedArticle contains information stored in db which need to be updated through scraping
 	storedArticle := getArticleById(db, id)
-	glog.Info("title before scraping --> ", storedArticle.Name.String)
 
 	// start scraping html
 	doc, err := goquery.NewDocument(storedArticle.Url.String)
@@ -165,4 +164,7 @@ func ScrapeArticle(db *sql.DB, id int64) {
 
 	// after succesfull scraping, add page title (and more?) to article in db
 	updateArticle(db, storedArticle)
+
+	elapsed := time.Since(start)
+	glog.Infof("scraping article %d completed in %s", storedArticle.ID.Int64, elapsed.String())
 }
