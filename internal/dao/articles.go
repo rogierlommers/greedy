@@ -125,25 +125,25 @@ func getArticleById(db *sql.DB, id int64) (updatedArticle ArticleStruct) {
 	return
 }
 
-func updateArticle(db *sql.DB, updatedArticle ArticleStruct) {
-	glog.Info("title after scraping --> ", updatedArticle.Name.String)
-	//	var err error
-	//	var stmt *sql.Stmt
+func updateArticle(db *sql.DB, updatedArticle ArticleStruct) (rowsAffected int64) {
+	// time.Sleep(10 * time.Second)
+	stmt, err := db.Prepare("UPDATE articles SET name = ?, description = ? WHERE id = ?")
+	check(err)
 
-	//	stmt, err = db.Prepare("SELECT " + sqlSelect + " FROM articles WHERE id = ?")
-	//	check(err)
+	result, err := stmt.Exec(updatedArticle.Name, updatedArticle.Description, updatedArticle.ID)
+	check(err)
 
-	//	err = stmt.QueryRow(id).Scan(&updatedArticle.ID, &updatedArticle.Name, &updatedArticle.Url, &updatedArticle.Description, &updatedArticle.Created)
-	//	if err != nil {
-	//		glog.Error("No record found with id --> ", id, err)
-	//	}
-	//	return
+	rowsAffected, err = result.RowsAffected()
+	check(err)
+
+	glog.Infof("scraping article %d completed, %d rows affected", updatedArticle.ID.Int64, rowsAffected)
+	return
 }
 
 func ScrapeArticle(db *sql.DB, id int64) {
 	glog.Info("scraping article with id --> ", id)
 
-	// storedArticle contains information stored in db
+	// storedArticle contains information stored in db which need to be updated through scraping
 	storedArticle := getArticleById(db, id)
 	glog.Info("title before scraping --> ", storedArticle.Name.String)
 
@@ -153,9 +153,13 @@ func ScrapeArticle(db *sql.DB, id int64) {
 		log.Fatal(err)
 	}
 
+	doc.Find("html").Each(func(i int, s *goquery.Selection) {
+		pageBody := s.Find("body").Text()
+		storedArticle.Description = sql.NullString{String: pageBody, Valid: true}
+	})
+
 	doc.Find("head").Each(func(i int, s *goquery.Selection) {
 		pageTitle := s.Find("title").Text()
-		glog.Info("scraped title: ", pageTitle)
 		storedArticle.Name = sql.NullString{String: pageTitle, Valid: true}
 	})
 
