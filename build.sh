@@ -30,7 +30,7 @@ else
   error_exit "error while creating target directory"
 fi
 
-if CGO_ENABLED=0 go build -a -installsuffix cgo -ldflags "-X main.builddate '${BUILDDATE}'" -o ./target/go-read main.go; then
+if go build -a -ldflags "-X main.builddate '${BUILDDATE}'" -o ./target/go-read main.go; then
   log "go build completed"
 else
   error_exit "error while building static binary"
