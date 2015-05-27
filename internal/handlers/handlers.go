@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"net/http"
+	"net/url"
 	"time"
 
 	"github.com/fukata/golang-stats-api-handler"
@@ -83,7 +84,7 @@ func AddArticle(db *sql.DB) http.HandlerFunc {
 		go dao.ScrapeArticle(db, insertedId)
 
 		// finally output confirmation page
-		renderObject := map[string]string{"url": addedUrl, "amount": "1"}
+		renderObject := map[string]string{"hostname": addedUrl}
 		render.DisplayPage(w, r, renderObject, "confirmation.html")
 	}
 }
@@ -95,12 +96,11 @@ func IndexPage(w http.ResponseWriter, r *http.Request) {
 }
 
 func logAddedUrl(addedUrl string, insertedId int64) (rogier string) {
-	var logUrl = ""
-	if len(addedUrl) < 60 {
-		logUrl = addedUrl
-	} else {
-		logUrl = addedUrl[0:60]
+	u, err := url.Parse(addedUrl)
+	if err != nil {
+		glog.Error(err)
 	}
-	glog.Infof("add url (id: %s) --> [%d]", logUrl, insertedId)
-	return logUrl
+
+	glog.Infof("add hostname (id: %s) --> [%d]", u.Host, insertedId)
+	return u.Host
 }

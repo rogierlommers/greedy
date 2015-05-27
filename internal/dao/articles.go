@@ -2,8 +2,8 @@ package dao
 
 import (
 	"database/sql"
-	"log"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
@@ -11,6 +11,7 @@ import (
 )
 
 const sqlSelect = "id, name, url, description, created"
+const noDescription = "<h3>go-read</h3><br/><br/>go-read was unable to extract the meta description tag from your saved article."
 
 // articleStruct holds the data fetched from a row
 type ArticleStruct struct {
@@ -146,20 +147,26 @@ func ScrapeArticle(db *sql.DB, id int64) {
 	// storedArticle contains information stored in db which need to be updated through scraping
 	storedArticle := getArticleById(db, id)
 
-	// start scraping html
+	// init goquery
 	doc, err := goquery.NewDocument(storedArticle.Url.String)
 	if err != nil {
-		log.Fatal(err)
+		glog.Error("error while scraping article with id %d -- > ", storedArticle.ID, err)
 	}
 
-	doc.Find("html").Each(func(i int, s *goquery.Selection) {
-		pageBody := s.Find("body").Text()
-		storedArticle.Description = sql.NullString{String: pageBody, Valid: true}
-	})
-
+	// start scraping page title
 	doc.Find("head").Each(func(i int, s *goquery.Selection) {
 		pageTitle := s.Find("title").Text()
 		storedArticle.Name = sql.NullString{String: pageTitle, Valid: true}
+	})
+
+	// now get meta description field
+	doc.Find("meta").Each(func(i int, s *goquery.Selection) {
+		if name, _ := s.Attr("name"); strings.EqualFold(name, "description") {
+			description, _ := s.Attr("content")
+			storedArticle.Description = sql.NullString{String: description, Valid: true}
+		} else {
+			storedArticle.Description = sql.NullString{String: noDescription, Valid: true}
+		}
 	})
 
 	// after succesfull scraping, add page title (and more?) to article in db
