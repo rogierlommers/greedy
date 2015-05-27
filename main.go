@@ -15,8 +15,14 @@ import (
 	"github.com/rogierlommers/go-read/internal/handlers"
 )
 
+// TODOS
+// builddate moet beginnen met hoofdletter
+// phantomjs inbouwen: http://phantomjs.org/api/webpage/method/render-base64.html
+// phantomjs als optie
+// RSS feed gebruiken als scrape method?
+// extract serverlocation from header
+
 // injected by the build process
-// MOET UPPERCASE
 var builddate = "unknown build date"
 
 // read flags
@@ -38,7 +44,6 @@ func log(handler http.Handler) http.Handler {
 
 func main() {
 	defer glog.Flush()
-	// TODO: RSS FEEd als input voor scrape
 
 	// expost build info
 	common.BuildDate = builddate
