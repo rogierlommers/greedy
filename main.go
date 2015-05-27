@@ -16,6 +16,7 @@ import (
 )
 
 // injected by the build process
+// MOET UPPERCASE
 var builddate = "unknown build date"
 
 // read flags
@@ -28,6 +29,7 @@ func init() {
 }
 
 func log(handler http.Handler) http.Handler {
+	// NCSACommonLogFormatLogger gebruien?
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		glog.Infof("%s %s %s", r.RemoteAddr, r.Method, r.URL)
 		handler.ServeHTTP(w, r)
@@ -36,6 +38,7 @@ func log(handler http.Handler) http.Handler {
 
 func main() {
 	defer glog.Flush()
+	// TODO: RSS FEEd als input voor scrape
 
 	// expost build info
 	common.BuildDate = builddate
