@@ -176,4 +176,5 @@ func ScrapeArticle(db *sql.DB, id int64) {
 func createBase64ImageFromURL(url string) (base64image string) {
 	//
 
+	return "base"
 }
