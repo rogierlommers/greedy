@@ -23,7 +23,7 @@ import (
 // extract serverlocation from header
 
 // injected by the build process
-var builddate = "unknown build date"
+var BUILDDATE = "unknown build date"
 
 // read flags
 var databasefile = flag.String("databasefile", "articles.db", "sqlite file where items are stored")
@@ -46,7 +46,7 @@ func main() {
 	defer glog.Flush()
 
 	// expost build info
-	common.BuildDate = builddate
+	common.BuildDate = BUILDDATE
 	glog.Info("go-read version: ", common.BuildDate)
 
 	// initialize sqlite storage
