@@ -23,7 +23,7 @@ import (
 // extract serverlocation from header
 
 // injected by the build process
-var BUILDDATE = "unknown build date"
+var BUILDDATE = "unknown build"
 
 // read flags
 var databasefile = flag.String("databasefile", "articles.db", "sqlite file where items are stored")
@@ -35,7 +35,6 @@ func init() {
 }
 
 func log(handler http.Handler) http.Handler {
-	// NCSACommonLogFormatLogger gebruien?
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		glog.Infof("%s %s %s", r.RemoteAddr, r.Method, r.URL)
 		handler.ServeHTTP(w, r)
