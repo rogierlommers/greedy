@@ -16,14 +16,13 @@ import (
 )
 
 // TODOS
-// builddate moet beginnen met hoofdletter
 // phantomjs inbouwen: http://phantomjs.org/api/webpage/method/render-base64.html
 // phantomjs als optie
 // RSS feed gebruiken als scrape method?
 // extract serverlocation from header
 
 // injected by the build process
-var BUILDDATE = "unknown build"
+var BuildDate = "unknown build"
 
 // read flags
 var databasefile = flag.String("databasefile", "articles.db", "sqlite file where items are stored")
@@ -45,7 +44,7 @@ func main() {
 	defer glog.Flush()
 
 	// expost build info
-	common.BuildDate = BUILDDATE
+	common.BuildDate = BuildDate
 	glog.Info("go-read version: ", common.BuildDate)
 
 	// initialize sqlite storage
