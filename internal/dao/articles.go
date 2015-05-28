@@ -153,14 +153,14 @@ func ScrapeArticle(db *sql.DB, id int64) {
 	// start scraping page title
 	doc.Find("head").Each(func(i int, s *goquery.Selection) {
 		pageTitle := s.Find("title").Text()
-		storedArticle.Name = sql.NullString{String: pageTitle, Valid: true}
+		storedArticle.Name = sql.NullString{String: strings.TrimSpace(pageTitle), Valid: true}
 	})
 
 	// now get meta description field
 	doc.Find("meta").Each(func(i int, s *goquery.Selection) {
 		if name, _ := s.Attr("name"); strings.EqualFold(name, "description") {
 			description, _ := s.Attr("content")
-			storedArticle.Description = sql.NullString{String: description, Valid: true}
+			storedArticle.Description = sql.NullString{String: strings.TrimSpace(description), Valid: true}
 		} else {
 			storedArticle.Description = sql.NullString{String: noDescription, Valid: true}
 		}
