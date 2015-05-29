@@ -5,7 +5,6 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/fukata/golang-stats-api-handler"
 	"github.com/golang/glog"
 	"github.com/gorilla/mux"
 	_ "github.com/mattn/go-sqlite3"
@@ -16,10 +15,9 @@ import (
 )
 
 // TODOS
-// phantomjs inbouwen: http://phantomjs.org/api/webpage/method/render-base64.html
-// phantomjs als optie
-// RSS feed gebruiken als scrape method?
 // extract serverlocation from header
+// basic authentication???
+// export button for all urls
 
 // injected by the build process
 var BuildDate = "unknown build"
@@ -31,13 +29,6 @@ var port = flag.Int("port", 8080, "http listener port")
 func init() {
 	flag.Parse()
 	flag.Lookup("alsologtostderr").Value.Set("true")
-}
-
-func log(handler http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		glog.Infof("%s %s %s", r.RemoteAddr, r.Method, r.URL)
-		handler.ServeHTTP(w, r)
-	})
 }
 
 func main() {
@@ -56,19 +47,23 @@ func main() {
 
 	// static files
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("static/css"))))
+	http.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir("static/images"))))
 	http.Handle("/logs/", http.StripPrefix("/logs/", http.FileServer(http.Dir("logs"))))
 
 	// http handles
-	r.HandleFunc("/stats/raw", stats_api.Handler)
 	r.HandleFunc("/stats", handlers.StatsHandler(db))
+	r.HandleFunc("/export", handlers.ExportCSV(db))
 	r.HandleFunc("/add", handlers.AddArticle(db))
 	r.HandleFunc("/rss", handlers.GenerateRSS(db))
 	r.HandleFunc("/", handlers.IndexPage)
 
+	// start cleanup db routing
+	go dao.Cleanup(db)
+
 	// start server
 	http.Handle("/", r)
 	glog.Infof("running on port %d", *port)
-	err := http.ListenAndServe(":"+strconv.Itoa(*port), log(http.DefaultServeMux))
+	err := http.ListenAndServe(":"+strconv.Itoa(*port), handlers.Log(http.DefaultServeMux))
 	if err != nil {
 		glog.Fatal(err)
 	}

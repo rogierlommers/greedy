@@ -10,10 +10,14 @@ import (
 	"github.com/golang/glog"
 )
 
-const sqlSelect = "id, name, url, description, created"
-const noDescription = "<h3>go-read</h3><br/><br/>go-read was unable to extract the meta description tag from your saved article."
+const (
+	sqlSelect        = "id, name, url, description, created"
+	noDescription    = "go-read was unable to extract the meta description tag from your saved article."
+	maxArticles      = 1000 // maximum of articles in database
+	cleanupFrequency = 24   // in hours
+)
 
-// articleStruct holds the data fetched from a row
+// articleStruct holds the data fetched from a single row
 type ArticleStruct struct {
 	ID          sql.NullInt64
 	Name        sql.NullString
@@ -48,6 +52,15 @@ func Init(databasefile string) (db *sql.DB) {
 		initializeDatabase(db)
 	}
 	return
+}
+
+func Cleanup(db *sql.DB) {
+	for {
+		// maxArticles
+		// cleanupFrequency
+		glog.Infof("cleaned up %d articles from database", 40)
+		time.Sleep(24 * time.Hour)
+	}
 }
 
 func initializeDatabase(db *sql.DB) bool {
@@ -161,10 +174,22 @@ func ScrapeArticle(db *sql.DB, id int64) {
 		if name, _ := s.Attr("name"); strings.EqualFold(name, "description") {
 			description, _ := s.Attr("content")
 			storedArticle.Description = sql.NullString{String: strings.TrimSpace(description), Valid: true}
-		} else {
-			storedArticle.Description = sql.NullString{String: noDescription, Valid: true}
 		}
 	})
+
+	// if unable to scrape title, then use url
+	if len(storedArticle.Name.String) == 0 {
+		storedArticle.Name.String = storedArticle.Url.String
+	}
+
+	// if unable to scrape description, then use default text
+	if len(storedArticle.Description.String) == 0 {
+		storedArticle.Description.String = noDescription
+	}
+
+	// debugging info
+	glog.Infof("scraped title --> %s (length: %d)", storedArticle.Name.String, len(storedArticle.Name.String))
+	glog.Infof("scraped description --> %s (length: %d)", storedArticle.Description.String, len(storedArticle.Description.String))
 
 	// after succesfull scraping, add page title (and more?) to article in db
 	updateArticle(db, storedArticle)

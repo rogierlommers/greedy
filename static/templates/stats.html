@@ -1,7 +1,10 @@
 {{template "header"}}
     <div class="post">
-    <p>
-      <pre>{{ .message }}</pre>
+    <a href="/export">
+		<img width="3%" alt="export as csv file" src="/images/export-icon.png"/>
+	</a>
+	<p>
+      {{ .message }}
     </p>
     </div>
 {{template "footer"}}
