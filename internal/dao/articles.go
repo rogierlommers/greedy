@@ -137,7 +137,6 @@ func getArticleById(db *sql.DB, id int64) (updatedArticle ArticleStruct) {
 }
 
 func updateArticle(db *sql.DB, updatedArticle ArticleStruct) (rowsAffected int64) {
-	// time.Sleep(10 * time.Second)
 	stmt, err := db.Prepare("UPDATE articles SET name = ?, description = ? WHERE id = ?")
 	check(err)
 
@@ -146,7 +145,6 @@ func updateArticle(db *sql.DB, updatedArticle ArticleStruct) (rowsAffected int64
 
 	rowsAffected, err = result.RowsAffected()
 	check(err)
-
 	return
 }
 
