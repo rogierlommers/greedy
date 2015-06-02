@@ -17,7 +17,6 @@ import (
 // TODOS
 // extract serverlocation from header
 // basic authentication???
-// export button for all urls
 
 // injected by the build process
 var BuildDate = "unknown build"

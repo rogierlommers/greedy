@@ -159,6 +159,7 @@ func ScrapeArticle(db *sql.DB, id int64) {
 
 	// init goquery
 	doc, err := goquery.NewDocument(storedArticle.Url.String)
+	glog.Info("scraping article with url --> ", storedArticle.Url.String)
 	if err != nil {
 		glog.Error("error while scraping article with id %d -- > ", storedArticle.ID, err)
 	}
