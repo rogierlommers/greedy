@@ -17,6 +17,9 @@ import (
 // TODOS
 // extract serverlocation from header
 // basic authentication???
+// serve static files form binary?
+// https://github.com/jteeuwen/go-bindata
+// http://stackoverflow.com/questions/13904441/whats-the-best-way-to-bundle-static-resources-in-a-go-program
 
 // injected by the build process
 var BuildDate = "unknown build"
