@@ -160,6 +160,7 @@ func ScrapeArticle(db *sql.DB, id int64) {
 	glog.Info("scraping article with url --> ", storedArticle.Url.String)
 	if err != nil {
 		glog.Error("error while scraping article with id %d -- > ", storedArticle.ID, err)
+		return
 	}
 
 	// start scraping page title
