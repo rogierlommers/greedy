@@ -14,7 +14,7 @@ const (
 	sqlSelect        = "id, name, url, description, created"
 	noDescription    = "go-read was unable to extract the meta description tag from your saved article."
 	maxArticles      = 1000 // maximum of articles in database
-	cleanupFrequency = 24   // in hours
+	cleanupFrequency = 1    // in hours
 )
 
 // articleStruct holds the data fetched from a single row
@@ -24,6 +24,24 @@ type ArticleStruct struct {
 	Url         sql.NullString
 	Description sql.NullString
 	Created     time.Time
+}
+
+func initializeDatabase(db *sql.DB) bool {
+	sqlStmt := `DROP TABLE IF EXISTS articles;
+				CREATE TABLE articles (
+					id          INTEGER NOT NULL PRIMARY KEY,
+					name        TEXT,
+					url         TEXT,
+					description TEXT,
+					created     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+				);`
+	_, err := db.Exec(sqlStmt)
+	if err != nil {
+		glog.Fatal(err)
+		return false
+	}
+	glog.Info("repository initiated")
+	return true
 }
 
 func check(e error) {
@@ -58,27 +76,16 @@ func Cleanup(db *sql.DB) {
 	for {
 		// maxArticles
 		// cleanupFrequency
-		glog.Infof("cleaned up %d articles from database", 40)
-		time.Sleep(24 * time.Hour)
-	}
-}
 
-func initializeDatabase(db *sql.DB) bool {
-	sqlStmt := `DROP TABLE IF EXISTS articles;
-				CREATE TABLE articles (
-					id          INTEGER NOT NULL PRIMARY KEY,
-					name        TEXT,
-					url         TEXT,
-					description TEXT,
-					created     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-				);`
-	_, err := db.Exec(sqlStmt)
-	if err != nil {
-		glog.Fatal(err)
-		return false
+		var numberOfArticles int
+		err := db.QueryRow("SELECT COUNT(1) FROM articles").Scan(&numberOfArticles)
+		check(err)
+
+		glog.Infof("articles in db --> %d", numberOfArticles)
+
+		time.Sleep(cleanupFrequency * time.Hour)
+
 	}
-	glog.Info("repository initiated")
-	return true
 }
 
 func SaveArticle(db *sql.DB, url string) (lastInsertID int64) {
