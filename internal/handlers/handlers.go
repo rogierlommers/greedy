@@ -2,8 +2,10 @@ package handlers
 
 import (
 	"bytes"
+	"crypto/md5"
 	"database/sql"
 	"encoding/csv"
+	"encoding/hex"
 	"net/http"
 	"net/url"
 	"time"
@@ -26,7 +28,6 @@ func StatsHandler(db *sql.DB) http.HandlerFunc {
 			stats += "<tr><td>" + getHostnameFromUrl(value.Url.String) + "</td><td>" + humanize.Time(value.Created) + "</td></tr>"
 		}
 
-		//fmt.Printf("This was touched %s", humanize.Time(someTimeInstance))
 		renderObject := map[string]string{"message": stats}
 		render.DisplayPage(w, r, renderObject, "stats.html")
 
@@ -56,7 +57,6 @@ func ExportCSV(db *sql.DB) http.HandlerFunc {
 
 func GenerateRSS(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		now := time.Now()
 		feed := &feeds.Feed{
 			Title:       "Go-read",
@@ -75,6 +75,7 @@ func GenerateRSS(db *sql.DB) http.HandlerFunc {
 				Link:        &feeds.Link{Href: value.Url.String},
 				Description: value.Description.String,
 				Created:     value.Created,
+				Id:          getMD5Hash(value.Url.String),
 			}
 			feed.Add(&newItem)
 		}
@@ -120,4 +121,9 @@ func getHostnameFromUrl(addedUrl string) (hostname string) {
 		glog.Error(err)
 	}
 	return u.Host
+}
+
+func getMD5Hash(text string) string {
+	hash := md5.Sum([]byte(text))
+	return hex.EncodeToString(hash[:])
 }
