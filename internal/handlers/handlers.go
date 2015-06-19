@@ -75,7 +75,7 @@ func GenerateRSS(db *sql.DB) http.HandlerFunc {
 				Link:        &feeds.Link{Href: value.Url.String},
 				Description: value.Description.String,
 				Created:     value.Created,
-				Id:          getMD5Hash(value.Url.String),
+				Id:          getMD5Hash(value.Url.String + value.Created.String()),
 			}
 			feed.Add(&newItem)
 		}
