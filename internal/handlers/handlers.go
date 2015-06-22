@@ -8,6 +8,7 @@ import (
 	"encoding/hex"
 	"net/http"
 	"net/url"
+	"strconv"
 	"time"
 
 	"github.com/dustin/go-humanize"
@@ -23,16 +24,15 @@ func StatsHandler(db *sql.DB) http.HandlerFunc {
 
 		var stats = "<table><tr><th>Title</th><th>Added</th></tr>"
 		articles := dao.GetLastArticles(db)
+		amount := dao.GetNumberOfRecords(db)
 
 		for _, value := range articles {
 			stats += "<tr><td>" + getHostnameFromUrl(value.Url.String) + "</td><td>" + humanize.Time(value.Created) + "</td></tr>"
 		}
 
-		renderObject := map[string]string{"message": stats}
+		renderObject := map[string]string{"message": stats, "amount": strconv.Itoa(amount)}
 		render.DisplayPage(w, r, renderObject, "stats.html")
-
 	}
-
 }
 
 func ExportCSV(db *sql.DB) http.HandlerFunc {

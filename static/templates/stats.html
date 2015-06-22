@@ -1,8 +1,18 @@
 {{template "header"}}
     <div class="post">
-    <a href="/export">
-		<img width="3%" alt="export as csv file" src="/images/export-icon.png"/>
-	</a>
+	
+	<table>
+	  <tr>
+	    <th colspan="2"">Statistics</th>
+	  </tr>
+	  <tr>
+	    <td>Articles in database</td><td>{{ .amount }}</td>
+	  </tr>
+	  <tr>
+		<td>Export as csv</td><td><a href="/export">save</a></td>
+     </tr>
+    </table>
+
 	<p>
       {{ .message }}
     </p>

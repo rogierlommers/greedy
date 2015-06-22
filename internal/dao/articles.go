@@ -74,18 +74,20 @@ func Init(databasefile string) (db *sql.DB) {
 
 func Cleanup(db *sql.DB) {
 	for {
-		// maxArticles
-		// cleanupFrequency
 
-		var numberOfArticles int
-		err := db.QueryRow("SELECT COUNT(1) FROM articles").Scan(&numberOfArticles)
-		check(err)
+		// query to run: DELETE FROM articles WHERE ROWID IN (SELECT ROWID FROM articles ORDER BY ROWID DESC LIMIT -1 OFFSET 10)
 
-		glog.Infof("articles in db --> %d", numberOfArticles)
+		glog.Infof("cleanum removed #articles --> %d", 1234)
 
 		time.Sleep(cleanupFrequency * time.Hour)
 
 	}
+}
+
+func GetNumberOfRecords(db *sql.DB) (numberOfArticles int) {
+	err := db.QueryRow("SELECT COUNT(1) FROM articles").Scan(&numberOfArticles)
+	check(err)
+	return numberOfArticles
 }
 
 func SaveArticle(db *sql.DB, url string) (lastInsertID int64) {
