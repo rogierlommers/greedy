@@ -18,6 +18,8 @@ import (
 // extract serverlocation from header
 // basic authentication???
 // make use of channels: http://play.golang.org/p/DUsA9gjoX_
+// http://golang.org/pkg/sync/#Mutex
+// http://stackoverflow.com/questions/31011234/channel-usage-in-go-routine
 
 // injected by the build process
 var BuildDate = "unknown build"
