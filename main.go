@@ -17,6 +17,7 @@ import (
 // TODOS
 // extract serverlocation from header
 // basic authentication???
+// make use of channels: http://play.golang.org/p/DUsA9gjoX_
 
 // injected by the build process
 var BuildDate = "unknown build"
