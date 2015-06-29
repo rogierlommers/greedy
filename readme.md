@@ -27,6 +27,6 @@ Screenshots
 =======
 204/232 <--> 847/480
 
-![home page](./static/images/gui-01.png)
+![home page](./docs/gui-01.png)
 
-![stats page](./static/images/gui-02.png)
+![stats page](./docs/gui-02.png)
