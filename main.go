@@ -47,6 +47,9 @@ func main() {
 	// initialise mux router
 	r := mux.NewRouter()
 
+	// selfdiagnose
+	common.SetupSelfdiagnose()
+
 	// static files
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("static/css"))))
 	http.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir("static/images"))))
