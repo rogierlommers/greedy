@@ -44,6 +44,8 @@ func main() {
 	common.SetupSelfdiagnose()
 
 	// static files
+	// https://github.com/arschles/go-bindata-html-template
+	// go-bindata -o statics.go static/...
 	http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("static/css"))))
 	http.Handle("/images/", http.StripPrefix("/images/", http.FileServer(http.Dir("static/images"))))
 	http.Handle("/logs/", http.StripPrefix("/logs/", http.FileServer(http.Dir("logs"))))

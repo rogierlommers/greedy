@@ -36,6 +36,8 @@ else
   error_exit "error while building static binary"
 fi
 
+# go-bindata -o statics.go static/...
+
 if cp -r ./static ./target/static; then
   log "static files copied to target directory"
 else

@@ -26,6 +26,7 @@ For more information, please don't hesitate to contact me [@rogierlommers](https
 Todo
 =======
 - [x] use sqlite3, instead of xml file
+- [ ] include static files (css and html) into binary using https://github.com/jteeuwen/go-bindata
 - [ ] extract serverlocation from header
 - [ ] basic authentication
 - [ ] make use of channels: http://play.golang.org/p/DUsA9gjoX_
