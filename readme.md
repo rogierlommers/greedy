@@ -23,6 +23,19 @@ Now open a browser and point to `localhost:8080`. The go-read homepage should ap
 
 For more information, please don't hesitate to contact me [@rogierlommers](https://twitter.com/rogierlommers).
 
+Todo
+=======
+- [x] use sqlite3, instead of xml file
+- [ ] extract serverlocation from header
+- [ ] basic authentication
+- [ ] make use of channels: http://play.golang.org/p/DUsA9gjoX_
+- [ ] finish cleanup routine
+
+Interesting links
+=======
+- http://golang.org/pkg/sync/#Mutex
+- http://stackoverflow.com/questions/31011234/channel-usage-in-go-routine
+
 Screenshots
 =======
 204/232 <--> 847/480
