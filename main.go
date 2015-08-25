@@ -5,10 +5,11 @@ import (
 	"net/http"
 	"strconv"
 
+	_ "expvar"
+
 	"github.com/golang/glog"
 	"github.com/gorilla/mux"
 	_ "github.com/mattn/go-sqlite3"
-
 	"github.com/rogierlommers/go-read/internal/common"
 	"github.com/rogierlommers/go-read/internal/dao"
 	"github.com/rogierlommers/go-read/internal/handlers"
