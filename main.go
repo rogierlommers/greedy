@@ -5,8 +5,6 @@ import (
 	"net/http"
 	"strconv"
 
-	_ "expvar"
-
 	"github.com/golang/glog"
 	"github.com/gorilla/mux"
 	_ "github.com/mattn/go-sqlite3"
