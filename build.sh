@@ -9,9 +9,6 @@ function log {
 }
 
 echo "---------------------------------------------------------------------------------------------------"
-BUILDDATE=`date "+%Y:%m:%d %H:%M:%S"`
-log "start building version: ${BUILDDATE}"
-
 if rm -rf ./target; then
   log "target directory cleaned"
 else
@@ -30,7 +27,7 @@ else
   error_exit "error while creating target directory"
 fi
 
-if go build -a -ldflags "-X main.BuildDate '${BUILDDATE}'" -tags netgo -installsuffix netgo -o ./target/go-read main.go; then
+if go build -a -tags netgo -installsuffix netgo -o ./target/go-read main.go; then
   log "go build completed"
 else
   error_exit "error while building static binary"

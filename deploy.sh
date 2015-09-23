@@ -30,7 +30,7 @@ else
   error_exit "error copying to installtion directory"
 fi
 
-if tmux send -t server:4 ./run.sh ENTER; then
+if tmux send -t server:3 ./run.sh ENTER; then
   log "Restarted go-read"
 else
   error_exit "error restarting go-read after deployment"
