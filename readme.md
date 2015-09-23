@@ -27,9 +27,9 @@ Todo
 =======
 - [x] use sqlite3, instead of xml file
 - [ ] make use of makefile
-- [ ] Use godep as dependency management
+- [x] Use godep as dependency management
 - [ ] extract serverlocation from header
-- [ ] basic authentication
+- [ ] some kind of authentication
 - [ ] make use of channels: http://play.golang.org/p/DUsA9gjoX_
 - [ ] finish cleanup routine
 - [ ] add static files to binary
