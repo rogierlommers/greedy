@@ -14,11 +14,13 @@ import (
 )
 
 // injected by the build process
-var BuildDate = "unknown build"
+var BuildDate = "unknown build date"
 
 // read flags
-var databasefile = flag.String("databasefile", "articles.db", "sqlite file where items are stored")
-var port = flag.Int("port", 8080, "http listener port")
+var (
+	databasefile = flag.String("databasefile", "articles.db", "sqlite file where items are stored")
+	port         = flag.Int("port", 8080, "http listener port")
+)
 
 func init() {
 	flag.Parse()

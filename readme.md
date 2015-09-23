@@ -26,6 +26,7 @@ For more information, please don't hesitate to contact me [@rogierlommers](https
 Todo
 =======
 - [x] use sqlite3, instead of xml file
+- [ ] make use of makefile
 - [ ] Use godep as dependency management
 - [ ] extract serverlocation from header
 - [ ] basic authentication
