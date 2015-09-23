@@ -26,10 +26,13 @@ For more information, please don't hesitate to contact me [@rogierlommers](https
 Todo
 =======
 - [x] use sqlite3, instead of xml file
+- [ ] Use godep as dependency management
 - [ ] extract serverlocation from header
 - [ ] basic authentication
 - [ ] make use of channels: http://play.golang.org/p/DUsA9gjoX_
 - [ ] finish cleanup routine
+- [ ] add static files to binary
+- [ ] create Dockerfile
 
 Interesting links
 =======
