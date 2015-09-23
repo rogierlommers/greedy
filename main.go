@@ -30,7 +30,7 @@ func init() {
 func main() {
 	defer glog.Flush()
 
-	// expost build info
+	// expose build info
 	common.BuildDate = BuildDate
 	glog.Info("go-read version: ", common.BuildDate)
 
