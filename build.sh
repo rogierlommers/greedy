@@ -30,7 +30,7 @@ else
   error_exit "error while creating target directory"
 fi
 
-if go build -a -ldflags "-X main.BuildDate='${BUILDDATE}'" -tags netgo -installsuffix netgo -o ./target/go-read main.go; then
+if go build -a -ldflags "-X main.BuildDate '${BUILDDATE}'" -tags netgo -installsuffix netgo -o ./target/go-read main.go; then
   log "go build completed"
 else
   error_exit "error while building static binary"
