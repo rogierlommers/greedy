@@ -1,0 +1,48 @@
+{
+	"ImportPath": "github.com/rogierlommers/go-read",
+	"GoVersion": "go1.5.1",
+	"Deps": [
+		{
+			"ImportPath": "github.com/PuerkitoBio/goquery",
+			"Comment": "v0.3.2-79-gb444041",
+			"Rev": "b4440419d81240f8451a505b2f806c853bc2befc"
+		},
+		{
+			"ImportPath": "github.com/andybalholm/cascadia",
+			"Rev": "3ad29d1ad1c4f2023e355603324348cf1f4b2d48"
+		},
+		{
+			"ImportPath": "github.com/dustin/go-humanize",
+			"Rev": "c20a8bde38c8f5ba06f6600edf473705c96829d1"
+		},
+		{
+			"ImportPath": "github.com/emicklei/go-selfdiagnose",
+			"Rev": "09154ea1221f12735a08f7078edd0fa4623dd504"
+		},
+		{
+			"ImportPath": "github.com/golang/glog",
+			"Rev": "fca8c8854093a154ff1eb580aae10276ad6b1b5f"
+		},
+		{
+			"ImportPath": "github.com/gorilla/context",
+			"Rev": "1c83b3eabd45b6d76072b66b746c20815fb2872d"
+		},
+		{
+			"ImportPath": "github.com/gorilla/feeds",
+			"Rev": "e57da339f9ed44132e11cd0baf87ecbd88dda142"
+		},
+		{
+			"ImportPath": "github.com/gorilla/mux",
+			"Rev": "49c024275504f0341e5a9971eb7ba7fa3dc7af40"
+		},
+		{
+			"ImportPath": "github.com/mattn/go-sqlite3",
+			"Comment": "v1.1.0-11-gb808f01",
+			"Rev": "b808f01f660667b1510acf216aa2b9fe7f555ddb"
+		},
+		{
+			"ImportPath": "golang.org/x/net/html",
+			"Rev": "db8e4de5b2d6653f66aea53094624468caad15d2"
+		}
+	]
+}
