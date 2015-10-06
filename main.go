@@ -3,7 +3,8 @@ package main
 import (
 	"flag"
 	"net/http"
-	"strconv"
+
+	"fmt"
 
 	"github.com/golang/glog"
 	"github.com/gorilla/mux"
@@ -13,33 +14,26 @@ import (
 	"github.com/rogierlommers/greedy/internal/handlers"
 )
 
-// injected by the build process
-var BuildDate = "unknown build date"
-
-// read flags
-var (
-	databasefile = flag.String("databasefile", "articles.db", "sqlite file where items are stored")
-	port         = flag.Int("port", 8080, "http listener port")
-)
-
 func init() {
 	flag.Parse()
 	flag.Lookup("alsologtostderr").Value.Set("true")
 }
 
+var BuildDate string
+
 func main() {
 	defer glog.Flush()
 
-	// expose build info
+	// read environment vars
 	common.BuildDate = BuildDate
-	glog.Info("go-read version: ", common.BuildDate)
+	common.ReadEnvironment()
 
 	// initialize sqlite storage
-	db := dao.Init(*databasefile)
+	db := dao.Init(common.Databasefile)
 	defer db.Close()
 
 	// initialise mux router
-	r := mux.NewRouter()
+	router := mux.NewRouter()
 
 	// selfdiagnose
 	common.SetupSelfdiagnose()
@@ -50,19 +44,21 @@ func main() {
 	http.Handle("/logs/", http.StripPrefix("/logs/", http.FileServer(http.Dir("logs"))))
 
 	// http handles
-	r.HandleFunc("/stats", handlers.StatsHandler(db))
-	r.HandleFunc("/export", handlers.ExportCSV(db))
-	r.HandleFunc("/add", handlers.AddArticle(db))
-	r.HandleFunc("/rss", handlers.GenerateRSS(db))
-	r.HandleFunc("/", handlers.IndexPage)
+	router.HandleFunc("/stats", handlers.StatsHandler(db))
+	router.HandleFunc("/export", handlers.ExportCSV(db))
+	router.HandleFunc("/add", handlers.AddArticle(db))
+	router.HandleFunc("/rss", handlers.GenerateRSS(db))
+	router.HandleFunc("/", handlers.IndexPage)
 
 	// start cleanup db routing
 	go dao.Cleanup(db)
 
 	// start server
-	http.Handle("/", r)
-	glog.Infof("running on port %d", *port)
-	err := http.ListenAndServe(":"+strconv.Itoa(*port), nil)
+	http.Handle("/", router)
+	hostPort := fmt.Sprintf("%s:%d", common.Host, common.Port)
+	glog.Infof("running on: %s", hostPort)
+
+	err := http.ListenAndServe(hostPort, nil)
 	if err != nil {
 		glog.Fatal(err)
 	}

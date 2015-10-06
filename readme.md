@@ -28,6 +28,7 @@ Todo
 - [x] use sqlite3, instead of xml file
 - [x] make use of makefile
 - [x] Use godep as dependency management
+- [x] Use [spf13/viper](https://github.com/spf13/viper) package to read environment vars
 - [ ] extract serverlocation from header
 - [ ] some kind of authentication
 - [ ] make use of channels: http://play.golang.org/p/DUsA9gjoX_
