@@ -64,6 +64,7 @@ func Init(databasefile string) (db *sql.DB) {
 		if err != nil {
 			glog.Fatal(err)
 		}
+		glog.Infof("number of records in db: %d", GetNumberOfRecords(db))
 	}
 
 	if !dbfileExists {
