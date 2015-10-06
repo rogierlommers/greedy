@@ -14,7 +14,7 @@ const (
 	sqlSelect        = "id, name, url, description, created"
 	noDescription    = "greedy was unable to extract the meta description tag from your saved article."
 	maxArticles      = 1000 // maximum of articles in database
-	cleanupFrequency = 1    // in hours
+	cleanupFrequency = 24   // in hours
 )
 
 // articleStruct holds the data fetched from a single row
