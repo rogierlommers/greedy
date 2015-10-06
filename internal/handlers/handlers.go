@@ -14,9 +14,9 @@ import (
 	"github.com/dustin/go-humanize"
 	"github.com/golang/glog"
 	"github.com/gorilla/feeds"
-	"github.com/rogierlommers/go-read/internal/common"
-	"github.com/rogierlommers/go-read/internal/dao"
-	"github.com/rogierlommers/go-read/internal/render"
+	"github.com/rogierlommers/greedy/internal/common"
+	"github.com/rogierlommers/greedy/internal/dao"
+	"github.com/rogierlommers/greedy/internal/render"
 )
 
 func StatsHandler(db *sql.DB) http.HandlerFunc {
@@ -59,7 +59,7 @@ func GenerateRSS(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		now := time.Now()
 		feed := &feeds.Feed{
-			Title:       "Go-read",
+			Title:       "greedy",
 			Link:        &feeds.Link{Href: "http://read.lommers.org/"},
 			Description: "personal feed with saved articles",
 			Author:      &feeds.Author{"Rogier Lommers", "rogier@lommers.org"},

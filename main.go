@@ -8,9 +8,9 @@ import (
 	"github.com/golang/glog"
 	"github.com/gorilla/mux"
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/rogierlommers/go-read/internal/common"
-	"github.com/rogierlommers/go-read/internal/dao"
-	"github.com/rogierlommers/go-read/internal/handlers"
+	"github.com/rogierlommers/greedy/internal/common"
+	"github.com/rogierlommers/greedy/internal/dao"
+	"github.com/rogierlommers/greedy/internal/handlers"
 )
 
 // injected by the build process
@@ -62,7 +62,7 @@ func main() {
 	// start server
 	http.Handle("/", r)
 	glog.Infof("running on port %d", *port)
-	err := http.ListenAndServe(":"+strconv.Itoa(*port), handlers.Log(http.DefaultServeMux))
+	err := http.ListenAndServe(":"+strconv.Itoa(*port), nil)
 	if err != nil {
 		glog.Fatal(err)
 	}

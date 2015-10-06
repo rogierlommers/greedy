@@ -29,7 +29,7 @@ func (r ReportBuildAndDate) Timeout() time.Duration {
 }
 
 func SetupSelfdiagnose() {
-	http.HandleFunc("/internal/selfdiagnose.html", handleSelfdiagnose)
+	http.HandleFunc("/selfdiagnose", handleSelfdiagnose)
 
 	// Display commandline args
 	selfdiagnose.Register(ArgumentList(os.Args))

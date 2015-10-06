@@ -9,16 +9,16 @@ function log {
 }
 
 echo "---------------------------------------------------------------------------------------------------"
-install_dir="/smb/www/go-read"
+install_dir="/smb/www/greedy"
 log "start deploying to ${install_dir}"
 
-if pkill go-read; then
+if pkill greedy; then
   log "service stopped"
 else
-  log "NOTICE: go-read did not run at all"
+  log "NOTICE: greedy did not run at all"
 fi
 
-if rm -rf ${install_dir}/static ${install_dir}/go-read; then
+if rm -rf ${install_dir}/static ${install_dir}/greedy; then
   log "deleted old version in ${install_dir}"
 else
   error_exit "something wrong deleting old version"
@@ -30,10 +30,10 @@ else
   error_exit "error copying to installtion directory"
 fi
 
-if tmux send -t server:3 ./go-read ENTER; then
-  log "Restarted go-read"
+if tmux send -t server:3 ./greedy ENTER; then
+  log "Restarted greedy"
 else
-  error_exit "error restarting go-read after deployment"
+  error_exit "error restarting greedy after deployment"
 fi
 
 echo "---------------------------------------------------------------------------------------------------"
