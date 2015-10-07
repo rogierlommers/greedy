@@ -6,13 +6,13 @@ import (
 
 	"fmt"
 
-	"github.com/GeertJohan/go.rice"
 	"github.com/golang/glog"
 	"github.com/gorilla/mux"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/rogierlommers/greedy/internal/common"
 	"github.com/rogierlommers/greedy/internal/dao"
 	"github.com/rogierlommers/greedy/internal/handlers"
+	"github.com/rogierlommers/greedy/internal/render"
 )
 
 func init() {
@@ -39,10 +39,8 @@ func main() {
 	// selfdiagnose
 	common.SetupSelfdiagnose()
 
-	// static files
-	cssBox := rice.MustFindBox("static-css")
-	cssFileServer := http.StripPrefix("/css/", http.FileServer(cssBox.HTTPBox()))
-	http.Handle("/css/", cssFileServer)
+	// setup statics
+	render.RegisterCSS()
 
 	// http handles
 	router.HandleFunc("/stats", handlers.StatsHandler(db))
