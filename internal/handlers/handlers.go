@@ -59,11 +59,8 @@ func GenerateRSS(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		now := time.Now()
 		feed := &feeds.Feed{
-			Title:       "greedy",
-			Link:        &feeds.Link{Href: "http://read.lommers.org/"},
-			Description: "personal feed with saved articles",
-			Author:      &feeds.Author{"Rogier Lommers", "rogier@lommers.org"},
-			Created:     now,
+			Title:   "Your personal greedy feed",
+			Created: now,
 		}
 
 		var articles []dao.ArticleStruct
