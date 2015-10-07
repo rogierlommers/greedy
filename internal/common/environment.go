@@ -6,15 +6,18 @@ import (
 )
 
 var (
-	BuildDate    string
-	Port         int
-	Host         string
-	Databasefile string
+	BuildDate        string
+	Port             int
+	Host             string
+	Databasefile     string
+	FeedsAuthorName  = "Rogier Lommers"
+	FeedsAuthorEmail = "rogier@lommers.org"
+	FeedsLink        = "http://www.lommers.org"
 )
 
 func ReadEnvironment() {
 	viper.SetEnvPrefix("GREEDY")
-	viper.SetDefault("databasefile", "articles.db")
+	viper.SetDefault("databasefile", "articles.sqlite")
 	viper.SetDefault("port", 8080)
 	viper.SetDefault("host", "0.0.0.0")
 	viper.AutomaticEnv()

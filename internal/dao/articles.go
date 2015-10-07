@@ -3,6 +3,7 @@ package dao
 import (
 	"database/sql"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -75,13 +76,9 @@ func Init(databasefile string) (db *sql.DB) {
 
 func Cleanup(db *sql.DB) {
 	for {
-
 		// query to run: DELETE FROM articles WHERE ROWID IN (SELECT ROWID FROM articles ORDER BY ROWID DESC LIMIT -1 OFFSET 10)
-
 		glog.Infof("cleanum removed #articles --> %d", 1234)
-
 		time.Sleep(cleanupFrequency * time.Hour)
-
 	}
 }
 
@@ -104,14 +101,23 @@ func SaveArticle(db *sql.DB, url string) (lastInsertID int64) {
 	return
 }
 
-func GetLastArticles(db *sql.DB) (articleList []ArticleStruct) {
-	var stmt *sql.Stmt
-	var rows *sql.Rows
+// returns last x articles from db. If amount is 0, then all articles are returned
+func GetLastArticles(db *sql.DB, amount int) (articleList []ArticleStruct) {
+	var (
+		stmt  *sql.Stmt
+		rows  *sql.Rows
+		limit string
+	)
+
+	if amount != 0 {
+		glog.Info("limit set: ", amount)
+		limit = " LIMIT " + strconv.Itoa(amount)
+	}
 
 	tx, err := db.Begin()
 	check(err)
 
-	stmt, err = tx.Prepare("SELECT " + sqlSelect + " FROM articles ORDER BY id DESC")
+	stmt, err = tx.Prepare("SELECT " + sqlSelect + " FROM articles ORDER BY id DESC" + limit)
 	check(err)
 	defer stmt.Close()
 

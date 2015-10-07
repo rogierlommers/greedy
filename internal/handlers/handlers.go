@@ -23,7 +23,7 @@ func StatsHandler(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		var stats = "<table><tr><th>Title</th><th>Added</th></tr>"
-		articles := dao.GetLastArticles(db)
+		articles := dao.GetLastArticles(db, 0)
 		amount := dao.GetNumberOfRecords(db)
 
 		for _, value := range articles {
@@ -38,7 +38,7 @@ func StatsHandler(db *sql.DB) http.HandlerFunc {
 func ExportCSV(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		articles := dao.GetLastArticles(db)
+		articles := dao.GetLastArticles(db, 0)
 
 		b := &bytes.Buffer{}
 		wr := csv.NewWriter(b)
@@ -59,14 +59,15 @@ func GenerateRSS(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		now := time.Now()
 		feed := &feeds.Feed{
-			Title:       "Your personal greedy feed",
-			Description: "personal feed with saved articles",
-			Author:      &feeds.Author{"Rogier Lommers", "rogier@lommers.org"},
+			Title:       "your greedy's personal rss feed",
+			Link:        &feeds.Link{Href: common.FeedsLink},
+			Description: "discussion about tech, footie, photos",
+			Author:      &feeds.Author{common.FeedsAuthorName, common.FeedsAuthorEmail},
 			Created:     now,
 		}
 
 		var articles []dao.ArticleStruct
-		articles = dao.GetLastArticles(db)
+		articles = dao.GetLastArticles(db, 100)
 
 		for _, value := range articles {
 			newItem := feeds.Item{
