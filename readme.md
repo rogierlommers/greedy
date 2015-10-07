@@ -31,15 +31,11 @@ Todo
 - [x] Use [spf13/viper](https://github.com/spf13/viper) package to read environment vars
 - [ ] extract serverlocation from header
 - [ ] some kind of authentication
-- [ ] make use of channels: http://play.golang.org/p/DUsA9gjoX_
 - [ ] finish cleanup routine
 - [ ] add static files to binary
 - [ ] create Dockerfile
+- [ ] create new screenshots
 
-Interesting links
-=======
-- http://golang.org/pkg/sync/#Mutex
-- http://stackoverflow.com/questions/31011234/channel-usage-in-go-routine
 
 Screenshots
 =======

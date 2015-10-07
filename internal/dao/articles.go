@@ -110,7 +110,6 @@ func GetLastArticles(db *sql.DB, amount int) (articleList []ArticleStruct) {
 	)
 
 	if amount != 0 {
-		glog.Info("limit set: ", amount)
 		limit = " LIMIT " + strconv.Itoa(amount)
 	}
 

@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/dustin/go-humanize"
 	"github.com/golang/glog"
 	"github.com/gorilla/feeds"
@@ -111,6 +112,7 @@ func AddArticle(db *sql.DB) http.HandlerFunc {
 }
 
 func IndexPage(w http.ResponseWriter, r *http.Request) {
+	spew.Dump(r)
 	renderObject := map[string]string{"serverLocation": "http://read.lommers.org", "buildversion": common.BuildDate}
 	render.DisplayPage(w, r, renderObject, "index.html")
 }
