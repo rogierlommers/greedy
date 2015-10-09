@@ -1,24 +1,22 @@
 package render
 
 import (
+	"log"
 	"net/http"
-	"path"
-	"text/template"
+
+	"html/template"
 )
 
-func DisplayPage(w http.ResponseWriter, r *http.Request, renderObject map[string]string, templateFile string) {
-	templateDirectory := path.Join("static", "templates")
-	baseFile := path.Join(templateDirectory, templateFile)
-	headerFile := path.Join(templateDirectory, "_header.html")
-	footerFile := path.Join(templateDirectory, "_footer.html")
-
-	tmpl, parseErr := template.ParseFiles(baseFile, headerFile, footerFile)
-	if parseErr != nil {
-		http.Error(w, parseErr.Error(), http.StatusInternalServerError)
-		return
+func DisplayPage(w http.ResponseWriter, r *http.Request, dynamicData interface{}) {
+	templateString, err := staticBox.String("index.tmpl")
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	if templErr := tmpl.Execute(w, renderObject); templErr != nil {
-		http.Error(w, templErr.Error(), http.StatusInternalServerError)
+	tmplMessage, err := template.New("messsage").Parse(templateString)
+	if err != nil {
+		log.Fatal(err)
 	}
+
+	tmplMessage.Execute(w, dynamicData)
 }

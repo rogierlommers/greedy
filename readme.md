@@ -27,15 +27,14 @@ Todo
 =======
 - [x] use sqlite3, instead of xml file
 - [x] make use of makefile
-- [x] Use godep as dependency management
-- [x] Use [spf13/viper](https://github.com/spf13/viper) package to read environment vars
+- [x] use godep as dependency management
+- [x] use [spf13/viper](https://github.com/spf13/viper) package to read environment vars
 - [?] extract serverlocation from header (find out if host starts with www?) 
+- [x] use [GeertJohan/go.rice](https://github.com/GeertJohan/go.rice) to add static files to binary
 - [ ] some kind of authentication
 - [ ] finish cleanup routine
-- [ ] add static files to binary
 - [ ] create Dockerfile
 - [ ] create new screenshots
-
 
 Screenshots
 =======

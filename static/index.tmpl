@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+    <link href="http://gmpg.org/xfn/11" rel="profile">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <title>greedy</title>
+    <link rel="stylesheet" href="css/poole.css">
+    <link rel="stylesheet" href="css/syntax.css">
+    <link rel="stylesheet" href="css/hyde.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400italic,700|Abril+Fatface">
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/apple-touch-icon-144-precomposed.png">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link href="/rss" rel="alternate" type="application/rss+xml" title="greedy RSS feed"/>
+</head>
+
+<body class="theme-base-08">
+
+<div class="sidebar">
+    <div class="container sidebar-sticky">
+        <div class="sidebar-about">
+            <h1>greedy</h1>
+
+            <p class="lead">
+                a personal readinglist.
+            </p>
+        </div>
+        <ul class="sidebar-nav">
+            <a href="/">Home</a> | <a href="/rss">RSS</a> | <a href="/stats">Stats</a> | <a href="/selfdiagnose">Diagnose</a>
+        </ul>
+    </div>
+</div>
+
+<div class="content container">
+    <div class="posts">
+
+        <div class="post">
+            {{if .IsLandingPage}}
+            <p>
+                Drag the button below to your favorites/bookmarks bar. It is a bookmarklet which redirects to the daemon
+                and stores the current page to your reading list. Next step is to add the <a href="/rss">/rss</a>
+                endpoint to your RSS aggregator.
+            </p>
+
+            <p>
+                <a href="javascript:location.href='{{ .serverLocation }}/add?url='+encodeURIComponent(window.location.href)">
+                    <button type="button">greedy</button>
+                </a>
+            </p>
+            {{end}}
+
+            {{if .IsConfirmation}}
+            <h1 class="post-title">
+                <a href="/">
+                    Done!
+                </a>
+            </h1>
+
+            <p>
+                {{ .hostname }} added.
+            </p>
+            {{end}}
+
+            {{if .IsStatsPage}}
+            <table>
+                <tr>
+                    <th colspan="2">Statistics</th>
+                </tr>
+                <tr>
+                    <td>Articles in database</td>
+                    <td>{{ .amount }}</td>
+                </tr>
+                <tr>
+                    <td>Export as csv</td>
+                    <td><a href="/export">save</a></td>
+                </tr>
+            </table>
+
+            <hr/>
+
+            {{ .html }}
+
+            {{end}}
+
+            {{if .IsErrorPage}}
+            <h1 class="post-title">
+                <a href="/">
+                    Error!
+                </a>
+            </h1>
+
+            <p>
+                {{ .errorMessage }}.
+            </p>
+            {{end}}
+
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>
+
