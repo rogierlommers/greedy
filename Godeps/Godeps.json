@@ -8,6 +8,10 @@
 			"Rev": "056c9bc7be7190eaa7715723883caffa5f8fa3e4"
 		},
 		{
+			"ImportPath": "github.com/GeertJohan/go.rice",
+			"Rev": "ada95a01c963696fb73320ee662195af68be81ae"
+		},
+		{
 			"ImportPath": "github.com/PuerkitoBio/goquery",
 			"Comment": "v0.3.2-80-g417cce8",
 			"Rev": "417cce822c7b9a379df5824be95228d177c5698b"
@@ -15,6 +19,10 @@
 		{
 			"ImportPath": "github.com/andybalholm/cascadia",
 			"Rev": "3ad29d1ad1c4f2023e355603324348cf1f4b2d48"
+		},
+		{
+			"ImportPath": "github.com/daaku/go.zipexe",
+			"Rev": "a5fe2436ffcb3236e175e5149162b41cd28bd27d"
 		},
 		{
 			"ImportPath": "github.com/dustin/go-humanize",
@@ -34,11 +42,15 @@
 		},
 		{
 			"ImportPath": "github.com/gorilla/feeds",
-			"Rev": "e57da339f9ed44132e11cd0baf87ecbd88dda142"
+			"Rev": "a6a27121d834d083d564b296561881acea23fbdd"
 		},
 		{
 			"ImportPath": "github.com/gorilla/mux",
-			"Rev": "49c024275504f0341e5a9971eb7ba7fa3dc7af40"
+			"Rev": "ad4d7a5882b961e07e2626045eb995c022ac6664"
+		},
+		{
+			"ImportPath": "github.com/kardianos/osext",
+			"Rev": "6e7f843663477789fac7c02def0d0909e969b4e5"
 		},
 		{
 			"ImportPath": "github.com/kr/pretty",
@@ -81,7 +93,7 @@
 		},
 		{
 			"ImportPath": "golang.org/x/net/html",
-			"Rev": "c2528b2dd8352441850638a8bb678c2ad056fd3e"
+			"Rev": "b846920a172af75fe52c1400ae6094307be83b8a"
 		},
 		{
 			"ImportPath": "gopkg.in/yaml.v2",
