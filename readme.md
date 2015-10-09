@@ -12,14 +12,24 @@ Simply install by:
 
     go get github.com/rogierlommers/greedy
 
-this will download the sources, build a binary and puts it in your Go binary direcory. You can leave it there or you can put it in a more convenient place. I have put it in `/srv/greedy`. You can start the service by running the binary: `./greedy`. By default, it binds to localhost:8080, but you can change this with the `-port` flag. After starting, the output should be like:
+this will download the sources to your `$gopath`, build a binary and puts it in your Go binary directory. You can leave it there or you can put it in a more convenient place. I have put it in `/srv/greedy`. Now you can start the service by running the binary: `./greedy`. By default, it binds to 0.0.0.0:8080, but you can change it's configuration by setting some environment variables.
 
-    I0629 09:56:47.700995   30466 main.go:38] greedy version: 2015:06:22 20:51:53
-    I0629 09:56:47.798813   30466 articles.go:59] does dbfile exist? true
-    I0629 09:56:47.799053   30466 main.go:64] running on port 8080
-    I0629 09:56:47.799167   30466 articles.go:80] cleanup removed #articles --> 3
+| environment var     | description               | default           |
+| --------------------|:-------------------------:| ------------------|
+| GREEDY_HOST         | host it bids to           | 0.0.0.0           |
+| GREEDY_PORT         | http port                 | 8080              |
+| GREEDY_DATABASEFILE | location of database file | ./articles.sqlite |
 
-Now open a browser and point to `localhost:8080`. The greedy homepage should appear. Drag the button to your favorites/bookmarks bar. It is a bookmarklet which redirects to the service and stores the current page to your reading list. Next step is to add the /rss endpoint to your RSS aggregator.
+After starting, the output should be like this:
+
+    INFO[10-09|21:23:19] environment vars                         host=0.0.0.0 port=8080 databasefile=articles.sqlite
+    WARN[10-09|21:23:19] greedy meta info                         builddate=09-October-2015/21:16:25
+    DBUG[10-09|21:23:19] check if database file exists            check result=true
+    INFO[10-09|21:23:19] number of records in database            amount=666
+    INFO[10-09|21:23:19] deamon listening                         host=0.0.0.0 port=8080
+    INFO[10-09|21:23:19] cleanup database file                    amount deleted=1234
+
+Now open a browser and point to the `host:port` you have configurated. The greedy homepage should appear. Drag the button to your favorites/bookmarks bar. It is a bookmarklet which redirects to the service and stores the current page to your reading list. Next step is to add the /rss endpoint to your RSS aggregator.
 
 For more information, please don't hesitate to contact me [@rogierlommers](https://twitter.com/rogierlommers).
 
