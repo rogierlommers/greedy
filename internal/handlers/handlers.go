@@ -6,6 +6,7 @@ import (
 	"database/sql"
 	"encoding/csv"
 	"encoding/hex"
+	"html/template"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -19,19 +20,28 @@ import (
 	"github.com/rogierlommers/greedy/internal/render"
 )
 
+type Article struct {
+	host   string
+	access string
+}
+
 func StatsHandler(db *sql.DB) http.HandlerFunc {
+	// http://julianyap.com/2013/09/23/using-anonymous-structs-to-pass-data-to-templates-in-golang.html
 	return func(w http.ResponseWriter, r *http.Request) {
+		amount := dao.GetNumberOfRecords(db)
 
 		var stats = "<table><tr><th>Title</th><th>Added</th></tr>"
 		articles := dao.GetLastArticles(db, 0)
-		amount := dao.GetNumberOfRecords(db)
-
 		for _, value := range articles {
 			stats += "<tr><td>" + getHostnameFromUrl(value.Url.String) + "</td><td>" + humanize.Time(value.Created) + "</td></tr>"
 		}
 
-		renderObject := map[string]string{"message": stats, "amount": strconv.Itoa(amount)}
-		render.DisplayPage(w, r, renderObject, "stats.html")
+		renderObject := map[string]interface{}{
+			"IsStatsPage": "true",
+			"amount":      strconv.Itoa(amount),
+			"html":        template.HTML(stats),
+		}
+		render.DisplayPage(w, r, renderObject)
 	}
 }
 
@@ -93,8 +103,12 @@ func AddArticle(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		queryParam := r.FormValue("url")
 		if len(queryParam) == 0 || queryParam == "about:blank" {
-			renderObject := map[string]string{"errorMessage": "unable to insert empty or about:blank page"}
-			render.DisplayPage(w, r, renderObject, "error.html")
+
+			renderObject := map[string]interface{}{
+				"IsErrorPage":  "true",
+				"errorMessage": "unable to insert empty or about:blank page",
+			}
+			render.DisplayPage(w, r, renderObject)
 			return
 		}
 
@@ -105,14 +119,21 @@ func AddArticle(db *sql.DB) http.HandlerFunc {
 		go dao.ScrapeArticle(db, insertedId)
 
 		// finally output confirmation page
-		renderObject := map[string]string{"hostname": getHostnameFromUrl(queryParam)}
-		render.DisplayPage(w, r, renderObject, "confirmation.html")
+		renderObject := map[string]interface{}{
+			"IsConfirmation": "true",
+			"hostname":       getHostnameFromUrl(queryParam),
+		}
+		render.DisplayPage(w, r, renderObject)
 	}
 }
 
 func IndexPage(w http.ResponseWriter, r *http.Request) {
-	renderObject := map[string]string{"serverLocation": r.Host, "buildversion": common.BuildDate}
-	render.DisplayPage(w, r, renderObject, "index.html")
+	renderObject := map[string]interface{}{
+		"IsLandingPage":  "true",
+		"serverLocation": r.Host,
+		"buildversion":   common.BuildDate,
+	}
+	render.DisplayPage(w, r, renderObject)
 }
 
 func getHostnameFromUrl(addedUrl string) (hostname string) {
