@@ -8,7 +8,8 @@ import (
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/golang/glog"
+
+	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 const (
@@ -38,16 +39,16 @@ func initializeDatabase(db *sql.DB) bool {
 				);`
 	_, err := db.Exec(sqlStmt)
 	if err != nil {
-		glog.Fatal(err)
+		log.Crit("sqlite could not create database", "errormessage", err)
 		return false
 	}
-	glog.Info("repository initiated")
+	log.Info("sqlite succesfully initialized database file")
 	return true
 }
 
 func check(e error) {
 	if e != nil {
-		glog.Error(e)
+		log.Error("database interaction error", "message form db", e.Error())
 	}
 }
 
@@ -57,15 +58,15 @@ func Init(databasefile string) (db *sql.DB) {
 		dbfileExists = true
 	}
 
-	glog.Info("does dbfile exist? ", dbfileExists)
+	log.Debug("check if database file exists", "check result", dbfileExists)
 
 	if true {
 		var err error
 		db, err = sql.Open("sqlite3", databasefile)
 		if err != nil {
-			glog.Fatal(err)
+			log.Crit("error opening database file", "message", err)
 		}
-		glog.Infof("number of records in db: %d", GetNumberOfRecords(db))
+		log.Info("number of records in database", "amount", GetNumberOfRecords(db))
 	}
 
 	if !dbfileExists {
@@ -77,7 +78,7 @@ func Init(databasefile string) (db *sql.DB) {
 func Cleanup(db *sql.DB) {
 	for {
 		// query to run: DELETE FROM articles WHERE ROWID IN (SELECT ROWID FROM articles ORDER BY ROWID DESC LIMIT -1 OFFSET 10)
-		glog.Infof("cleanum removed #articles --> %d", 1234)
+		log.Info("cleanup database file", "amount deleted", 1234)
 		time.Sleep(cleanupFrequency * time.Hour)
 	}
 }
@@ -146,7 +147,7 @@ func getArticleById(db *sql.DB, id int64) (updatedArticle ArticleStruct) {
 
 	err = stmt.QueryRow(id).Scan(&updatedArticle.ID, &updatedArticle.Name, &updatedArticle.Url, &updatedArticle.Description, &updatedArticle.Created)
 	if err != nil {
-		glog.Error("no record found with id --> ", id, err)
+		log.Error("error fetching article from database", "article id", id, "message", err)
 	}
 	return
 }
@@ -172,9 +173,10 @@ func ScrapeArticle(db *sql.DB, id int64) {
 
 	// init goquery
 	doc, err := goquery.NewDocument(storedArticle.Url.String)
-	glog.Info("scraping article with url --> ", storedArticle.Url.String)
+	log.Info("start scraping article", "url", storedArticle.Url.String)
+
 	if err != nil {
-		glog.Error("error while scraping article with id %d -- > ", storedArticle.ID, err)
+		log.Error("error while scraping article", "article id", id, "message", err)
 		return
 	}
 
@@ -203,12 +205,12 @@ func ScrapeArticle(db *sql.DB, id int64) {
 	}
 
 	// debugging info
-	glog.Infof("scraped title --> %s (length: %d)", storedArticle.Name.String, len(storedArticle.Name.String))
-	glog.Infof("scraped description --> %s (length: %d)", storedArticle.Description.String, len(storedArticle.Description.String))
+	log.Debug("scrape information", "title", storedArticle.Name.String, "title length", len(storedArticle.Name.String))
+	log.Debug("scrape information", "description", storedArticle.Description.String, "description length", len(storedArticle.Description.String))
 
 	// after succesfull scraping, add page title (and more?) to article in db
 	updateArticle(db, storedArticle)
 
 	elapsed := time.Since(start)
-	glog.Infof("scraping article %d completed in %s", storedArticle.ID.Int64, elapsed.String())
+	log.Info("scrape information", "stored article id", storedArticle.ID.Int64, "time elapsed", elapsed.String())
 }

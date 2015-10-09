@@ -31,11 +31,12 @@ Todo
 - [x] use [spf13/viper](https://github.com/spf13/viper) package to read environment vars
 - [?] extract serverlocation from header (find out if host starts with www?) 
 - [x] use [GeertJohan/go.rice](https://github.com/GeertJohan/go.rice) to add static files to binary
-- [ ] implement [inconshreveable/log15](https://github.com/inconshreveable/log15) as logger, replacing glog
+- [x] implement [inconshreveable/log15](https://github.com/inconshreveable/log15) as logger, replacing glog
 - [ ] some kind of authentication
 - [ ] finish cleanup routine
 - [ ] create Dockerfile
 - [ ] create new screenshots
+- [ ] update readme
 
 Screenshots
 =======

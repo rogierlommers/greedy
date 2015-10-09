@@ -1,8 +1,8 @@
 package common
 
 import (
-	"github.com/golang/glog"
 	"github.com/spf13/viper"
+	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 var (
@@ -26,8 +26,6 @@ func ReadEnvironment() {
 	Databasefile = viper.GetString("databasefile")
 	Host = viper.GetString("host")
 
-	glog.Infof("environment var loaded [port=%d]", Port)
-	glog.Infof("environment var loaded [databasefile=%s]", Databasefile)
-	glog.Infof("environment var loaded [host=%s]", Host)
-	glog.Info("greedy version: ", BuildDate)
+	log.Info("environment vars", "host", Host, "port", Port, "databasefile", Databasefile)
+	log.Warn("greedy meta info", "builddate", BuildDate)
 }

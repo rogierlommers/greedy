@@ -8,7 +8,7 @@ import (
 
 var staticBox *rice.Box
 
-func RegisterCSS() {
+func CreateStaticBox() {
 
 	// create rice.box with static files
 	staticBox = rice.MustFindBox("../../static")

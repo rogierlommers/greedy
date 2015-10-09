@@ -13,17 +13,12 @@ import (
 	"time"
 
 	"github.com/dustin/go-humanize"
-	"github.com/golang/glog"
 	"github.com/gorilla/feeds"
 	"github.com/rogierlommers/greedy/internal/common"
 	"github.com/rogierlommers/greedy/internal/dao"
 	"github.com/rogierlommers/greedy/internal/render"
+	log "gopkg.in/inconshreveable/log15.v2"
 )
-
-type Article struct {
-	host   string
-	access string
-}
 
 func StatsHandler(db *sql.DB) http.HandlerFunc {
 	// http://julianyap.com/2013/09/23/using-anonymous-structs-to-pass-data-to-templates-in-golang.html
@@ -92,7 +87,7 @@ func GenerateRSS(db *sql.DB) http.HandlerFunc {
 
 		rss, err := feed.ToAtom()
 		if err != nil {
-			glog.Errorf("error creating RSS feed -> %s", err)
+			log.Error("error generation RSS feed", "message", err)
 			return
 		}
 		w.Write([]byte(rss))
@@ -113,7 +108,7 @@ func AddArticle(db *sql.DB) http.HandlerFunc {
 		}
 
 		insertedId := dao.SaveArticle(db, queryParam)
-		glog.Infof("add hostname %s, id: %d", getHostnameFromUrl(queryParam), insertedId)
+		log.Info("adding article", "hostname", getHostnameFromUrl(queryParam), "article id", insertedId)
 
 		// start routine which scrapes url
 		go dao.ScrapeArticle(db, insertedId)
@@ -139,7 +134,7 @@ func IndexPage(w http.ResponseWriter, r *http.Request) {
 func getHostnameFromUrl(addedUrl string) (hostname string) {
 	u, err := url.Parse(addedUrl)
 	if err != nil {
-		glog.Error(err)
+		log.Error("error looking up hostname from url", "url", addedUrl, "message", err)
 	}
 	return u.Host
 }

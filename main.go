@@ -1,30 +1,21 @@
 package main
 
 import (
-	"flag"
+	"fmt"
 	"net/http"
 
-	"fmt"
-
-	"github.com/golang/glog"
 	"github.com/gorilla/mux"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/rogierlommers/greedy/internal/common"
 	"github.com/rogierlommers/greedy/internal/dao"
 	"github.com/rogierlommers/greedy/internal/handlers"
 	"github.com/rogierlommers/greedy/internal/render"
+	log "gopkg.in/inconshreveable/log15.v2"
 )
-
-func init() {
-	flag.Parse()
-	flag.Lookup("alsologtostderr").Value.Set("true")
-}
 
 var BuildDate string
 
 func main() {
-	defer glog.Flush()
-
 	// read environment vars
 	common.BuildDate = BuildDate
 	common.ReadEnvironment()
@@ -40,7 +31,7 @@ func main() {
 	common.SetupSelfdiagnose()
 
 	// setup statics
-	render.RegisterCSS()
+	render.CreateStaticBox()
 
 	// http handles
 	router.HandleFunc("/stats", handlers.StatsHandler(db))
@@ -54,11 +45,10 @@ func main() {
 
 	// start server
 	http.Handle("/", router)
-	hostPort := fmt.Sprintf("%s:%d", common.Host, common.Port)
-	glog.Infof("running on: %s", hostPort)
+	log.Info("deamon listening", "host", common.Host, "port", common.Port)
 
-	err := http.ListenAndServe(hostPort, nil)
+	err := http.ListenAndServe(fmt.Sprintf("%s:%d", common.Host, common.Port), nil)
 	if err != nil {
-		glog.Fatal(err)
+		log.Crit("daemon could not bind on interface", "host", common.Host, "port", common.Port)
 	}
 }

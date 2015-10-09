@@ -33,10 +33,6 @@
 			"Rev": "09154ea1221f12735a08f7078edd0fa4623dd504"
 		},
 		{
-			"ImportPath": "github.com/golang/glog",
-			"Rev": "fca8c8854093a154ff1eb580aae10276ad6b1b5f"
-		},
-		{
 			"ImportPath": "github.com/gorilla/context",
 			"Rev": "1c83b3eabd45b6d76072b66b746c20815fb2872d"
 		},
@@ -67,6 +63,10 @@
 			"Rev": "337395e44efb4affc8bf11971e22acbd4e27a32d"
 		},
 		{
+			"ImportPath": "github.com/mattn/go-colorable",
+			"Rev": "40e4aedc8fabf8c23e040057540867186712faa5"
+		},
+		{
 			"ImportPath": "github.com/mattn/go-sqlite3",
 			"Comment": "v1.1.0-11-gb808f01",
 			"Rev": "b808f01f660667b1510acf216aa2b9fe7f555ddb"
@@ -94,6 +94,11 @@
 		{
 			"ImportPath": "golang.org/x/net/html",
 			"Rev": "b846920a172af75fe52c1400ae6094307be83b8a"
+		},
+		{
+			"ImportPath": "gopkg.in/inconshreveable/log15.v2",
+			"Comment": "v2.11",
+			"Rev": "b105bd37f74e5d9dc7b6ad7806715c7a2b83fd3f"
 		},
 		{
 			"ImportPath": "gopkg.in/yaml.v2",
