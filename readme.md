@@ -33,6 +33,12 @@ Now open a browser and point to the `host:port` you have configurated. The greed
 
 For more information, please don't hesitate to contact me [@rogierlommers](https://twitter.com/rogierlommers).
 
+Releases
+=========================
+| version     | download    | features    |
+| --------------------------|:-----------:|
+| 1.0         | greedy1.0   | see main    |
+
 Todo
 =======
 - [x] use sqlite3, instead of xml file
@@ -42,6 +48,7 @@ Todo
 - [?] extract serverlocation from header (find out if host starts with www?) 
 - [x] use [GeertJohan/go.rice](https://github.com/GeertJohan/go.rice) to add static files to binary
 - [x] implement [inconshreveable/log15](https://github.com/inconshreveable/log15) as logger, replacing glog
+- [ ] implement github's releases feature and add versions for all platforms
 - [ ] some kind of authentication
 - [ ] finish cleanup routine
 - [ ] create Dockerfile
