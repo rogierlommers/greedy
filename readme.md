@@ -15,7 +15,7 @@ Simply install by:
 this will download the sources to your `$gopath`, build a binary and puts it in your Go binary directory. You can leave it there or you can put it in a more convenient place. I have put it in `/srv/greedy`. Now you can start the service by running the binary: `./greedy`. By default, it binds to 0.0.0.0:8080, but you can change it's configuration by setting some environment variables.
 
 | environment var     | description               | default           |
-| --------------------|:-------------------------:| ------------------|
+| --------------------|---------------------------| ------------------|
 | GREEDY_HOST         | host it bids to           | 0.0.0.0           |
 | GREEDY_PORT         | http port                 | 8080              |
 | GREEDY_DATABASEFILE | location of database file | ./articles.sqlite |
@@ -33,6 +33,12 @@ Now open a browser and point to the `host:port` you have configurated. The greed
 
 For more information, please don't hesitate to contact me [@rogierlommers](https://twitter.com/rogierlommers).
 
+Releases
+=========================
+| version     | download    | features    |
+| ------------|-------------|-------------|
+| 1.0         | greedy1.0   | see main    |
+
 Todo
 =======
 - [x] use sqlite3, instead of xml file
@@ -42,6 +48,7 @@ Todo
 - [?] extract serverlocation from header (find out if host starts with www?) 
 - [x] use [GeertJohan/go.rice](https://github.com/GeertJohan/go.rice) to add static files to binary
 - [x] implement [inconshreveable/log15](https://github.com/inconshreveable/log15) as logger, replacing glog
+- [ ] implement github's releases feature and add versions for all platforms
 - [ ] some kind of authentication
 - [ ] finish cleanup routine
 - [ ] create Dockerfile
