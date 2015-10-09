@@ -4,7 +4,7 @@ Greedy allows you to run your own collection of `urls to read`. For example: you
 
 Storage
 ============
-Greedy uses a local database file (sqlite3) as storage. You can specify the location of the database file by adding the `-databasefile` parameter during startup. By detault, it is stored in the current working directory.
+Greedy uses a local database file (sqlite3) as it's storage. You can specify the location of the database file by setting the `databasefile` environment variable. See section below for more information.
 
 Installation instructions
 =========================
@@ -46,7 +46,7 @@ Todo
 - [ ] finish cleanup routine
 - [ ] create Dockerfile
 - [ ] create new screenshots
-- [ ] update readme
+- [x] update readme
 
 Screenshots
 =======
