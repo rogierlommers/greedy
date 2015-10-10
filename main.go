@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	_ "github.com/mattn/go-sqlite3"
 	"github.com/rogierlommers/greedy/internal/common"
 	"github.com/rogierlommers/greedy/internal/dao"
 	"github.com/rogierlommers/greedy/internal/handlers"
@@ -20,9 +19,9 @@ func main() {
 	common.BuildDate = BuildDate
 	common.ReadEnvironment()
 
-	// initialize sqlite storage
-	db := dao.Init(common.Databasefile)
-	defer db.Close()
+	// initialize bolt storage
+	dao.Open()
+	defer dao.Close()
 
 	// initialise mux router
 	router := mux.NewRouter()
@@ -34,14 +33,17 @@ func main() {
 	render.CreateStaticBox()
 
 	// http handles
-	router.HandleFunc("/stats", handlers.StatsHandler(db))
-	router.HandleFunc("/export", handlers.ExportCSV(db))
-	router.HandleFunc("/add", handlers.AddArticle(db))
-	router.HandleFunc("/rss", handlers.GenerateRSS(db))
+
+	router.HandleFunc("/add", handlers.AddArticle)
 	router.HandleFunc("/", handlers.IndexPage)
+	//	router.HandleFunc("/stats", handlers.StatsHandler(db))
+	//	router.HandleFunc("/export", handlers.ExportCSV(db))
+
+	//	router.HandleFunc("/rss", handlers.GenerateRSS(db))
+	//
 
 	// start cleanup db routing
-	go dao.Cleanup(db)
+	//	go dao.Cleanup(db)
 
 	// start server
 	http.Handle("/", router)

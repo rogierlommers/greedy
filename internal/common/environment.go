@@ -19,7 +19,7 @@ func ReadEnvironment() {
 	// override configuration with environment vars
 	// example: GREEDY_PORT=/tmp/greedy.sqlite
 	viper.SetEnvPrefix("GREEDY")
-	viper.SetDefault("databasefile", "articles.sqlite")
+	viper.SetDefault("databasefile", "articles.bolt")
 	viper.SetDefault("port", 8080)
 	viper.SetDefault("host", "0.0.0.0")
 	viper.AutomaticEnv()
