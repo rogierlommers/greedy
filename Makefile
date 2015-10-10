@@ -97,3 +97,4 @@ test:
 	curl http://localhost:8080/add?url=http://www.waterpop.nl/
 	curl http://localhost:8080/add?url=https://walledcity.com/supermighty/building-go-projects-with-gb
 	curl http://localhost:8080/add?url=http://www.geenstijl.nl/mt/archieven/2015/05/video_alcomobilist_rijdt_daiha.html
+

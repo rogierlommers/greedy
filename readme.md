@@ -48,6 +48,7 @@ Todo
 - [?] extract serverlocation from header (find out if host starts with www?) 
 - [x] use [GeertJohan/go.rice](https://github.com/GeertJohan/go.rice) to add static files to binary
 - [x] implement [inconshreveable/log15](https://github.com/inconshreveable/log15) as logger, replacing glog
+- [ ] implement native, embeddable database (https://www.reddit.com/r/golang/comments/3m1xcu/embeddable_database_for_go/)
 - [ ] implement github's releases feature and add versions for all platforms
 - [ ] some kind of authentication
 - [ ] finish cleanup routine

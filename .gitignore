@@ -5,7 +5,8 @@
 database.xml
 articles.db
 go-read
-target
+/target/greedy
 logs
 greedy.iml
+/bin
 greedy
