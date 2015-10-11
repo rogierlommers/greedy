@@ -1,4 +1,4 @@
-package dao
+package articles
 
 import (
 	"encoding/json"
@@ -10,6 +10,8 @@ import (
 	"github.com/boltdb/bolt"
 	"github.com/rogierlommers/greedy/internal/common"
 )
+
+// http://bl.ocks.org/joyrexus/22c3ef0984ed957f54b9
 
 var (
 	db   *bolt.DB
@@ -28,7 +30,6 @@ func Open() (err error) {
 	if err != nil {
 		log.Crit("error creating bolt database", "message", err)
 	}
-	log.Info("database succesfully created", "filename", common.Databasefile)
 	open = true
 	return nil
 }
@@ -43,6 +44,7 @@ func (a *Article) Save() error {
 		return fmt.Errorf("db must be opened before saving")
 	}
 	err := db.Update(func(tx *bolt.Tx) error {
+
 		articles, err := tx.CreateBucketIfNotExists([]byte("articles"))
 		if err != nil {
 			return fmt.Errorf("error creating bucket: %s", err)

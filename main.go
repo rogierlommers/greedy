@@ -5,9 +5,8 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/rogierlommers/greedy/internal/articles"
 	"github.com/rogierlommers/greedy/internal/common"
-	"github.com/rogierlommers/greedy/internal/dao"
-	"github.com/rogierlommers/greedy/internal/handlers"
 	"github.com/rogierlommers/greedy/internal/render"
 	log "gopkg.in/inconshreveable/log15.v2"
 )
@@ -20,8 +19,8 @@ func main() {
 	common.ReadEnvironment()
 
 	// initialize bolt storage
-	dao.Open()
-	defer dao.Close()
+	articles.Open()
+	defer articles.Close()
 
 	// initialise mux router
 	router := mux.NewRouter()
@@ -33,10 +32,9 @@ func main() {
 	render.CreateStaticBox()
 
 	// http handles
-
-	router.HandleFunc("/add", handlers.AddArticle)
-	router.HandleFunc("/", handlers.IndexPage)
-	//	router.HandleFunc("/stats", handlers.StatsHandler(db))
+	router.HandleFunc("/", articles.IndexPage)
+	router.HandleFunc("/add", articles.AddArticle)
+	//router.HandleFunc("/stats", handlers.StatsHandler)
 	//	router.HandleFunc("/export", handlers.ExportCSV(db))
 
 	//	router.HandleFunc("/rss", handlers.GenerateRSS(db))
