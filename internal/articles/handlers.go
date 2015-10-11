@@ -34,6 +34,7 @@ func AddArticle(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Warn("error saving article", "hostname", getHostnameFromUrl(queryParam), "article id", newArticle.ID)
 	}
+
 	log.Info("article added", "hostname", getHostnameFromUrl(queryParam), "article id", newArticle.ID)
 
 	// start routine which scrapes url
