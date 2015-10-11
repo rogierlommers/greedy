@@ -38,7 +38,7 @@ func AddArticle(w http.ResponseWriter, r *http.Request) {
 	log.Info("article added", "hostname", getHostnameFromUrl(queryParam), "article id", newArticle.ID)
 
 	// start routine which scrapes url
-	go scrapeArticle(newArticle.ID)
+	newArticle.Scrape()
 
 	// finally output confirmation page
 	renderObject := map[string]interface{}{
