@@ -76,3 +76,11 @@ func decode(data []byte) (*Article, error) {
 	}
 	return a, nil
 }
+
+func (a *Article) Scrape() error {
+	if !open {
+		return fmt.Errorf("db must be opened before saving")
+	}
+	log.Info("start scraping article", "id", a.ID, "url", a.Url)
+	return nil
+}
