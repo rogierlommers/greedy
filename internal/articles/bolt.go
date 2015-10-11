@@ -11,17 +11,17 @@ import (
 	"github.com/rogierlommers/greedy/internal/common"
 )
 
-// http://bl.ocks.org/joyrexus/22c3ef0984ed957f54b9
-
 var (
 	db   *bolt.DB
 	open bool
 )
 
 type Article struct {
-	ID    string
-	Url   string
-	Added time.Time
+	ID          string
+	Url         string
+	Added       time.Time
+	Title       string
+	Description string
 }
 
 func Open() (err error) {
@@ -81,6 +81,15 @@ func (a *Article) Scrape() error {
 	if !open {
 		return fmt.Errorf("db must be opened before saving")
 	}
-	log.Info("start scraping article", "id", a.ID, "url", a.Url)
+
+	err := scrapeUrl(a)
+	if err != nil {
+		return fmt.Errorf("could not scrape article %s:", err)
+	}
+
+	err = a.Save()
+	if err != nil {
+		return fmt.Errorf("could not scrape article %s:", err)
+	}
 	return nil
 }

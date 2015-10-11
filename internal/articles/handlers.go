@@ -38,7 +38,10 @@ func AddArticle(w http.ResponseWriter, r *http.Request) {
 	log.Info("article added", "hostname", getHostnameFromUrl(queryParam), "article id", newArticle.ID)
 
 	// start routine which scrapes url
-	newArticle.Scrape()
+	err = newArticle.Scrape()
+	if err != nil {
+		log.Warn("error scraping article", "hostname", getHostnameFromUrl(queryParam), "article id", newArticle.ID)
+	}
 
 	// finally output confirmation page
 	renderObject := map[string]interface{}{
