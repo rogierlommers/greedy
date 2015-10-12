@@ -35,11 +35,10 @@ func main() {
 	// http handles
 	router.HandleFunc("/", articles.IndexPage)
 	router.HandleFunc("/add", articles.AddArticle)
+	router.HandleFunc("/rss", articles.GenerateRSS)
+
 	//router.HandleFunc("/stats", handlers.StatsHandler)
 	//	router.HandleFunc("/export", handlers.ExportCSV(db))
-
-	//	router.HandleFunc("/rss", handlers.GenerateRSS(db))
-	//
 
 	// start cleanup db routing
 	//	go dao.Cleanup(db)

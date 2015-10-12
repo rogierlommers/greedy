@@ -1,12 +1,10 @@
 package articles
 
 import (
-	"crypto/md5"
-	"encoding/hex"
 	"net/http"
-	"net/url"
 	"time"
 
+	"github.com/gorilla/feeds"
 	"github.com/rogierlommers/greedy/internal/common"
 	"github.com/rogierlommers/greedy/internal/render"
 	log "gopkg.in/inconshreveable/log15.v2"
@@ -25,7 +23,7 @@ func AddArticle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	newArticle := Article{
-		ID:    getMD5Hash(queryParam),
+		//ID:    getMD5Hash(queryParam),
 		Url:   queryParam,
 		Added: time.Now(),
 	}
@@ -60,15 +58,33 @@ func IndexPage(w http.ResponseWriter, r *http.Request) {
 	render.DisplayPage(w, r, renderObject)
 }
 
-func getHostnameFromUrl(addedUrl string) (hostname string) {
-	u, err := url.Parse(addedUrl)
-	if err != nil {
-		log.Error("error looking up hostname from url", "url", addedUrl, "message", err)
+func GenerateRSS(w http.ResponseWriter, r *http.Request) {
+	now := time.Now()
+	feed := &feeds.Feed{
+		Title:       "your greedy's personal rss feed",
+		Link:        &feeds.Link{Href: common.FeedsLink},
+		Description: "discussion about tech, footie, photos",
+		Author:      &feeds.Author{common.FeedsAuthorName, common.FeedsAuthorEmail},
+		Created:     now,
 	}
-	return u.Host
-}
 
-func getMD5Hash(text string) string {
-	hash := md5.Sum([]byte(text))
-	return hex.EncodeToString(hash[:])
+	articles := getArticles()
+
+	for _, a := range articles {
+		newItem := feeds.Item{
+			Title:       a.Title,
+			Link:        &feeds.Link{Href: a.Url},
+			Description: a.Description,
+			Created:     a.Added,
+			Id:          a.ID,
+		}
+		feed.Add(&newItem)
+	}
+
+	rss, err := feed.ToAtom()
+	if err != nil {
+		log.Error("error generation RSS feed", "message", err)
+		return
+	}
+	w.Write([]byte(rss))
 }

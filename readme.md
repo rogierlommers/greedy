@@ -55,6 +55,8 @@ Todo
 - [ ] create Dockerfile
 - [ ] create new screenshots
 - [x] update readme
+- [ ] fix tag/releases
+- [ ] add to [avelino/awesome-go](https://github.com/avelino/awesome-go)
 
 Screenshots
 =======
