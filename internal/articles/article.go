@@ -3,6 +3,7 @@ package articles
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"strings"
 	"time"
 
@@ -10,6 +11,8 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/boltdb/bolt"
+	"github.com/davecgh/go-spew/spew"
+	"github.com/gorilla/feeds"
 	"github.com/rogierlommers/greedy/internal/common"
 )
 
@@ -21,11 +24,11 @@ var (
 )
 
 type Article struct {
-	ID          uint64
+	ID          string
 	Url         string
-	Added       time.Time
 	Title       string
 	Description string
+	Added       time.Time
 }
 
 func Open() (err error) {
@@ -43,19 +46,6 @@ func Close() {
 	db.Close()
 }
 
-func (a *Article) GetId() (newId uint64, err error) {
-	err = db.Update(func(tx *bolt.Tx) error {
-		//articles, err := tx.CreateBucketIfNotExists([]byte(BucketName))
-		newId, err := tx.Bucket([]byte(BucketName)).NextSequence()
-		if err != nil {
-			return fmt.Errorf("error fetching new ID: %s", err)
-		}
-		log.Info("next sequence", "sequence", newId)
-		return err
-	})
-	return newId, nil
-}
-
 func (a *Article) Save() error {
 	if !open {
 		return fmt.Errorf("db must be opened before saving")
@@ -65,21 +55,80 @@ func (a *Article) Save() error {
 		if err != nil {
 			return fmt.Errorf("error creating bucket: %s", err)
 		}
-		enc, err := a.encode()
-		if err != nil {
-			return fmt.Errorf("could not encode article %s:", err)
-		}
 
-		// finally save article
+		// scrape
 		err = a.Scrape()
 		if err != nil {
 			log.Error("scraping error")
 		}
 
-		err = articles.Put(uint64ToByte(a.ID), enc)
+		enc, err := a.encode()
+		if err != nil {
+			return fmt.Errorf("could not encode article %s:", err)
+		}
+		spew.Dump(enc)
+		err = articles.Put([]byte(a.ID), enc)
 		return err
 	})
 	return err
+}
+
+func DisplayRSS(w http.ResponseWriter, r *http.Request) {
+	now := time.Now()
+	feed := &feeds.Feed{
+		Title:       "your greedy's personal rss feed",
+		Link:        &feeds.Link{Href: common.FeedsLink},
+		Description: "discussion about tech, footie, photos",
+		Author:      &feeds.Author{common.FeedsAuthorName, common.FeedsAuthorEmail},
+		Created:     now,
+	}
+
+	db.View(func(tx *bolt.Tx) error {
+		c := tx.Bucket([]byte(BucketName)).Cursor()
+
+		for k, v := c.Last(); k != nil; k, v = c.Prev() {
+			var a *Article
+			a, err := decode(v)
+			if err != nil {
+				return err
+			}
+
+			newItem := feeds.Item{
+				Title:       a.Title,
+				Link:        &feeds.Link{Href: a.Url},
+				Description: a.Description,
+				Created:     a.Added,
+				Id:          a.ID,
+			}
+			log.Info("RSS item added", "id", a.ID, "title", newItem.Title)
+			feed.Add(&newItem)
+		}
+		return nil
+	})
+
+	rss, err := feed.ToAtom()
+	if err != nil {
+		log.Error("error generation RSS feed", "message", err)
+		return
+	}
+	w.Write([]byte(rss))
+}
+
+func (a *Article) encode() ([]byte, error) {
+	enc, err := json.Marshal(a)
+	if err != nil {
+		return nil, err
+	}
+	return enc, nil
+}
+
+func decode(data []byte) (*Article, error) {
+	var a *Article
+	err := json.Unmarshal(data, &a)
+	if err != nil {
+		return nil, err
+	}
+	return a, nil
 }
 
 func (a *Article) Scrape() error {
@@ -108,54 +157,9 @@ func (a *Article) Scrape() error {
 	})
 
 	// debugging info
-	log.Debug("scrape information", "title", a.Title, "description", a.Description)
-
 	elapsed := time.Since(start)
-	log.Info("scrape information", "time elapsed", elapsed.String())
+	log.Debug("scrape information", "id", a.ID, "title", a.Title, "description", a.Description, "elapsed", elapsed)
 	return nil
-
-}
-
-func getArticles() (articles []Article) {
-	db.View(func(tx *bolt.Tx) error {
-		c := tx.Bucket([]byte(BucketName)).Cursor()
-		for k, v := c.First(); k != nil; k, v = c.Next() {
-			var a *Article
-			a, err := decode(v)
-			if err != nil {
-				return err
-			}
-
-			log.Debug("fetching article", "id", "bla")
-			article := Article{}
-			article.ID = a.ID
-			article.Title = a.Title
-			article.Url = a.Url
-			article.Added = a.Added
-			article.Description = a.Description
-			articles = append(articles, article)
-
-		}
-		return nil
-	})
-	return articles
-}
-
-func (a *Article) encode() ([]byte, error) {
-	enc, err := json.Marshal(a)
-	if err != nil {
-		return nil, err
-	}
-	return enc, nil
-}
-
-func decode(data []byte) (*Article, error) {
-	var a *Article
-	err := json.Unmarshal(data, &a)
-	if err != nil {
-		return nil, err
-	}
-	return a, nil
 }
 
 // ---------------------------------------------------------------------------------------
@@ -182,4 +186,29 @@ func decode(data []byte) (*Article, error) {
 //		return nil, err
 //	}
 //	return a, nil
+//}
+
+//func getArticles() (articles []Article) {
+//	db.View(func(tx *bolt.Tx) error {
+//		c := tx.Bucket([]byte(BucketName)).Cursor()
+//		for k, v := c.First(); k != nil; k, v = c.Next() {
+//			var a *Article
+//			a, err := decode(v)
+//			if err != nil {
+//				return err
+//			}
+//
+//			//log.Debug("fetching article", "id", a.Description)
+//			article := Article{}
+//			article.ID = a.ID
+//			article.Title = a.Title
+//			article.Url = a.Url
+//			article.Added = a.Added
+//			article.Description = a.Description
+//			articles = append(articles, article)
+//
+//		}
+//		return nil
+//	})
+//	return articles
 //}

@@ -4,12 +4,14 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"net/url"
+	"time"
 
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 func getMD5Hash(text string) string {
-	hash := md5.Sum([]byte(text))
+	toHash := text + time.Now().String()
+	hash := md5.Sum([]byte(toHash))
 	return hex.EncodeToString(hash[:])
 }
 

@@ -4,7 +4,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gorilla/feeds"
 	"github.com/rogierlommers/greedy/internal/common"
 	"github.com/rogierlommers/greedy/internal/render"
 	log "gopkg.in/inconshreveable/log15.v2"
@@ -23,22 +22,14 @@ func AddArticle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	newArticle := Article{
-		//ID:    getMD5Hash(queryParam),
+		ID:    getMD5Hash(queryParam), // function will add time.Now() to make it unique
 		Url:   queryParam,
 		Added: time.Now(),
 	}
 
 	err := newArticle.Save()
 	if err != nil {
-		log.Warn("error saving article", "hostname", getHostnameFromUrl(queryParam), "article id", newArticle.ID)
-	}
-
-	log.Info("article added", "hostname", getHostnameFromUrl(queryParam), "article id", newArticle.ID)
-
-	// start routine which scrapes url
-	err = newArticle.Scrape()
-	if err != nil {
-		log.Warn("error scraping article", "hostname", getHostnameFromUrl(queryParam), "article id", newArticle.ID)
+		log.Warn("error saving article", "hostname", getHostnameFromUrl(queryParam), "id", newArticle.ID)
 	}
 
 	// finally output confirmation page
@@ -56,35 +47,4 @@ func IndexPage(w http.ResponseWriter, r *http.Request) {
 		"buildversion":   common.BuildDate,
 	}
 	render.DisplayPage(w, r, renderObject)
-}
-
-func GenerateRSS(w http.ResponseWriter, r *http.Request) {
-	now := time.Now()
-	feed := &feeds.Feed{
-		Title:       "your greedy's personal rss feed",
-		Link:        &feeds.Link{Href: common.FeedsLink},
-		Description: "discussion about tech, footie, photos",
-		Author:      &feeds.Author{common.FeedsAuthorName, common.FeedsAuthorEmail},
-		Created:     now,
-	}
-
-	articles := getArticles()
-
-	for _, a := range articles {
-		newItem := feeds.Item{
-			Title:       a.Title,
-			Link:        &feeds.Link{Href: a.Url},
-			Description: a.Description,
-			Created:     a.Added,
-			Id:          a.ID,
-		}
-		feed.Add(&newItem)
-	}
-
-	rss, err := feed.ToAtom()
-	if err != nil {
-		log.Error("error generation RSS feed", "message", err)
-		return
-	}
-	w.Write([]byte(rss))
 }

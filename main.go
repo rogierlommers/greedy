@@ -38,7 +38,7 @@ func main() {
 	// http handles
 	router.HandleFunc("/", articles.IndexPage)
 	router.HandleFunc("/add", articles.AddArticle)
-	router.HandleFunc("/rss", articles.GenerateRSS)
+	router.HandleFunc("/rss", articles.DisplayRSS)
 
 	//router.HandleFunc("/stats", handlers.StatsHandler)
 	//	router.HandleFunc("/export", handlers.ExportCSV(db))
