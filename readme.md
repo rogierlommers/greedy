@@ -58,6 +58,7 @@ Todo
 - [ ] fix tag/releases
 - [ ] add to [avelino/awesome-go](https://github.com/avelino/awesome-go)
 - [ ] fix injection of build date: https://ariejan.net/2015/10/12/building-golang-cli-tools-update/
+- [ ] automatic releases --> https://github.com/miekg/mmark/blob/master/.rel.sh
 
 Screenshots
 =======

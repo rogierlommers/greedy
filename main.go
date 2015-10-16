@@ -16,6 +16,8 @@ import (
 var BuildDate string
 
 // http://bl.ocks.org/joyrexus/22c3ef0984ed957f54b9
+// https://github.com/boltdb/bolt/issues/436
+
 func main() {
 	// read environment vars
 	common.BuildDate = BuildDate
