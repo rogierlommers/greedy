@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
+	"os"
+
 	"github.com/gorilla/mux"
 	"github.com/rogierlommers/greedy/internal/articles"
 	"github.com/rogierlommers/greedy/internal/common"
@@ -50,5 +52,6 @@ func main() {
 	err := http.ListenAndServe(fmt.Sprintf("%s:%d", common.Host, common.Port), nil)
 	if err != nil {
 		log.Crit("daemon could not bind on interface", "host", common.Host, "port", common.Port)
+		os.Exit(1)
 	}
 }
