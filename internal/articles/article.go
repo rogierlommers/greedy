@@ -13,6 +13,7 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/boltdb/bolt"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/gorilla/feeds"
 	"github.com/rogierlommers/greedy/internal/common"
 )
@@ -90,6 +91,7 @@ func DisplayRSS(w http.ResponseWriter, r *http.Request) {
 	}
 
 	db.View(func(tx *bolt.Tx) error {
+		spew.Dump(tx)
 		c := tx.Bucket([]byte(BucketName)).Cursor()
 
 		for k, v := c.Last(); k != nil; k, v = c.Prev() {
