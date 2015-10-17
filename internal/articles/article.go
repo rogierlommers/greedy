@@ -11,7 +11,6 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/boltdb/bolt"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/gorilla/feeds"
 	"github.com/rogierlommers/greedy/internal/common"
 )
@@ -66,7 +65,7 @@ func (a *Article) Save() error {
 		if err != nil {
 			return fmt.Errorf("could not encode article %s:", err)
 		}
-		spew.Dump(enc)
+
 		err = articles.Put([]byte(a.ID), enc)
 		return err
 	})
