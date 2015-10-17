@@ -22,7 +22,7 @@ func AddArticle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	newArticle := Article{
-		ID:    getMD5Hash(queryParam), // function will add time.Now() to make it unique
+		//ID:    getMD5Hash(queryParam), // function will add time.Now() to make it unique
 		Url:   queryParam,
 		Added: time.Now(),
 	}

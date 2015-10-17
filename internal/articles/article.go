@@ -9,6 +9,8 @@ import (
 
 	log "gopkg.in/inconshreveable/log15.v2"
 
+	"strconv"
+
 	"github.com/PuerkitoBio/goquery"
 	"github.com/boltdb/bolt"
 	"github.com/gorilla/feeds"
@@ -23,7 +25,7 @@ var (
 )
 
 type Article struct {
-	ID          string
+	ID          int
 	Url         string
 	Title       string
 	Description string
@@ -55,6 +57,11 @@ func (a *Article) Save() error {
 			return fmt.Errorf("error creating bucket: %s", err)
 		}
 
+		// Generate ID for the article.
+		id, _ := articles.NextSequence()
+		log.Info("article", "sequence", id)
+		a.ID = int(id)
+
 		// scrape
 		err = a.Scrape()
 		if err != nil {
@@ -66,7 +73,7 @@ func (a *Article) Save() error {
 			return fmt.Errorf("could not encode article %s:", err)
 		}
 
-		err = articles.Put([]byte(a.ID), enc)
+		err = articles.Put(itob(a.ID), enc)
 		return err
 	})
 	return err
@@ -97,9 +104,8 @@ func DisplayRSS(w http.ResponseWriter, r *http.Request) {
 				Link:        &feeds.Link{Href: a.Url},
 				Description: a.Description,
 				Created:     a.Added,
-				Id:          a.ID,
+				Id:          strconv.Itoa(a.ID),
 			}
-			log.Info("RSS item added", "id", a.ID, "title", newItem.Title)
 			feed.Add(&newItem)
 		}
 		return nil
