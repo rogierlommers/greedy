@@ -12,6 +12,7 @@ run:
 	godep go run *.go
 
 test:
+	go run ./systemtest/main.go
 	curl http://localhost:8080/add?url=http%3A%2F%2Fen.wikipedia.org%2Fwiki%2FWikipedia%3ALists_of_protected_pages
 	curl http://localhost:8080/add?url=http%3A%2F%2Fen.wikipedia.org%2Fwiki%2FWikipedia%3ALists_of_protected_pages http://localhost:8080/add?url=http%3A%2F%2Fubuntuforums.org%2Fforumdisplay.php%3Ff%3D339
 	curl http://localhost:8080/add?url=http%3A%2F%2Fen.wikipedia.org%2Fwiki%2FWikipedia%3ALists_of_protected_pages http://localhost:8080/add?url=http%3A%2F%2Fwww.iculture.nl%2Ficulture-vandaag-26-mei-2015%2F

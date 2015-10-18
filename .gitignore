@@ -5,6 +5,7 @@
 database.xml
 articles.db
 go-read
+/articles.bolt
 /target/greedy
 logs
 greedy.iml

@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"net/http"
 
+	"os"
+
 	"github.com/gorilla/mux"
-	_ "github.com/mattn/go-sqlite3"
+	"github.com/rogierlommers/greedy/internal/articles"
 	"github.com/rogierlommers/greedy/internal/common"
-	"github.com/rogierlommers/greedy/internal/dao"
-	"github.com/rogierlommers/greedy/internal/handlers"
 	"github.com/rogierlommers/greedy/internal/render"
 	log "gopkg.in/inconshreveable/log15.v2"
 )
@@ -20,9 +20,9 @@ func main() {
 	common.BuildDate = BuildDate
 	common.ReadEnvironment()
 
-	// initialize sqlite storage
-	db := dao.Init(common.Databasefile)
-	defer db.Close()
+	// initialize bolt storage
+	articles.Open()
+	defer articles.Close()
 
 	// initialise mux router
 	router := mux.NewRouter()
@@ -34,14 +34,11 @@ func main() {
 	render.CreateStaticBox()
 
 	// http handles
-	router.HandleFunc("/stats", handlers.StatsHandler(db))
-	router.HandleFunc("/export", handlers.ExportCSV(db))
-	router.HandleFunc("/add", handlers.AddArticle(db))
-	router.HandleFunc("/rss", handlers.GenerateRSS(db))
-	router.HandleFunc("/", handlers.IndexPage)
-
-	// start cleanup db routing
-	go dao.Cleanup(db)
+	router.HandleFunc("/", articles.IndexPage)
+	router.HandleFunc("/add", articles.AddArticle)
+	router.HandleFunc("/rss", articles.DisplayRSS)
+	router.HandleFunc("/stats", articles.StatsHandler)
+	router.HandleFunc("/export", articles.ExportCSV)
 
 	// start server
 	http.Handle("/", router)
@@ -50,5 +47,6 @@ func main() {
 	err := http.ListenAndServe(fmt.Sprintf("%s:%d", common.Host, common.Port), nil)
 	if err != nil {
 		log.Crit("daemon could not bind on interface", "host", common.Host, "port", common.Port)
+		os.Exit(1)
 	}
 }
