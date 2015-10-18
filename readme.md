@@ -61,6 +61,7 @@ Todo
 - [x] fix injection of build date: https://ariejan.net/2015/10/12/building-golang-cli-tools-update/
 - [x] implement native, embeddable database (https://www.reddit.com/r/golang/comments/3m1xcu/embeddable_database_for_go/)
 - [x] automatic releases --> https://github.com/miekg/mmark/blob/master/.rel.sh
+- [ ] update installation instructions --> add binary section
 - [ ] extract serverlocation from header (find out if host starts with www?)
 - [ ] some kind of authentication?
 - [ ] finish cleanup routine
