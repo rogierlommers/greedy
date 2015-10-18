@@ -1,3 +1,7 @@
+DEPRICATED
+===========
+10-18-2015 | THIS BRANCH USES SQLITE AS ITS STORAGE, IT IS DEPRICATED
+
 Greedy
 ===========
 Greedy allows you to run your own collection of `urls to read`. For example: you are reading a webpage and you want to mark it as `read later`, you can use this service to quickly save the page and read it later. From there, the service generates an RSS feed containing all these urls. You can import this RSS feed into your own, favorite RSS client (f.e. [TinyTinyRSS](https://tt-rss.org "TinyTinyRSS")).
