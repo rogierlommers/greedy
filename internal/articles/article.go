@@ -4,16 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
 	log "gopkg.in/inconshreveable/log15.v2"
 
-	"strconv"
-
 	"github.com/PuerkitoBio/goquery"
 	"github.com/boltdb/bolt"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/gorilla/feeds"
 	"github.com/rogierlommers/greedy/internal/common"
 )
@@ -39,6 +37,16 @@ func Open() (err error) {
 	if err != nil {
 		log.Crit("error creating bolt database", "message", err)
 	}
+
+	// create initial bucket (if not exists)
+	db.Update(func(tx *bolt.Tx) error {
+		_, err := tx.CreateBucketIfNotExists([]byte(BucketName))
+		if err != nil {
+			return fmt.Errorf("create bucket: %s", err)
+		}
+		return nil
+	})
+
 	open = true
 	return nil
 }
@@ -48,36 +56,24 @@ func Close() {
 	db.Close()
 }
 
-func (a *Article) Save() error {
-	if !open {
-		return fmt.Errorf("db must be opened before saving")
-	}
-	err := db.Update(func(tx *bolt.Tx) error {
-		articles, err := tx.CreateBucketIfNotExists([]byte(BucketName))
-		if err != nil {
-			return fmt.Errorf("error creating bucket: %s", err)
+func getArticles(amount int) (articleList []Article) {
+	articleList = make([]Article, 0, 0)
+
+	db.View(func(tx *bolt.Tx) error {
+		c := tx.Bucket([]byte(BucketName)).Cursor()
+		var x = 0
+		for _, v := c.Last(); x != amount; _, v = c.Prev() {
+			var a *Article
+			a, err := decode(v)
+			if err != nil {
+				return err
+			}
+			articleList = append(articleList, *a)
+			x++
 		}
-
-		// Generate ID for the article.
-		id, _ := articles.NextSequence()
-		log.Info("article", "sequence", id)
-		a.ID = int(id)
-
-		// scrape
-		err = a.Scrape()
-		if err != nil {
-			log.Error("scraping error")
-		}
-
-		enc, err := a.encode()
-		if err != nil {
-			return fmt.Errorf("could not encode article %s:", err)
-		}
-
-		err = articles.Put(itob(a.ID), enc)
-		return err
+		return nil
 	})
-	return err
+	return articleList
 }
 
 func DisplayRSS(w http.ResponseWriter, r *http.Request) {
@@ -91,7 +87,6 @@ func DisplayRSS(w http.ResponseWriter, r *http.Request) {
 	}
 
 	db.View(func(tx *bolt.Tx) error {
-		spew.Dump(tx)
 		c := tx.Bucket([]byte(BucketName)).Cursor()
 
 		for k, v := c.Last(); k != nil; k, v = c.Prev() {
@@ -121,12 +116,13 @@ func DisplayRSS(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(rss))
 }
 
-func (a *Article) encode() ([]byte, error) {
-	enc, err := json.Marshal(a)
-	if err != nil {
-		return nil, err
-	}
-	return enc, nil
+func count() (amount int) {
+	db.View(func(tx *bolt.Tx) error {
+		c := tx.Bucket([]byte(BucketName)).Cursor()
+		amount = c.Bucket().Stats().KeyN
+		return nil
+	})
+	return amount
 }
 
 func decode(data []byte) (*Article, error) {
@@ -169,53 +165,39 @@ func (a *Article) Scrape() error {
 	return nil
 }
 
-// ---------------------------------------------------------------------------------------
-// still unused
-// ---------------------------------------------------------------------------------------
+func (a *Article) encode() ([]byte, error) {
+	enc, err := json.Marshal(a)
+	if err != nil {
+		return nil, err
+	}
+	return enc, nil
+}
 
-//func GetArticle(id string) (*Article, error) {
-//	if !open {
-//		return nil, fmt.Errorf("db must be opened before saving!")
-//	}
-//	var a *Article
-//	err := db.View(func(tx *bolt.Tx) error {
-//		var err error
-//		b := tx.Bucket([]byte(BucketName))
-//		k := []byte(id)
-//		a, err = decode(b.Get(k))
-//		if err != nil {
-//			return err
-//		}
-//		return nil
-//	})
-//	if err != nil {
-//		fmt.Printf("Could not get Person ID %s", id)
-//		return nil, err
-//	}
-//	return a, nil
-//}
+func (a *Article) Save() error {
+	if !open {
+		return fmt.Errorf("db must be opened before saving")
+	}
+	err := db.Update(func(tx *bolt.Tx) error {
+		articles := tx.Bucket([]byte(BucketName))
 
-//func getArticles() (articles []Article) {
-//	db.View(func(tx *bolt.Tx) error {
-//		c := tx.Bucket([]byte(BucketName)).Cursor()
-//		for k, v := c.First(); k != nil; k, v = c.Next() {
-//			var a *Article
-//			a, err := decode(v)
-//			if err != nil {
-//				return err
-//			}
-//
-//			//log.Debug("fetching article", "id", a.Description)
-//			article := Article{}
-//			article.ID = a.ID
-//			article.Title = a.Title
-//			article.Url = a.Url
-//			article.Added = a.Added
-//			article.Description = a.Description
-//			articles = append(articles, article)
-//
-//		}
-//		return nil
-//	})
-//	return articles
-//}
+		// Generate ID for the article.
+		id, _ := articles.NextSequence()
+		log.Info("article", "sequence", id)
+		a.ID = int(id)
+
+		// scrape
+		err := a.Scrape()
+		if err != nil {
+			log.Error("scraping error")
+		}
+
+		enc, err := a.encode()
+		if err != nil {
+			return fmt.Errorf("could not encode article %s:", err)
+		}
+
+		err = articles.Put(itob(a.ID), enc)
+		return err
+	})
+	return err
+}

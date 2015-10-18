@@ -1,9 +1,14 @@
 package articles
 
 import (
+	"bytes"
+	"encoding/csv"
+	"html/template"
 	"net/http"
+	"strconv"
 	"time"
 
+	"github.com/dustin/go-humanize"
 	"github.com/rogierlommers/greedy/internal/common"
 	"github.com/rogierlommers/greedy/internal/render"
 	log "gopkg.in/inconshreveable/log15.v2"
@@ -22,7 +27,6 @@ func AddArticle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	newArticle := Article{
-		//ID:    getMD5Hash(queryParam), // function will add time.Now() to make it unique
 		Url:   queryParam,
 		Added: time.Now(),
 	}
@@ -47,4 +51,37 @@ func IndexPage(w http.ResponseWriter, r *http.Request) {
 		"buildversion":   common.BuildDate,
 	}
 	render.DisplayPage(w, r, renderObject)
+}
+
+func StatsHandler(w http.ResponseWriter, r *http.Request) {
+	var stats = "<table><tr><th>Title</th><th>Added</th></tr>"
+
+	articles := getArticles(100)
+	for _, value := range articles {
+		stats += "<tr><td>" + getHostnameFromUrl(value.Url) + "</td><td>" + humanize.Time(value.Added) + "</td></tr>"
+	}
+
+	renderObject := map[string]interface{}{
+		"IsStatsPage": "true",
+		"amount":      strconv.Itoa(count()),
+		"html":        template.HTML(stats),
+	}
+	render.DisplayPage(w, r, renderObject)
+}
+
+func ExportCSV(w http.ResponseWriter, r *http.Request) {
+	articles := getArticles(count())
+
+	b := &bytes.Buffer{}
+	wr := csv.NewWriter(b)
+
+	for _, value := range articles {
+		record := []string{value.Url}
+		wr.Write(record)
+	}
+
+	wr.Flush()
+	w.Header().Set("Content-Type", "text/csv")
+	w.Header().Set("Content-Disposition", "attachment;filename=go-read-articles.csv")
+	w.Write(b.Bytes())
 }

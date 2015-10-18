@@ -15,9 +15,6 @@ import (
 
 var BuildDate string
 
-// http://bl.ocks.org/joyrexus/22c3ef0984ed957f54b9
-// https://github.com/boltdb/bolt/issues/436
-
 func main() {
 	// read environment vars
 	common.BuildDate = BuildDate
@@ -40,12 +37,8 @@ func main() {
 	router.HandleFunc("/", articles.IndexPage)
 	router.HandleFunc("/add", articles.AddArticle)
 	router.HandleFunc("/rss", articles.DisplayRSS)
-
-	//router.HandleFunc("/stats", handlers.StatsHandler)
-	//	router.HandleFunc("/export", handlers.ExportCSV(db))
-
-	// start cleanup db routing
-	//	go dao.Cleanup(db)
+	router.HandleFunc("/stats", articles.StatsHandler)
+	router.HandleFunc("/export", articles.ExportCSV)
 
 	// start server
 	http.Handle("/", router)
