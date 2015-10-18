@@ -8,27 +8,31 @@ Greedy uses a local database file (sqlite3) as it's storage. You can specify the
 
 Installation instructions
 =========================
-Simply install by:
+If you don't have a working Go environment, then you can simply download one of the pre-built binaries. For download links, see below. After putting the binary in your path, start the service by running the binary: `./greedy`. By default, it binds to 0.0.0.0:8080, but you can change it's configuration by setting some environment variables which are described below. After starting, the output should be like this:
 
-    go get github.com/rogierlommers/greedy
-
-this will download the sources to your `$gopath`, build a binary and puts it in your Go binary directory. You can leave it there or you can put it in a more convenient place. I have put it in `/srv/greedy`. Now you can start the service by running the binary: `./greedy`. By default, it binds to 0.0.0.0:8080, but you can change it's configuration by setting some environment variables.
-
-| environment var     | description               | default           |
-| --------------------|:-------------------------:| ------------------|
-| GREEDY_HOST         | host it bids to           | 0.0.0.0           |
-| GREEDY_PORT         | http port                 | 8080              |
-| GREEDY_DATABASEFILE | location of database file | ./articles.sqlite |
-
-After starting, the output should be like this:
-
-    t=2015-10-18T14:28:44+0200 lvl=info msg="environment vars" host=0.0.0.0 port=8080 databasefile=articles.bolt
-    t=2015-10-18T14:28:44+0200 lvl=warn msg="greedy meta info" builddate=
-    t=2015-10-18T14:28:44+0200 lvl=info msg="deamon listening" host=0.0.0.0 port=8080
+    INFO[10-18|15:48:03] environment vars                         host=0.0.0.0 port=8080 databasefile=articles.bolt
+    INFO[10-18|15:48:03] greedy meta info                         builddate=18-October-2015/15:47:55 commithash=9cb5fe13067f2dead95233e36b3b7b9fd1dd2b73
+    INFO[10-18|15:48:03] deamon listening                         host=0.0.0.0 port=8080
 
 Now open a browser and point to the `host:port` you have configurated. The greedy homepage should appear. Drag the button to your favorites/bookmarks bar. It is a bookmarklet which redirects to the service and stores the current page to your reading list. Next step is to add the /rss endpoint to your RSS aggregator.
 
 For more information, please don't hesitate to contact me [@rogierlommers](https://twitter.com/rogierlommers).
+
+If you have Go installed, simply `go get` it:
+
+    go get github.com/rogierlommers/greedy
+
+this will download the sources to your `$gopath`, build a binary and puts it in your Go binary directory. You can leave it there or you can put it in a more convenient place.
+
+| environment var     | description               | default           |
+| --------------------|:-------------------------:| ------------------|
+| GREEDY_HOST         | host it binds to          | 0.0.0.0           |
+| GREEDY_PORT         | http port                 | 8080              |
+| GREEDY_DATABASEFILE | location of database file | ./articles.sqlite |
+
+Running in Docker container
+===========================
+Explained here
 
 Releases
 =========================
@@ -38,7 +42,6 @@ Releases
 | 1.0-linux-368     | [greedy-1.0-linux-368.tar.bz2](https://github.com/rogierlommers/greedy/releases/download/1.0/greedy-1.0-linux-386.tar.bz2)       |
 | 1.0-darwin-amd64  | [greedy-1.0-darwin-amd64.tar.bz2](https://github.com/rogierlommers/greedy/releases/download/1.0/greedy-1.0-darwin-amd64.tar.bz2) |
 | 1.0-darwin-368    | [greedy-1.0-darwin-386.tar.bz2](https://github.com/rogierlommers/greedy/releases/download/1.0/greedy-1.0-darwin-386.tar.bz2)     |
-
 
 History
 =======
@@ -61,14 +64,13 @@ Todo
 - [x] fix injection of build date: https://ariejan.net/2015/10/12/building-golang-cli-tools-update/
 - [x] implement native, embeddable database (https://www.reddit.com/r/golang/comments/3m1xcu/embeddable_database_for_go/)
 - [x] automatic releases --> https://github.com/miekg/mmark/blob/master/.rel.sh
-- [ ] update installation instructions --> add binary section
-- [ ] extract serverlocation from header (find out if host starts with www?)
+- [x] extract serverlocation from header
+- [x] update installation instructions --> add binary section
+- [ ] create Dockerfile
 - [ ] some kind of authentication?
 - [ ] finish cleanup routine
-- [ ] create Dockerfile
 - [ ] create new screenshots
 - [ ] add to [avelino/awesome-go](https://github.com/avelino/awesome-go)
-
 
 Screenshots
 =======

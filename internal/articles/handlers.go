@@ -3,6 +3,7 @@ package articles
 import (
 	"bytes"
 	"encoding/csv"
+	"fmt"
 	"html/template"
 	"net/http"
 	"strconv"
@@ -45,9 +46,12 @@ func AddArticle(w http.ResponseWriter, r *http.Request) {
 }
 
 func IndexPage(w http.ResponseWriter, r *http.Request) {
+	host := fmt.Sprint("http://", r.Host)
+	log.Debug("greedy location", "url", host)
+
 	renderObject := map[string]interface{}{
 		"IsLandingPage":  "true",
-		"serverLocation": r.Host,
+		"serverLocation": host,
 		"buildversion":   common.BuildDate,
 	}
 	render.DisplayPage(w, r, renderObject)
