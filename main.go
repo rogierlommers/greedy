@@ -17,7 +17,6 @@ var BuildDate string
 
 func main() {
 	// read environment vars
-	common.BuildDate = BuildDate
 	common.ReadEnvironment()
 
 	// initialize bolt storage

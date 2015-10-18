@@ -7,6 +7,7 @@ import (
 
 var (
 	BuildDate        string
+	CommitHash       string
 	Port             int
 	Host             string
 	Databasefile     string
@@ -29,5 +30,5 @@ func ReadEnvironment() {
 	Host = viper.GetString("host")
 
 	log.Info("environment vars", "host", Host, "port", Port, "databasefile", Databasefile)
-	log.Warn("greedy meta info", "builddate", BuildDate)
+	log.Info("greedy meta info", "builddate", BuildDate, "commit-hash", CommitHash)
 }
