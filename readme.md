@@ -22,12 +22,9 @@ this will download the sources to your `$gopath`, build a binary and puts it in 
 
 After starting, the output should be like this:
 
-    INFO[10-09|21:23:19] environment vars                         host=0.0.0.0 port=8080 databasefile=articles.sqlite
-    WARN[10-09|21:23:19] greedy meta info                         builddate=09-October-2015/21:16:25
-    DBUG[10-09|21:23:19] check if database file exists            check result=true
-    INFO[10-09|21:23:19] number of records in database            amount=666
-    INFO[10-09|21:23:19] deamon listening                         host=0.0.0.0 port=8080
-    INFO[10-09|21:23:19] cleanup database file                    amount deleted=1234
+    t=2015-10-18T14:28:44+0200 lvl=info msg="environment vars" host=0.0.0.0 port=8080 databasefile=articles.bolt
+    t=2015-10-18T14:28:44+0200 lvl=warn msg="greedy meta info" builddate=
+    t=2015-10-18T14:28:44+0200 lvl=info msg="deamon listening" host=0.0.0.0 port=8080
 
 Now open a browser and point to the `host:port` you have configurated. The greedy homepage should appear. Drag the button to your favorites/bookmarks bar. It is a bookmarklet which redirects to the service and stores the current page to your reading list. Next step is to add the /rss endpoint to your RSS aggregator.
 
