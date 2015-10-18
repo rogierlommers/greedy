@@ -42,19 +42,19 @@ Todo
 - [x] make use of makefile
 - [x] use godep as dependency management
 - [x] use [spf13/viper](https://github.com/spf13/viper) package to read environment vars
-- [?] extract serverlocation from header (find out if host starts with www?) 
 - [x] use [GeertJohan/go.rice](https://github.com/GeertJohan/go.rice) to add static files to binary
 - [x] implement [inconshreveable/log15](https://github.com/inconshreveable/log15) as logger, replacing glog
-- [ ] implement native, embeddable database (https://www.reddit.com/r/golang/comments/3m1xcu/embeddable_database_for_go/)
+- [x] update readme
+- [x] fix injection of build date: https://ariejan.net/2015/10/12/building-golang-cli-tools-update/
+- [x] implement native, embeddable database (https://www.reddit.com/r/golang/comments/3m1xcu/embeddable_database_for_go/)
+- [ ] extract serverlocation from header (find out if host starts with www?)
 - [ ] implement github's releases feature and add versions for all platforms
 - [ ] some kind of authentication
 - [ ] finish cleanup routine
 - [ ] create Dockerfile
 - [ ] create new screenshots
-- [x] update readme
 - [ ] fix tag/releases
 - [ ] add to [avelino/awesome-go](https://github.com/avelino/awesome-go)
-- [x] fix injection of build date: https://ariejan.net/2015/10/12/building-golang-cli-tools-update/
 - [ ] automatic releases --> https://github.com/miekg/mmark/blob/master/.rel.sh
 
 Screenshots
