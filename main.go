@@ -13,8 +13,6 @@ import (
 	log "gopkg.in/inconshreveable/log15.v2"
 )
 
-var BuildDate string
-
 func main() {
 	// read environment vars
 	common.ReadEnvironment()

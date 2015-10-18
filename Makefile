@@ -1,15 +1,29 @@
 default: run
 
+VERSION := 1.0
+LDFLAGS := -X github.com/rogierlommers/greedy/internal/common.CommitHash=`git rev-parse HEAD` -X github.com/rogierlommers/greedy/internal/common.BuildDate=`date +"%d-%B-%Y/%T"`
+BINARY := ./bin/greedy-${VERSION}
+
 setup:
 	go get github.com/tools/godep
 
 build: setup
 	rm -rf ./target
 	mkdir -p ./target
-	godep go build -ldflags "-X github.com/rogierlommers/greedy/internal/common.CommitHash=`git rev-parse HEAD` -X github.com/rogierlommers/greedy/internal/common.BuildDate=`date +"%d-%B-%Y/%T"`" -o ./target/greedy main.go
+	godep go build -ldflags "$(LDFLAGS)" -o ./target/greedy main.go
 
 run:
 	godep go run *.go
+
+release:
+	GOOS=darwin GOARCH=386 godep go build -ldflags "$(LDFLAGS)" -o $(BINARY)-darwin-386 main.go
+	GOOS=darwin GOARCH=amd64 godep go build -ldflags "$(LDFLAGS)" -o $(BINARY)-darwin-amd64 main.go
+	GOOS=linux GOARCH=386 godep go build -ldflags "$(LDFLAGS)" -o $(BINARY)-linux-386 main.go
+	GOOS=linux GOARCH=amd64 godep go build -ldflags "$(LDFLAGS)" -o $(BINARY)-linux-amd64 main.go
+	tar --verbose --create --bzip2 --file $(BINARY)-darwin-386.tar.bz2 $(BINARY)-darwin-386
+	tar --verbose --create --bzip2 --file $(BINARY)-darwin-amd64.tar.bz2 $(BINARY)-darwin-amd64
+	tar --verbose --create --bzip2 --file $(BINARY)-linux-386.tar.bz2 $(BINARY)-linux-386
+	tar --verbose --create --bzip2 --file $(BINARY)-linux-amd64.tar.bz2 $(BINARY)-linux-amd64
 
 test:
 	go run ./systemtest/main.go
