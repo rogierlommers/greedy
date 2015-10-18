@@ -66,10 +66,12 @@ Explained here
 - [x] automatic releases --> https://github.com/miekg/mmark/blob/master/.rel.sh
 - [x] extract serverlocation from header
 - [x] update installation instructions --> add binary section
+- [x] create new screenshots
+- [ ] generate static binaries
 - [ ] create Dockerfile
+- [ ] configuration inside Bolt bucket?
 - [ ] some kind of authentication?
 - [ ] finish cleanup routine
-- [ ] create new screenshots
 - [ ] add to [avelino/awesome-go](https://github.com/avelino/awesome-go)
 
 # Screenshots
