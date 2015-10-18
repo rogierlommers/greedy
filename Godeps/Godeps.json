@@ -21,6 +21,11 @@
 			"Rev": "3ad29d1ad1c4f2023e355603324348cf1f4b2d48"
 		},
 		{
+			"ImportPath": "github.com/boltdb/bolt",
+			"Comment": "v1.0-131-g14ea02b",
+			"Rev": "14ea02b7ee56ea0440b8e42b333934fdf623f214"
+		},
+		{
 			"ImportPath": "github.com/daaku/go.zipexe",
 			"Rev": "a5fe2436ffcb3236e175e5149162b41cd28bd27d"
 		},
@@ -65,11 +70,6 @@
 		{
 			"ImportPath": "github.com/mattn/go-colorable",
 			"Rev": "40e4aedc8fabf8c23e040057540867186712faa5"
-		},
-		{
-			"ImportPath": "github.com/mattn/go-sqlite3",
-			"Comment": "v1.1.0-11-gb808f01",
-			"Rev": "b808f01f660667b1510acf216aa2b9fe7f555ddb"
 		},
 		{
 			"ImportPath": "github.com/mitchellh/mapstructure",
