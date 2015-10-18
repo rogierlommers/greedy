@@ -32,12 +32,22 @@ For more information, please don't hesitate to contact me [@rogierlommers](https
 
 Releases
 =========================
-| version           | download                                                                                                                         | features  |
-| ------------------|----------------------------------------------------------------------------------------------------------------------------------|-----------|
-| 1.0-linux-amd64   | [greedy-1.0-linux-amd64.tar.bz2](https://github.com/rogierlommers/greedy/releases/download/1.0/greedy-1.0-linux-amd64.tar.bz2)   | see main  |
-| 1.0-linux-368     | [greedy-1.0-linux-368.tar.bz2](https://github.com/rogierlommers/greedy/releases/download/1.0/greedy-1.0-linux-386.tar.bz2)       | see main  |
-| 1.0-darwin-amd64  | [greedy-1.0-darwin-amd64.tar.bz2](https://github.com/rogierlommers/greedy/releases/download/1.0/greedy-1.0-darwin-amd64.tar.bz2) | see main  |
-| 1.0-darwin-368    | [greedy-1.0-darwin-386.tar.bz2](https://github.com/rogierlommers/greedy/releases/download/1.0/greedy-1.0-darwin-386.tar.bz2)     | see main  |
+| version           | download                                                                                                                         |
+| ------------------|----------------------------------------------------------------------------------------------------------------------------------|
+| 1.0-linux-amd64   | [greedy-1.0-linux-amd64.tar.bz2](https://github.com/rogierlommers/greedy/releases/download/1.0/greedy-1.0-linux-amd64.tar.bz2)   |
+| 1.0-linux-368     | [greedy-1.0-linux-368.tar.bz2](https://github.com/rogierlommers/greedy/releases/download/1.0/greedy-1.0-linux-386.tar.bz2)       |
+| 1.0-darwin-amd64  | [greedy-1.0-darwin-amd64.tar.bz2](https://github.com/rogierlommers/greedy/releases/download/1.0/greedy-1.0-darwin-amd64.tar.bz2) |
+| 1.0-darwin-368    | [greedy-1.0-darwin-386.tar.bz2](https://github.com/rogierlommers/greedy/releases/download/1.0/greedy-1.0-darwin-386.tar.bz2)     |
+
+
+History
+=======
+- 1.0
+  - uses BOLT as storage engine
+  - display articles as RSS
+  - scrapes title and page description
+  - single binary containing all (static) files, easy to install
+  - multiple platforms: linux and darwin
 
 Todo
 =======
@@ -50,15 +60,14 @@ Todo
 - [x] update readme
 - [x] fix injection of build date: https://ariejan.net/2015/10/12/building-golang-cli-tools-update/
 - [x] implement native, embeddable database (https://www.reddit.com/r/golang/comments/3m1xcu/embeddable_database_for_go/)
+- [x] automatic releases --> https://github.com/miekg/mmark/blob/master/.rel.sh
 - [ ] extract serverlocation from header (find out if host starts with www?)
-- [ ] implement github's releases feature and add versions for all platforms
-- [ ] some kind of authentication
+- [ ] some kind of authentication?
 - [ ] finish cleanup routine
 - [ ] create Dockerfile
 - [ ] create new screenshots
-- [ ] fix tag/releases
 - [ ] add to [avelino/awesome-go](https://github.com/avelino/awesome-go)
-- [ ] automatic releases --> https://github.com/miekg/mmark/blob/master/.rel.sh
+
 
 Screenshots
 =======
