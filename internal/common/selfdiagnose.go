@@ -11,13 +11,13 @@ import (
 )
 
 type ReportBuildAndDate struct {
-	Version string
-	Date    string
+	CommitHash string
+	Date       string
 }
 
 func (r ReportBuildAndDate) Run(ctx *selfdiagnose.Context, result *selfdiagnose.Result) {
 	result.Passed = true
-	result.Reason = fmt.Sprintf("builddate: %s", r.Date)
+	result.Reason = fmt.Sprintf("builddate: %s, commithash: %s", r.Date, r.CommitHash)
 }
 
 func (r ReportBuildAndDate) Comment() string {
@@ -42,7 +42,8 @@ func SetupSelfdiagnose() {
 
 	// report build and date
 	report := ReportBuildAndDate{
-		Date: BuildDate,
+		Date:       BuildDate,
+		CommitHash: CommitHash,
 	}
 
 	// finally build report
@@ -67,7 +68,7 @@ func (r ArgumentList) Run(ctx *selfdiagnose.Context, result *selfdiagnose.Result
 }
 
 func (r ArgumentList) Comment() string {
-	return "commandline args (if logging debug only)"
+	return "commandline args"
 }
 
 func (r ArgumentList) Timeout() time.Duration {

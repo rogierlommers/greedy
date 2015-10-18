@@ -1,4 +1,3 @@
-
 package bolt
 
 import (
@@ -7,6 +6,7 @@ import (
 	"syscall"
 	"time"
 	"unsafe"
+
 	"golang.org/x/sys/unix"
 )
 
