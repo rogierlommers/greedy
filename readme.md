@@ -32,12 +32,22 @@ For more information, please don't hesitate to contact me [@rogierlommers](https
 
 Releases
 =========================
-| version           | download                                                                                                                         | features  |
-| ------------------|----------------------------------------------------------------------------------------------------------------------------------|-----------|
-| 1.0-linux-amd64   | [greedy-1.0-linux-amd64.tar.bz2](https://github.com/rogierlommers/greedy/releases/download/1.0/greedy-1.0-linux-amd64.tar.bz2)   | see main  |
-| 1.0-linux-368     | [greedy-1.0-linux-368.tar.bz2](https://github.com/rogierlommers/greedy/releases/download/1.0/greedy-1.0-linux-386.tar.bz2)       | see main  |
-| 1.0-darwin-amd64  | [greedy-1.0-darwin-amd64.tar.bz2](https://github.com/rogierlommers/greedy/releases/download/1.0/greedy-1.0-darwin-amd64.tar.bz2) | see main  |
-| 1.0-darwin-368    | [greedy-1.0-darwin-386.tar.bz2](https://github.com/rogierlommers/greedy/releases/download/1.0/greedy-1.0-darwin-386.tar.bz2)     | see main  |
+| version           | download                                                                                                                         |
+| ------------------|----------------------------------------------------------------------------------------------------------------------------------|
+| 1.0-linux-amd64   | [greedy-1.0-linux-amd64.tar.bz2](https://github.com/rogierlommers/greedy/releases/download/1.0/greedy-1.0-linux-amd64.tar.bz2)   |
+| 1.0-linux-368     | [greedy-1.0-linux-368.tar.bz2](https://github.com/rogierlommers/greedy/releases/download/1.0/greedy-1.0-linux-386.tar.bz2)       |
+| 1.0-darwin-amd64  | [greedy-1.0-darwin-amd64.tar.bz2](https://github.com/rogierlommers/greedy/releases/download/1.0/greedy-1.0-darwin-amd64.tar.bz2) |
+| 1.0-darwin-368    | [greedy-1.0-darwin-386.tar.bz2](https://github.com/rogierlommers/greedy/releases/download/1.0/greedy-1.0-darwin-386.tar.bz2)     |
+
+
+History
+=======
+- 1.0
+  - uses BOLT as storage engine
+  - display articles as RSS
+  - scrapes title and page description
+  - single binary containing all (static) files, easy to install
+  - multiple platforms: linux and darwin
 
 Todo
 =======
