@@ -29,6 +29,6 @@ func ReadEnvironment() {
 	Databasefile = viper.GetString("databasefile")
 	Host = viper.GetString("host")
 
-	log.Info("environment vars", "host", Host, "port", Port, "databasefile", Databasefile)
-	log.Info("greedy meta info", "builddate", BuildDate, "commithash", CommitHash)
+	log.Info("environment", "host", Host, "port", Port, "databasefile", Databasefile)
+	log.Info("greedy", "builddate", BuildDate, "commithash", CommitHash)
 }

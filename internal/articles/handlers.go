@@ -46,9 +46,7 @@ func AddArticle(w http.ResponseWriter, r *http.Request) {
 }
 
 func IndexPage(w http.ResponseWriter, r *http.Request) {
-	host := fmt.Sprint("http://", r.Host)
-	log.Debug("greedy location", "url", host)
-
+	host := fmt.Sprint("http://", r.Host) // needed to build bookmarklet
 	renderObject := map[string]interface{}{
 		"IsLandingPage":  "true",
 		"serverLocation": host,

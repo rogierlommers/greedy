@@ -43,6 +43,8 @@ func Open() (err error) {
 		_, err := tx.CreateBucketIfNotExists([]byte(BucketName))
 		if err != nil {
 			return fmt.Errorf("create bucket: %s", err)
+		} else {
+			log.Info("bucket", "amount", count())
 		}
 		return nil
 	})
@@ -81,7 +83,7 @@ func DisplayRSS(w http.ResponseWriter, r *http.Request) {
 	feed := &feeds.Feed{
 		Title:       "your greedy's personal rss feed",
 		Link:        &feeds.Link{Href: common.FeedsLink},
-		Description: "discussion about tech, footie, photos",
+		Description: "Saved pages, all in one RSS feed",
 		Author:      &feeds.Author{common.FeedsAuthorName, common.FeedsAuthorEmail},
 		Created:     now,
 	}
@@ -161,7 +163,7 @@ func (a *Article) Scrape() error {
 
 	// debugging info
 	elapsed := time.Since(start)
-	log.Debug("scrape information", "id", a.ID, "title", a.Title, "description", a.Description, "elapsed", elapsed)
+	log.Debug("scraped", "id", a.ID, "title", a.Title, "description", a.Description, "elapsed", elapsed)
 	return nil
 }
 

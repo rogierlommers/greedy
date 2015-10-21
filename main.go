@@ -39,7 +39,7 @@ func main() {
 
 	// start server
 	http.Handle("/", router)
-	log.Info("deamon listening", "host", common.Host, "port", common.Port)
+	log.Info("deamon", "host", common.Host, "port", common.Port)
 
 	err := http.ListenAndServe(fmt.Sprintf("%s:%d", common.Host, common.Port), nil)
 	if err != nil {
