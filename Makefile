@@ -10,16 +10,16 @@ setup:
 build: setup
 	rm -rf ./target
 	mkdir -p ./target
-	godep go build -ldflags "$(LDFLAGS)" -o ./target/greedy main.go
+	CGO_ENABLED=0 godep go build -ldflags "-s $(LDFLAGS)" -a -installsuffix cgo -o ./target/greedy main.go
 
 run:
 	godep go run *.go
 
 release:
-	GOOS=darwin GOARCH=386 godep go build -ldflags "$(LDFLAGS)" -o $(BINARY)-darwin-386 main.go
-	GOOS=darwin GOARCH=amd64 godep go build -ldflags "$(LDFLAGS)" -o $(BINARY)-darwin-amd64 main.go
-	GOOS=linux GOARCH=386 godep go build -ldflags "$(LDFLAGS)" -o $(BINARY)-linux-386 main.go
-	GOOS=linux GOARCH=amd64 godep go build -ldflags "$(LDFLAGS)" -o $(BINARY)-linux-amd64 main.go
+	CGO_ENABLED=0 GOOS=darwin GOARCH=386 godep go build -ldflags "-s $(LDFLAGS)" -a -installsuffix cgo -o $(BINARY)-darwin-386 main.go
+	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 godep go build -ldflags "$(LDFLAGS)" -a -installsuffix cgo -o $(BINARY)-darwin-amd64 main.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=386 godep go build -ldflags "$(LDFLAGS)" -a -installsuffix cgo -o $(BINARY)-linux-386 main.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 godep go build -ldflags "$(LDFLAGS)" -a -installsuffix cgo -o $(BINARY)-linux-amd64 main.go
 	tar --verbose --create --bzip2 --file $(BINARY)-darwin-386.tar.bz2 $(BINARY)-darwin-386
 	tar --verbose --create --bzip2 --file $(BINARY)-darwin-amd64.tar.bz2 $(BINARY)-darwin-amd64
 	tar --verbose --create --bzip2 --file $(BINARY)-linux-386.tar.bz2 $(BINARY)-linux-386
