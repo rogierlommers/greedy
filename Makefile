@@ -20,10 +20,10 @@ release:
 	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 godep go build -ldflags "$(LDFLAGS)" -a -installsuffix cgo -o $(BINARY)-darwin-amd64 main.go
 	CGO_ENABLED=0 GOOS=linux GOARCH=386 godep go build -ldflags "$(LDFLAGS)" -a -installsuffix cgo -o $(BINARY)-linux-386 main.go
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 godep go build -ldflags "$(LDFLAGS)" -a -installsuffix cgo -o $(BINARY)-linux-amd64 main.go
-	tar --verbose --create --bzip2 --file $(BINARY)-darwin-386.tar.bz2 $(BINARY)-darwin-386
-	tar --verbose --create --bzip2 --file $(BINARY)-darwin-amd64.tar.bz2 $(BINARY)-darwin-amd64
-	tar --verbose --create --bzip2 --file $(BINARY)-linux-386.tar.bz2 $(BINARY)-linux-386
-	tar --verbose --create --bzip2 --file $(BINARY)-linux-amd64.tar.bz2 $(BINARY)-linux-amd64
+	zip -m -9 $(BINARY)-darwin-386.zip $(BINARY)-darwin-386
+	zip -m -9 $(BINARY)-darwin-amd64.zip $(BINARY)-darwin-amd64
+	zip -m -9 $(BINARY)-linux-386.zip $(BINARY)-linux-386
+	zip -m -9 $(BINARY)-linux-amd64.zip $(BINARY)-linux-amd64
 
 test:
 	go run ./systemtest/main.go
