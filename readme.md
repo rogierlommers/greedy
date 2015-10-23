@@ -54,8 +54,8 @@ Explained here
   - multiple platforms: linux and darwin
 
 # Todo
-- [ ] generate static binaries
 - [ ] create Dockerfile
+- [ ] add tests
 - [ ] some kind of configuration inside Bolt bucket?
 - [ ] authentication?
 - [ ] finish cleanup routine
