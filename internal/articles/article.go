@@ -43,12 +43,11 @@ func Open() (err error) {
 		_, err := tx.CreateBucketIfNotExists([]byte(BucketName))
 		if err != nil {
 			return fmt.Errorf("create bucket: %s", err)
-		} else {
-			log.Info("bucket", "amount", count())
 		}
 		return nil
 	})
 
+	log.Info("bucket", "amount", count())
 	open = true
 	return nil
 }
