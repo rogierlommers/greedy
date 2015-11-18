@@ -15,6 +15,9 @@ build: setup
 run:
 	godep go run *.go
 
+validate:
+	golint ./...
+	go vet ./...
 release:
 	CGO_ENABLED=0 GOOS=darwin GOARCH=386 godep go build -ldflags "-s $(LDFLAGS)" -a -installsuffix cgo -o $(BINARY)-darwin-386 main.go
 	CGO_ENABLED=0 GOOS=darwin GOARCH=amd64 godep go build -ldflags "$(LDFLAGS)" -a -installsuffix cgo -o $(BINARY)-darwin-amd64 main.go
