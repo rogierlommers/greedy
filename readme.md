@@ -53,13 +53,6 @@ Explained here
   - single binary containing all (static) files, easy to install
   - multiple platforms: linux and darwin
 
-# Todo
-- [ ] create Dockerfile
-- [ ] add tests
-- [ ] some kind of configuration inside Bolt bucket?
-- [ ] authentication?
-- [ ] finish cleanup routine
-
 # Screenshots
 ![home page](./docs/gui-01.png)
 
