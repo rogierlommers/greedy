@@ -6,16 +6,26 @@ import (
 )
 
 var (
-	BuildDate        string
-	CommitHash       string
-	Port             int
-	Host             string
+	// BuildDate is the date when the greedy binary has been build
+	BuildDate string
+
+	// CommitHash shows the GIT commit hash at build time
+	CommitHash string
+
+	// Port where servers runs ons
+	Port int
+
+	// Host where server runs on
+	Host string
+
 	Databasefile     string
 	FeedsAuthorName  = "Rogier Lommers"
 	FeedsAuthorEmail = "rogier@lommers.org"
 	FeedsLink        = "http://www.lommers.org"
 )
 
+// ReadEnvironment reads properies form environment. If no environment
+// properties are set, then then defaults will be loaded
 func ReadEnvironment() {
 	// override configuration with environment vars
 	// example: GREEDY_PORT=/tmp/greedy.sqlite
