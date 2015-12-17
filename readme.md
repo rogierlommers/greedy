@@ -17,7 +17,7 @@ If you have Go installed, simply `go get` it:
 
     go get github.com/rogierlommers/greedy
 
-this will download the sources to your `$gopath`, build a binary and puts it in your Go binary directory. You can leave it there or you can put it in a more convenient place.
+this will download the sources to your `$gopath`, build a binary and puts it in your Go binary directory. You can leave it there or you can put it in a more convenient place. You can manually start a build by running `make build`. Please notice that you will need the Go-Rice tool (https://github.com/GeertJohan/go.rice) to embed the static files to your binary.
 
 ###### Usage
 Once you have installed and started Greedy, open a browser and point to the `host:port` you have configurated. The greedy homepage should appear. Drag the button to your favorites/bookmarks bar. It is a bookmarklet which redirects to the service and stores the current page to your reading list. Next step is to add the /rss endpoint to your RSS aggregator.
