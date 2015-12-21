@@ -5,7 +5,6 @@ LDFLAGS := -X github.com/rogierlommers/greedy/internal/common.CommitHash=`git re
 BINARY := ./bin/greedy-${VERSION}
 
 build:
-	rm -rf ./target
 	mkdir -p ./target
 	rice embed-go -i ./internal/render/
 	CGO_ENABLED=0 go build -ldflags "-s $(LDFLAGS)" -a -installsuffix cgo -o ./target/greedy main.go
