@@ -9,10 +9,10 @@ import (
 	"strconv"
 	"time"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/dustin/go-humanize"
 	"github.com/rogierlommers/greedy/internal/common"
 	"github.com/rogierlommers/greedy/internal/render"
-	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 func AddArticle(w http.ResponseWriter, r *http.Request) {

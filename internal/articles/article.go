@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	log "gopkg.in/inconshreveable/log15.v2"
+	log "github.com/Sirupsen/logrus"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/boltdb/bolt"
@@ -35,7 +35,7 @@ func Open() (err error) {
 	config := &bolt.Options{Timeout: 1 * time.Second}
 	db, err = bolt.Open(common.Databasefile, 0600, config)
 	if err != nil {
-		log.Crit("error creating bolt database", "message", err)
+		log.Panicf("error creating bolt database: %s", err)
 	}
 
 	// create initial bucket (if not exists)
@@ -47,7 +47,7 @@ func Open() (err error) {
 		return nil
 	})
 
-	log.Info("bucket", "amount", count())
+	log.Infof("bucket initialized with %d records", count())
 	open = true
 	return nil
 }
@@ -111,7 +111,7 @@ func DisplayRSS(w http.ResponseWriter, r *http.Request) {
 
 	rss, err := feed.ToAtom()
 	if err != nil {
-		log.Error("error generation RSS feed", "message", err)
+		log.Errorf("error while generating RSS feed: %s", err)
 		return
 	}
 	w.Write([]byte(rss))
@@ -138,7 +138,7 @@ func decode(data []byte) (*Article, error) {
 func (a *Article) Scrape() error {
 	// time function duration
 	start := time.Now()
-	log.Info("start scraping article", "time", start, "id", a.ID, "url", a.Url)
+	log.Infof("start scraping article [id: %s] [url: %s]", a.ID, a.Url)
 
 	// init goquery
 	doc, err := goquery.NewDocument(a.Url)
@@ -162,7 +162,7 @@ func (a *Article) Scrape() error {
 
 	// debugging info
 	elapsed := time.Since(start)
-	log.Debug("scraped", "id", a.ID, "title", a.Title, "description", a.Description, "elapsed", elapsed)
+	log.Debugf("scraping done [id: %s] [title: %s] [description: %s] [elapsed: %s]", a.ID, a.Title, a.Description, elapsed)
 	return nil
 }
 
@@ -183,13 +183,13 @@ func (a *Article) Save() error {
 
 		// Generate ID for the article.
 		id, _ := articles.NextSequence()
-		log.Info("article", "sequence", id)
+		log.Infof("new sequence article: %d", id)
 		a.ID = int(id)
 
 		// scrape
 		err := a.Scrape()
 		if err != nil {
-			log.Error("scraping error")
+			log.Errorf("scraping error: %s", err)
 		}
 
 		enc, err := a.encode()

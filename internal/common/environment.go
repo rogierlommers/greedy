@@ -1,8 +1,8 @@
 package common
 
 import (
+	log "github.com/Sirupsen/logrus"
 	"github.com/spf13/viper"
-	log "gopkg.in/inconshreveable/log15.v2"
 )
 
 var (
@@ -39,6 +39,6 @@ func ReadEnvironment() {
 	Databasefile = viper.GetString("databasefile")
 	Host = viper.GetString("host")
 
-	log.Info("environment", "host", Host, "port", Port, "databasefile", Databasefile)
-	log.Info("greedy", "builddate", BuildDate, "commithash", CommitHash)
+	log.Infof("environment loaded [host: %s], [port: %d], [databasefile: %s]", Host, Port, Databasefile)
+	log.Infof("greedy info [builddate: %s], [git commit hash: %s]", BuildDate, CommitHash)
 }

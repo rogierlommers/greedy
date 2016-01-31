@@ -4,14 +4,22 @@ import (
 	"fmt"
 	"net/http"
 
-	"os"
-
+	log "github.com/Sirupsen/logrus"
 	"github.com/gorilla/mux"
 	"github.com/rogierlommers/greedy/internal/articles"
 	"github.com/rogierlommers/greedy/internal/common"
 	"github.com/rogierlommers/greedy/internal/render"
-	log "gopkg.in/inconshreveable/log15.v2"
+	"github.com/rogierlommers/logrus-redis-hook"
 )
+
+func init() {
+	hook, err := logredis.NewHook("192.168.1.4", 6379, "logs", "v1")
+	if err == nil {
+		log.AddHook(hook)
+	} else {
+		log.Error(err)
+	}
+}
 
 func main() {
 	// read environment vars
@@ -39,11 +47,10 @@ func main() {
 
 	// start server
 	http.Handle("/", router)
-	log.Info("deamon", "host", common.Host, "port", common.Port)
+	log.Infof("deamon running on host %s and port %d", common.Host, common.Port)
 
 	err := http.ListenAndServe(fmt.Sprintf("%s:%d", common.Host, common.Port), nil)
 	if err != nil {
-		log.Crit("daemon could not bind on interface", "host", common.Host, "port", common.Port)
-		os.Exit(1)
+		log.Panicf("daemon could not bind on interface: %s, port: %d", common.Host, common.Port)
 	}
 }
