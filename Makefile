@@ -7,7 +7,6 @@ BINARY := ./bin/greedy-${VERSION}
 build:
 	mkdir -p ./target
 	rice embed-go -i ./internal/render/
-	go get -u
 	CGO_ENABLED=0 go build -ldflags "-s $(LDFLAGS)" -a -installsuffix cgo -o ./target/greedy main.go
 
 run:

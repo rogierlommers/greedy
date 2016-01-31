@@ -37,9 +37,6 @@ For more information, please don't hesitate to contact me [@rogierlommers](https
 # Running in Docker container
 Explained here
 
-# Releases
-See releases to download binaries: https://github.com/rogierlommers/greedy/releases 
-
 # History
 - 1.0
   - uses BOLT as storage engine
