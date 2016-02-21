@@ -18,6 +18,7 @@ var (
 	// Host where server runs on
 	Host string
 
+	// Databasefile contains path to storage
 	Databasefile     string
 	FeedsAuthorName  = "Rogier Lommers"
 	FeedsAuthorEmail = "rogier@lommers.org"
