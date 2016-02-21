@@ -9,17 +9,7 @@ import (
 	"github.com/rogierlommers/greedy/internal/articles"
 	"github.com/rogierlommers/greedy/internal/common"
 	"github.com/rogierlommers/greedy/internal/render"
-	"github.com/rogierlommers/logrus-redis-hook"
 )
-
-func init() {
-	hook, err := logredis.NewHook("192.168.1.4", 6379, "logs", "v1")
-	if err == nil {
-		log.AddHook(hook)
-	} else {
-		log.Error(err)
-	}
-}
 
 func main() {
 	// read environment vars

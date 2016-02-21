@@ -8,9 +8,10 @@ Greedy uses a local database file (sqlite3) as it's storage. You can specify the
 ###### I don't have Go installed
 If you don't have a working Go environment, then you can simply download one of the pre-built binaries. For download links, see below. After putting the binary in your path, start the service by running the binary: `./greedy`. By default, it binds to 0.0.0.0:8080, but you can change it's configuration by setting some environment variables which are described below. After starting, the output should be like this:
 
-    INFO[10-18|15:48:03] environment vars                         host=0.0.0.0 port=8080 databasefile=articles.bolt
-    INFO[10-18|15:48:03] greedy meta info                         builddate=18-October-2015/15:47:55 commithash=9cb5fe13067f2dead95233e36b3b7b9fd1dd2b73
-    INFO[10-18|15:48:03] deamon listening                         host=0.0.0.0 port=8080
+    INFO[0000] environment loaded [host: 0.0.0.0], [port: 8080], [databasefile: articles.bolt]
+    INFO[0000] greedy info [builddate: ], [git commit hash: ]
+    INFO[0000] bucket initialized with 0 records
+    INFO[0000] deamon running on host 0.0.0.0 and port 8080
 
 ###### I have Go installed
 If you have Go installed, simply `go get` it:
@@ -33,9 +34,6 @@ You can change the default configuration by changing environment vars. For examp
 
 ###### Need help?
 For more information, please don't hesitate to contact me [@rogierlommers](https://twitter.com/rogierlommers).
-
-# Running in Docker container
-Explained here
 
 # History
 - 1.0
