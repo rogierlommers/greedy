@@ -1,0 +1,120 @@
+!_TAG_FILE_FORMAT	2
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted/
+!_TAG_PROGRAM_AUTHOR	Joel Stemmer	/stemmertech@gmail.com/
+!_TAG_PROGRAM_NAME	gotags
+!_TAG_PROGRAM_URL	https://github.com/jstemmer/gotags
+!_TAG_PROGRAM_VERSION	1.3.0	/go1.6/
+AddArticle	internal/articles/handlers.go	18;"	f	access:public	language:Go	line:18	signature:(w http.ResponseWriter, r *http.Request)
+Added	internal/articles/article.go	35;"	w	access:public	ctype:Article	language:Go	line:35	type:time.Time
+ArgumentList	internal/common/selfdiagnose.go	59;"	t	access:public	language:Go	line:59	type:[]string
+Article	internal/articles/article.go	29;"	t	access:public	language:Go	line:29	type:struct
+BucketName	internal/articles/article.go	21;"	c	access:public	language:Go	line:21
+BuildDate	internal/common/environment.go	10;"	v	access:public	language:Go	line:10	type:string
+Close	internal/articles/article.go	59;"	f	access:public	language:Go	line:59	signature:()
+Comment	internal/common/selfdiagnose.go	101;"	m	access:public	ctype:ReportHostname	language:Go	line:101	signature:()	type:string
+Comment	internal/common/selfdiagnose.go	23;"	m	access:public	ctype:ReportBuildAndDate	language:Go	line:23	signature:()	type:string
+Comment	internal/common/selfdiagnose.go	70;"	m	access:public	ctype:ArgumentList	language:Go	line:70	signature:()	type:string
+Comment	internal/common/selfdiagnose.go	95;"	m	access:public	ctype:ReportHttpRequest	language:Go	line:95	signature:()	type:string
+CommitHash	internal/common/environment.go	13;"	v	access:public	language:Go	line:13	type:string
+CommitHash	internal/common/selfdiagnose.go	14;"	w	access:public	ctype:ReportBuildAndDate	language:Go	line:14	type:string
+CreateStaticBox	internal/render/render.go	13;"	f	access:public	language:Go	line:13	signature:()
+Databasefile	internal/common/environment.go	22;"	v	access:public	language:Go	line:22	type:string
+Date	internal/common/selfdiagnose.go	15;"	w	access:public	ctype:ReportBuildAndDate	language:Go	line:15	type:string
+Description	internal/articles/article.go	33;"	w	access:public	ctype:Article	language:Go	line:33	type:string
+DisplayPage	internal/render/render.go	23;"	f	access:public	language:Go	line:23	signature:(w http.ResponseWriter, r *http.Request, dynamicData interface{})
+DisplayRSS	internal/articles/article.go	84;"	f	access:public	language:Go	line:84	signature:(w http.ResponseWriter, r *http.Request)
+ExportCSV	internal/articles/handlers.go	74;"	f	access:public	language:Go	line:74	signature:(w http.ResponseWriter, r *http.Request)
+FeedsAuthorEmail	internal/common/environment.go	24;"	v	access:public	language:Go	line:24
+FeedsAuthorName	internal/common/environment.go	23;"	v	access:public	language:Go	line:23
+FeedsLink	internal/common/environment.go	25;"	v	access:public	language:Go	line:25
+HTML	internal/articles/article.go	34;"	w	access:public	ctype:Article	language:Go	line:34	type:string
+Host	internal/common/environment.go	19;"	v	access:public	language:Go	line:19	type:string
+ID	internal/articles/article.go	30;"	w	access:public	ctype:Article	language:Go	line:30	type:int
+IndexPage	internal/articles/handlers.go	48;"	f	access:public	language:Go	line:48	signature:(w http.ResponseWriter, r *http.Request)
+Open	internal/articles/article.go	38;"	f	access:public	language:Go	line:38	signature:()	type:error
+Port	internal/common/environment.go	16;"	v	access:public	language:Go	line:16	type:int
+ReadEnvironment	internal/common/environment.go	30;"	f	access:public	language:Go	line:30	signature:()
+ReportBuildAndDate	internal/common/selfdiagnose.go	13;"	t	access:public	language:Go	line:13	type:struct
+ReportHostname	internal/common/selfdiagnose.go	99;"	t	access:public	language:Go	line:99	type:struct
+ReportHttpRequest	internal/common/selfdiagnose.go	78;"	t	access:public	language:Go	line:78	type:struct
+Run	internal/common/selfdiagnose.go	105;"	m	access:public	ctype:ReportHostname	language:Go	line:105	signature:(ctx *selfdiagnose.Context, result *selfdiagnose.Result)
+Run	internal/common/selfdiagnose.go	18;"	m	access:public	ctype:ReportBuildAndDate	language:Go	line:18	signature:(ctx *selfdiagnose.Context, result *selfdiagnose.Result)
+Run	internal/common/selfdiagnose.go	61;"	m	access:public	ctype:ArgumentList	language:Go	line:61	signature:(ctx *selfdiagnose.Context, result *selfdiagnose.Result)
+Run	internal/common/selfdiagnose.go	80;"	m	access:public	ctype:ReportHttpRequest	language:Go	line:80	signature:(ctx *selfdiagnose.Context, result *selfdiagnose.Result)
+Save	internal/articles/article.go	198;"	m	access:public	ctype:Article	language:Go	line:198	signature:()	type:error
+Scrape	internal/articles/article.go	142;"	m	access:public	ctype:Article	language:Go	line:142	signature:()	type:error
+SetupSelfdiagnose	internal/common/selfdiagnose.go	31;"	f	access:public	language:Go	line:31	signature:()
+StatsHandler	internal/articles/handlers.go	58;"	f	access:public	language:Go	line:58	signature:(w http.ResponseWriter, r *http.Request)
+Timeout	internal/common/selfdiagnose.go	103;"	m	access:public	ctype:ReportHostname	language:Go	line:103	signature:()	type:time.Duration
+Timeout	internal/common/selfdiagnose.go	27;"	m	access:public	ctype:ReportBuildAndDate	language:Go	line:27	signature:()	type:time.Duration
+Timeout	internal/common/selfdiagnose.go	74;"	m	access:public	ctype:ArgumentList	language:Go	line:74	signature:()	type:time.Duration
+Timeout	internal/common/selfdiagnose.go	97;"	m	access:public	ctype:ReportHttpRequest	language:Go	line:97	signature:()	type:time.Duration
+Title	internal/articles/article.go	32;"	w	access:public	ctype:Article	language:Go	line:32	type:string
+Url	internal/articles/article.go	31;"	w	access:public	ctype:Article	language:Go	line:31	type:string
+articles	internal/articles/article.go	1;"	p	language:Go	line:1
+articles	internal/articles/handlers.go	1;"	p	language:Go	line:1
+articles	internal/articles/helpers.go	1;"	p	language:Go	line:1
+bytes	internal/articles/handlers.go	4;"	i	language:Go	line:4
+bytes	internal/common/selfdiagnose.go	4;"	i	language:Go	line:4
+common	internal/common/environment.go	1;"	p	language:Go	line:1
+common	internal/common/selfdiagnose.go	1;"	p	language:Go	line:1
+count	internal/articles/article.go	124;"	f	access:private	language:Go	line:124	signature:()	type:int
+db	internal/articles/article.go	24;"	v	access:private	language:Go	line:24	type:*bolt.DB
+decode	internal/articles/article.go	133;"	f	access:private	ctype:Article	language:Go	line:133	signature:(data []byte)	type:*Article, error
+encode	internal/articles/article.go	190;"	m	access:private	ctype:Article	language:Go	line:190	signature:()	type:[]byte, error
+encoding/binary	internal/articles/helpers.go	4;"	i	language:Go	line:4
+encoding/csv	internal/articles/handlers.go	5;"	i	language:Go	line:5
+encoding/json	internal/articles/article.go	4;"	i	language:Go	line:4
+fmt	internal/articles/article.go	5;"	i	language:Go	line:5
+fmt	internal/articles/handlers.go	6;"	i	language:Go	line:6
+fmt	internal/common/selfdiagnose.go	5;"	i	language:Go	line:5
+fmt	main.go	4;"	i	language:Go	line:4
+getArticles	internal/articles/article.go	64;"	f	access:private	language:Go	line:64	signature:(amount int)	type:[]Article
+getHostnameFromUrl	internal/articles/helpers.go	10;"	f	access:private	language:Go	line:10	signature:(addedUrl string)	type:string
+github.com/GeertJohan/go.rice	internal/render/render.go	7;"	i	language:Go	line:7
+github.com/GeertJohan/go.rice/embedded	internal/render/rice-box.go	4;"	i	language:Go	line:4
+github.com/PuerkitoBio/goquery	internal/articles/article.go	14;"	i	language:Go	line:14
+github.com/Sirupsen/logrus	internal/articles/article.go	12;"	i	language:Go	line:12
+github.com/Sirupsen/logrus	internal/articles/handlers.go	12;"	i	language:Go	line:12
+github.com/Sirupsen/logrus	internal/articles/helpers.go	7;"	i	language:Go	line:7
+github.com/Sirupsen/logrus	internal/common/environment.go	4;"	i	language:Go	line:4
+github.com/Sirupsen/logrus	internal/render/render.go	8;"	i	language:Go	line:8
+github.com/Sirupsen/logrus	main.go	7;"	i	language:Go	line:7
+github.com/boltdb/bolt	internal/articles/article.go	15;"	i	language:Go	line:15
+github.com/dustin/go-humanize	internal/articles/handlers.go	13;"	i	language:Go	line:13
+github.com/emicklei/go-selfdiagnose	internal/common/selfdiagnose.go	10;"	i	language:Go	line:10
+github.com/gorilla/feeds	internal/articles/article.go	16;"	i	language:Go	line:16
+github.com/gorilla/mux	main.go	8;"	i	language:Go	line:8
+github.com/rogierlommers/greedy/internal/articles	main.go	9;"	i	language:Go	line:9
+github.com/rogierlommers/greedy/internal/common	internal/articles/article.go	17;"	i	language:Go	line:17
+github.com/rogierlommers/greedy/internal/common	internal/articles/handlers.go	14;"	i	language:Go	line:14
+github.com/rogierlommers/greedy/internal/common	main.go	10;"	i	language:Go	line:10
+github.com/rogierlommers/greedy/internal/render	internal/articles/handlers.go	15;"	i	language:Go	line:15
+github.com/rogierlommers/greedy/internal/render	main.go	11;"	i	language:Go	line:11
+github.com/spf13/viper	internal/common/environment.go	5;"	i	language:Go	line:5
+handleSelfdiagnose	internal/common/selfdiagnose.go	53;"	f	access:private	language:Go	line:53	signature:(w http.ResponseWriter, r *http.Request)
+html/template	internal/articles/handlers.go	7;"	i	language:Go	line:7
+html/template	internal/render/render.go	4;"	i	language:Go	line:4
+init	internal/render/rice-box.go	8;"	f	access:private	language:Go	line:8	signature:()
+io/ioutil	internal/articles/article.go	6;"	i	language:Go	line:6
+itob	internal/articles/helpers.go	19;"	f	access:private	language:Go	line:19	signature:(v int)	type:[]byte
+main	main.go	14;"	f	access:private	language:Go	line:14	signature:()
+main	main.go	1;"	p	language:Go	line:1
+net/http	internal/articles/article.go	7;"	i	language:Go	line:7
+net/http	internal/articles/handlers.go	8;"	i	language:Go	line:8
+net/http	internal/common/selfdiagnose.go	6;"	i	language:Go	line:6
+net/http	internal/render/render.go	5;"	i	language:Go	line:5
+net/http	main.go	5;"	i	language:Go	line:5
+net/url	internal/articles/helpers.go	5;"	i	language:Go	line:5
+open	internal/articles/article.go	25;"	v	access:private	language:Go	line:25	type:bool
+os	internal/common/selfdiagnose.go	7;"	i	language:Go	line:7
+render	internal/render/render.go	1;"	p	language:Go	line:1
+render	internal/render/rice-box.go	1;"	p	language:Go	line:1
+staticBox	internal/render/render.go	11;"	v	access:private	language:Go	line:11	type:*rice.Box
+strconv	internal/articles/article.go	8;"	i	language:Go	line:8
+strconv	internal/articles/handlers.go	9;"	i	language:Go	line:9
+strings	internal/articles/article.go	9;"	i	language:Go	line:9
+time	internal/articles/article.go	10;"	i	language:Go	line:10
+time	internal/articles/handlers.go	10;"	i	language:Go	line:10
+time	internal/common/selfdiagnose.go	8;"	i	language:Go	line:8
+time	internal/render/rice-box.go	5;"	i	language:Go	line:5
