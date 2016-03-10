@@ -3,6 +3,7 @@ package articles
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"strconv"
 	"strings"
@@ -16,6 +17,7 @@ import (
 	"github.com/rogierlommers/greedy/internal/common"
 )
 
+// BucketName is the name of the buckets
 const BucketName = "articles"
 
 var (
@@ -23,11 +25,13 @@ var (
 	open bool
 )
 
+// Article holds information about saved URL
 type Article struct {
 	ID          int
 	Url         string
 	Title       string
 	Description string
+	HTML        string
 	Added       time.Time
 }
 
@@ -100,7 +104,7 @@ func DisplayRSS(w http.ResponseWriter, r *http.Request) {
 			newItem := feeds.Item{
 				Title:       a.Title,
 				Link:        &feeds.Link{Href: a.Url},
-				Description: a.Description,
+				Description: a.HTML,
 				Created:     a.Added,
 				Id:          strconv.Itoa(a.ID),
 			}
@@ -160,6 +164,23 @@ func (a *Article) Scrape() error {
 		}
 	})
 
+	// HERE WE SHOULD DOWNLOAD ORIGINAL HTML
+	var sourceHtml string
+
+	resp, err := http.Get(a.Url)
+	if err != nil {
+
+		sourceHtml = "error while fetching: " + err.Error()
+		//return nil, fmt.Errorf("error fetching original image from elvis")
+	}
+	defer resp.Body.Close()
+
+	respByte, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		sourceHtml = "error while fetching: " + err.Error()
+	}
+
+	a.Description = sourceHtml
 	// debugging info
 	elapsed := time.Since(start)
 	log.Debugf("scraping done [id: %s] [title: %s] [description: %s] [elapsed: %s]", a.ID, a.Title, a.Description, elapsed)
