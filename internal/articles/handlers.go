@@ -15,6 +15,7 @@ import (
 	"github.com/rogierlommers/greedy/internal/render"
 )
 
+// AddArticle stores new article into database
 func AddArticle(w http.ResponseWriter, r *http.Request) {
 	queryParam := r.FormValue("url")
 	if len(queryParam) == 0 || queryParam == "about:blank" {
@@ -28,7 +29,7 @@ func AddArticle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	newArticle := Article{
-		Url:   queryParam,
+		URL:   queryParam,
 		Added: time.Now(),
 	}
 
@@ -45,6 +46,7 @@ func AddArticle(w http.ResponseWriter, r *http.Request) {
 	render.DisplayPage(w, r, renderObject)
 }
 
+// IndexPage writes IndexPage to ResponseWriter
 func IndexPage(w http.ResponseWriter, r *http.Request) {
 	host := fmt.Sprint("http://", r.Host) // needed to build bookmarklet
 	renderObject := map[string]interface{}{
@@ -55,12 +57,13 @@ func IndexPage(w http.ResponseWriter, r *http.Request) {
 	render.DisplayPage(w, r, renderObject)
 }
 
+// StatsHandler writes stats to ResponseWriter
 func StatsHandler(w http.ResponseWriter, r *http.Request) {
 	var stats = "<table><tr><th>Title</th><th>Added</th></tr>"
 
 	articles := getArticles(100)
 	for _, value := range articles {
-		stats += "<tr><td>" + getHostnameFromUrl(value.Url) + "</td><td>" + humanize.Time(value.Added) + "</td></tr>"
+		stats += "<tr><td>" + getHostnameFromUrl(value.URL) + "</td><td>" + humanize.Time(value.Added) + "</td></tr>"
 	}
 
 	renderObject := map[string]interface{}{
@@ -71,6 +74,7 @@ func StatsHandler(w http.ResponseWriter, r *http.Request) {
 	render.DisplayPage(w, r, renderObject)
 }
 
+// ExportCSV sends csv file to ResponseWriter
 func ExportCSV(w http.ResponseWriter, r *http.Request) {
 	articles := getArticles(count())
 
@@ -78,7 +82,7 @@ func ExportCSV(w http.ResponseWriter, r *http.Request) {
 	wr := csv.NewWriter(b)
 
 	for _, value := range articles {
-		record := []string{value.Url}
+		record := []string{value.URL}
 		wr.Write(record)
 	}
 

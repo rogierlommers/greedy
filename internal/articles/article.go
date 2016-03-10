@@ -28,13 +28,13 @@ var (
 // Article holds information about saved URL
 type Article struct {
 	ID          int
-	Url         string
+	URL         string
 	Title       string
 	Description string
-	HTML        string
 	Added       time.Time
 }
 
+// Open creates database and opens it
 func Open() (err error) {
 	config := &bolt.Options{Timeout: 1 * time.Second}
 	db, err = bolt.Open(common.Databasefile, 0600, config)
@@ -56,6 +56,7 @@ func Open() (err error) {
 	return nil
 }
 
+//Close closes database
 func Close() {
 	open = false
 	db.Close()
@@ -81,6 +82,7 @@ func getArticles(amount int) (articleList []Article) {
 	return articleList
 }
 
+// DisplayRSS generates RSS feed and writes to ResponseWriter
 func DisplayRSS(w http.ResponseWriter, r *http.Request) {
 	now := time.Now()
 	feed := &feeds.Feed{
@@ -103,8 +105,8 @@ func DisplayRSS(w http.ResponseWriter, r *http.Request) {
 
 			newItem := feeds.Item{
 				Title:       a.Title,
-				Link:        &feeds.Link{Href: a.Url},
-				Description: a.HTML,
+				Link:        &feeds.Link{Href: a.URL},
+				Description: a.Description,
 				Created:     a.Added,
 				Id:          strconv.Itoa(a.ID),
 			}
@@ -139,13 +141,14 @@ func decode(data []byte) (*Article, error) {
 	return a, nil
 }
 
+// Scrape gathers information about new article
 func (a *Article) Scrape() error {
 	// time function duration
 	start := time.Now()
-	log.Infof("start scraping article [id: %s] [url: %s]", a.ID, a.Url)
+	log.Infof("start scraping article [id: %s] [url: %s]", a.ID, a.URL)
 
 	// init goquery
-	doc, err := goquery.NewDocument(a.Url)
+	doc, err := goquery.NewDocument(a.URL)
 	if err != nil {
 		return err
 	}
@@ -157,33 +160,32 @@ func (a *Article) Scrape() error {
 	})
 
 	// now get meta description field
-	doc.Find("meta").Each(func(i int, s *goquery.Selection) {
-		if name, _ := s.Attr("name"); strings.EqualFold(name, "description") {
-			description, _ := s.Attr("content")
-			a.Description = strings.TrimSpace(description)
-		}
-	})
+	// doc.Find("meta").Each(func(i int, s *goquery.Selection) {
+	// 	if name, _ := s.Attr("name"); strings.EqualFold(name, "description") {
+	// 		description, _ := s.Attr("content")
+	// 		a.Description = strings.TrimSpace(description)
+	// 	}
+	// })
 
 	// HERE WE SHOULD DOWNLOAD ORIGINAL HTML
-	var sourceHtml string
-
-	resp, err := http.Get(a.Url)
+	var sourceHTML string
+	resp, err := http.Get(a.URL)
 	if err != nil {
-
-		sourceHtml = "error while fetching: " + err.Error()
-		//return nil, fmt.Errorf("error fetching original image from elvis")
+		sourceHTML = "error while fetching: " + err.Error()
 	}
 	defer resp.Body.Close()
 
 	respByte, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		sourceHtml = "error while fetching: " + err.Error()
+		sourceHTML = "error while fetching: " + err.Error()
+	} else {
+		sourceHTML = string(respByte)
 	}
+	a.Description = sourceHTML
 
-	a.Description = sourceHtml
 	// debugging info
 	elapsed := time.Since(start)
-	log.Debugf("scraping done [id: %s] [title: %s] [description: %s] [elapsed: %s]", a.ID, a.Title, a.Description, elapsed)
+	log.Infof("scraping done [id: %d] [title: %q] [elapsed: %s]", a.ID, a.Title, elapsed)
 	return nil
 }
 
@@ -195,6 +197,7 @@ func (a *Article) encode() ([]byte, error) {
 	return enc, nil
 }
 
+// Save saves new article into db
 func (a *Article) Save() error {
 	if !open {
 		return fmt.Errorf("db must be opened before saving")
@@ -215,7 +218,7 @@ func (a *Article) Save() error {
 
 		enc, err := a.encode()
 		if err != nil {
-			return fmt.Errorf("could not encode article %s:", err)
+			return fmt.Errorf("could not encode article: %s", err)
 		}
 
 		err = articles.Put(itob(a.ID), enc)
