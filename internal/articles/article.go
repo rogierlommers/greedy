@@ -10,6 +10,7 @@ import (
 	"time"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/davecgh/go-spew/spew"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/boltdb/bolt"
@@ -133,6 +134,7 @@ func DisplayRSS(w http.ResponseWriter, r *http.Request) {
 		log.Errorf("error while generating RSS feed: %s", err)
 		return
 	}
+	spew.Dump(r)
 	w.Write([]byte(rss))
 }
 
