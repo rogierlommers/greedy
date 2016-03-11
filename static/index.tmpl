@@ -61,6 +61,19 @@
                     <td>Export as csv</td>
                     <td><a href="/export">save</a></td>
                 </tr>
+                <tr>
+                    <td>Last crawled</td>
+                    <td>{{ .LastCrawlTimestamp }}</td>
+                </tr>
+                <tr>
+                    <td>Last crawler</td>
+                    <td>{{ .LastCrawler }}</td>
+                </tr>
+                <tr>
+                    <td>Crawl count since start</td>
+                    <td>{{ .CrawlCount }}</td>
+                </tr>
+
             </table>
 
             <hr/>

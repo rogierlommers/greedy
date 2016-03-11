@@ -49,11 +49,14 @@ func AddArticle(w http.ResponseWriter, r *http.Request) {
 func IndexPage(w http.ResponseWriter, r *http.Request) {
 	host := fmt.Sprint("http://", r.Host) // needed to build bookmarklet
 	renderObject := map[string]interface{}{
-		"IsLandingPage":  "true",
-		"serverLocation": host,
-		"buildversion":   common.BuildDate,
-		"statsHTML":      template.HTML(getStatsHTML()),
-		"amount":         count(),
+		"IsLandingPage":      "true",
+		"serverLocation":     host,
+		"buildversion":       common.BuildDate,
+		"statsHTML":          template.HTML(getStatsHTML()),
+		"amount":             count(),
+		"LastCrawlTimestamp": humanize.Time(s.LastCrawled),
+		"CrawlCount":         s.CrawlCount,
+		"LastCrawler":        s.LastCrawler,
 	}
 	render.DisplayPage(w, r, renderObject)
 }

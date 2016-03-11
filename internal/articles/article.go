@@ -24,6 +24,7 @@ var (
 	db         *bolt.DB
 	open       bool
 	httpClient *http.Client
+	s          Stats
 )
 
 // Article holds information about saved URL
@@ -120,6 +121,10 @@ func DisplayRSS(w http.ResponseWriter, r *http.Request) {
 			}
 			feed.Add(&newItem)
 		}
+
+		// update stats
+		s.setLastCrawler(r.Referer())
+		s.incCrawlCount()
 		return nil
 	})
 
