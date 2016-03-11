@@ -26,7 +26,7 @@
             </p>
         </div>
         <ul class="sidebar-nav">
-            <a href="/">Home</a> | <a href="/rss">RSS</a> | <a href="/stats">Stats</a> | <a href="/selfdiagnose">Diagnose</a>
+            <a href="/">Home</a> | <a href="/rss">RSS</a> | <a href="/selfdiagnose">Diagnose</a>
         </ul>
     </div>
 </div>
@@ -36,6 +36,7 @@
 
         <div class="post">
             {{if .IsLandingPage}}
+            <h3>Installation</h3>
             <p>
                 Drag the button below to your favorites/bookmarks bar. It is a bookmarklet which redirects to the daemon
                 and stores the current page to your reading list. Next step is to add the <a href="/rss">/rss</a>
@@ -47,21 +48,7 @@
                     <button type="button">greedy</button>
                 </a>
             </p>
-            {{end}}
 
-            {{if .IsConfirmation}}
-            <h1 class="post-title">
-                <a href="/">
-                    Done!
-                </a>
-            </h1>
-
-            <p>
-                {{ .hostname }} added.
-            </p>
-            {{end}}
-
-            {{if .IsStatsPage}}
             <table>
                 <tr>
                     <th colspan="2">Statistics</th>
@@ -77,9 +64,20 @@
             </table>
 
             <hr/>
+            {{ .statsHTML }}
 
-            {{ .html }}
+            {{end}}
 
+            {{if .IsConfirmation}}
+            <h1 class="post-title">
+                <a href="/">
+                    Done!
+                </a>
+            </h1>
+
+            <p>
+                {{ .hostname }} added.
+            </p>
             {{end}}
 
             {{if .IsErrorPage}}

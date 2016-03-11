@@ -21,8 +21,9 @@ import (
 const BucketName = "articles"
 
 var (
-	db   *bolt.DB
-	open bool
+	db         *bolt.DB
+	open       bool
+	httpClient *http.Client
 )
 
 // Article holds information about saved URL
@@ -32,6 +33,13 @@ type Article struct {
 	Title       string
 	Description string
 	Added       time.Time
+}
+
+// NewClient creates http client with timeout
+func NewClient() {
+	httpClient = &http.Client{
+		Timeout: time.Duration(5) * time.Second,
+	}
 }
 
 // Open creates database and opens it
@@ -145,7 +153,7 @@ func decode(data []byte) (*Article, error) {
 func (a *Article) Scrape() error {
 	// time function duration
 	start := time.Now()
-	log.Infof("start scraping article [id: %s] [url: %s]", a.ID, a.URL)
+	log.Infof("start scraping article [id: %d] [url: %s]", a.ID, a.URL)
 
 	// init goquery
 	doc, err := goquery.NewDocument(a.URL)
@@ -169,7 +177,7 @@ func (a *Article) Scrape() error {
 
 	// HERE WE SHOULD DOWNLOAD ORIGINAL HTML
 	var sourceHTML string
-	resp, err := http.Get(a.URL)
+	resp, err := httpClient.Get(a.URL)
 	if err != nil {
 		sourceHTML = "error while fetching: " + err.Error()
 	}

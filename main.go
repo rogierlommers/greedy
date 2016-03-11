@@ -12,8 +12,9 @@ import (
 )
 
 func main() {
-	// read environment vars
+	// read environment vars and setup http client
 	common.ReadEnvironment()
+	articles.NewClient()
 
 	// initialize bolt storage
 	articles.Open()
@@ -32,7 +33,6 @@ func main() {
 	router.HandleFunc("/", articles.IndexPage)
 	router.HandleFunc("/add", articles.AddArticle)
 	router.HandleFunc("/rss", articles.DisplayRSS)
-	router.HandleFunc("/stats", articles.StatsHandler)
 	router.HandleFunc("/export", articles.ExportCSV)
 
 	// start server

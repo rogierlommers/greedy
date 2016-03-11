@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
-	"strconv"
 	"time"
 
 	log "github.com/Sirupsen/logrus"
@@ -53,23 +52,8 @@ func IndexPage(w http.ResponseWriter, r *http.Request) {
 		"IsLandingPage":  "true",
 		"serverLocation": host,
 		"buildversion":   common.BuildDate,
-	}
-	render.DisplayPage(w, r, renderObject)
-}
-
-// StatsHandler writes stats to ResponseWriter
-func StatsHandler(w http.ResponseWriter, r *http.Request) {
-	var stats = "<table><tr><th>Title</th><th>Added</th></tr>"
-
-	articles := getArticles(100)
-	for _, value := range articles {
-		stats += "<tr><td>" + getHostnameFromUrl(value.URL) + "</td><td>" + humanize.Time(value.Added) + "</td></tr>"
-	}
-
-	renderObject := map[string]interface{}{
-		"IsStatsPage": "true",
-		"amount":      strconv.Itoa(count()),
-		"html":        template.HTML(stats),
+		"statsHTML":      template.HTML(getStatsHTML()),
+		"amount":         count(),
 	}
 	render.DisplayPage(w, r, renderObject)
 }
@@ -90,4 +74,14 @@ func ExportCSV(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/csv")
 	w.Header().Set("Content-Disposition", "attachment;filename=go-read-articles.csv")
 	w.Write(b.Bytes())
+}
+
+func getStatsHTML() string {
+	var stats = "<table><tr><th>Title</th><th>Added</th></tr>"
+
+	articles := getArticles(100)
+	for _, value := range articles {
+		stats += "<tr><td>" + getHostnameFromUrl(value.URL) + "</td><td>" + humanize.Time(value.Added) + "</td></tr>"
+	}
+	return stats
 }
