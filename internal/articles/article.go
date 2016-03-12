@@ -98,8 +98,11 @@ func DisplayRSS(w http.ResponseWriter, r *http.Request) {
 		Title:       "your greedy's personal rss feed",
 		Link:        &feeds.Link{Href: common.FeedsLink},
 		Description: "Saved pages, all in one RSS feed",
-		Author:      &feeds.Author{common.FeedsAuthorName, common.FeedsAuthorEmail},
-		Created:     now,
+		Author: &feeds.Author{
+			Name:  common.FeedsAuthorName,
+			Email: common.FeedsAuthorEmail,
+		},
+		Created: now,
 	}
 
 	db.View(func(tx *bolt.Tx) error {
