@@ -20,7 +20,7 @@ func main() {
 	articles.Open()
 	defer articles.Close()
 
-	// initialise mux router
+	// initialize mux router
 	router := mux.NewRouter()
 
 	// selfdiagnose
