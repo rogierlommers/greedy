@@ -1,0 +1,18 @@
+[Unit]
+Description=Greedy service
+After=network.target
+
+[Service]
+Type=simple
+User=rlommers
+Group=rlommers
+WorkingDirectory=/srv/services/greedy
+ExecStart=/srv/services/greedy/greedy
+Restart=always
+RestartSec=5
+StartLimitInterval=60s
+StartLimitBurst=3
+Environment=GREEDY_PORT=8080
+
+[Install]
+WantedBy=multi-user.target
