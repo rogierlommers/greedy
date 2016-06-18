@@ -17,8 +17,12 @@ import (
 	"github.com/rogierlommers/greedy/internal/common"
 )
 
-// BucketName is the name of the buckets
-const BucketName = "articles"
+const (
+	bucketName      = "articles"
+	keep            = 100   // amount of records to keep on disk
+	numberInRSS     = 25    // amount of records to display in feed
+	scheduleCleanup = 86400 // 1 day
+)
 
 var (
 	db         *bolt.DB
@@ -53,7 +57,7 @@ func Open() (err error) {
 
 	// create initial bucket (if not exists)
 	db.Update(func(tx *bolt.Tx) error {
-		_, err := tx.CreateBucketIfNotExists([]byte(BucketName))
+		_, err := tx.CreateBucketIfNotExists([]byte(bucketName))
 		if err != nil {
 			return fmt.Errorf("create bucket: %s", err)
 		}
@@ -65,7 +69,7 @@ func Open() (err error) {
 	return nil
 }
 
-//Close closes database
+// Close closes database
 func Close() {
 	open = false
 	db.Close()
@@ -75,7 +79,7 @@ func getArticles(amount int) (articleList []Article) {
 	articleList = make([]Article, 0, 0)
 
 	db.View(func(tx *bolt.Tx) error {
-		c := tx.Bucket([]byte(BucketName)).Cursor()
+		c := tx.Bucket([]byte(bucketName)).Cursor()
 		var x = 0
 		for _, v := c.Last(); x != amount; _, v = c.Prev() {
 			var a *Article
@@ -106,9 +110,13 @@ func DisplayRSS(w http.ResponseWriter, r *http.Request) {
 	}
 
 	db.View(func(tx *bolt.Tx) error {
-		c := tx.Bucket([]byte(BucketName)).Cursor()
-
+		c := tx.Bucket([]byte(bucketName)).Cursor()
+		count := 0
 		for k, v := c.Last(); k != nil; k, v = c.Prev() {
+			if count >= numberInRSS {
+				break
+			}
+
 			var a *Article
 			a, err := decode(v)
 			if err != nil {
@@ -123,6 +131,7 @@ func DisplayRSS(w http.ResponseWriter, r *http.Request) {
 				Id:          strconv.Itoa(a.ID),
 			}
 			feed.Add(&newItem)
+			count++
 		}
 
 		// update stats
@@ -141,7 +150,7 @@ func DisplayRSS(w http.ResponseWriter, r *http.Request) {
 
 func count() (amount int) {
 	db.View(func(tx *bolt.Tx) error {
-		c := tx.Bucket([]byte(BucketName)).Cursor()
+		c := tx.Bucket([]byte(bucketName)).Cursor()
 		amount = c.Bucket().Stats().KeyN
 		return nil
 	})
@@ -175,15 +184,7 @@ func (a *Article) Scrape() error {
 		a.Title = strings.TrimSpace(pageTitle)
 	})
 
-	// now get meta description field
-	// doc.Find("meta").Each(func(i int, s *goquery.Selection) {
-	// 	if name, _ := s.Attr("name"); strings.EqualFold(name, "description") {
-	// 		description, _ := s.Attr("content")
-	// 		a.Description = strings.TrimSpace(description)
-	// 	}
-	// })
-
-	// HERE WE SHOULD DOWNLOAD ORIGINAL HTML
+	// download full original html
 	var sourceHTML string
 	resp, err := httpClient.Get(a.URL)
 	if err != nil {
@@ -219,7 +220,7 @@ func (a *Article) Save() error {
 		return fmt.Errorf("db must be opened before saving")
 	}
 	err := db.Update(func(tx *bolt.Tx) error {
-		articles := tx.Bucket([]byte(BucketName))
+		articles := tx.Bucket([]byte(bucketName))
 
 		// Generate ID for the article.
 		id, _ := articles.NextSequence()
@@ -241,4 +242,41 @@ func (a *Article) Save() error {
 		return err
 	})
 	return err
+}
+
+func cleanUp(numberToKeep int) int {
+	var (
+		count   = 0
+		deleted = 0
+	)
+
+	db.Update(func(tx *bolt.Tx) error {
+		c := tx.Bucket([]byte(bucketName)).Cursor()
+
+		for k, _ := c.Last(); k != nil; k, _ = c.Prev() {
+			count++
+			if count > numberToKeep {
+				err := c.Delete()
+				if err != nil {
+					log.Errorf("error deleting record while cleanup: %q", err)
+				} else {
+					deleted++
+				}
+			}
+		}
+		return nil
+	})
+	return deleted
+}
+
+// ScheduleCleanup removes old records
+func ScheduleCleanup() {
+	go func() {
+		log.Infof("scheduled cleanup, every %d seconds, remove more than %d records", scheduleCleanup, keep)
+		for {
+			deleted := cleanUp(keep)
+			log.Infof("deleted %d records from database", deleted)
+			time.Sleep(scheduleCleanup * time.Second)
+		}
+	}()
 }

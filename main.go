@@ -35,6 +35,9 @@ func main() {
 	router.HandleFunc("/rss", articles.DisplayRSS)
 	router.HandleFunc("/export", articles.ExportCSV)
 
+	// schedule cleanup routing
+	articles.ScheduleCleanup()
+
 	// start server
 	http.Handle("/", router)
 	log.Infof("deamon running on host %s and port %d", common.Host, common.Port)
