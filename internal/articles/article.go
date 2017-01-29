@@ -3,15 +3,13 @@ package articles
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"strconv"
-	"strings"
 	"time"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/badoux/goscraper"
 
-	"github.com/PuerkitoBio/goquery"
 	"github.com/boltdb/bolt"
 	"github.com/gorilla/feeds"
 	"github.com/rogierlommers/greedy/internal/common"
@@ -172,33 +170,14 @@ func (a *Article) Scrape() error {
 	start := time.Now()
 	log.Infof("start scraping article [id: %d] [url: %s]", a.ID, a.URL)
 
-	// init goquery
-	doc, err := goquery.NewDocument(a.URL)
+	s, err := goscraper.Scrape(a.URL, 5)
 	if err != nil {
-		return err
-	}
-
-	// start scraping page title
-	doc.Find("head").Each(func(i int, s *goquery.Selection) {
-		pageTitle := s.Find("title").Text()
-		a.Title = strings.TrimSpace(pageTitle)
-	})
-
-	// download full original html
-	var sourceHTML string
-	resp, err := httpClient.Get(a.URL)
-	if err != nil {
-		sourceHTML = "error while fetching: " + err.Error()
-	}
-	defer resp.Body.Close()
-
-	respByte, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		sourceHTML = "error while fetching: " + err.Error()
+		a.Title = fmt.Sprintf("[Greedy] scrape failed: %q", a.URL)
+		a.Description = fmt.Sprintf("Scraping failed for url %q", a.URL)
 	} else {
-		sourceHTML = string(respByte)
+		a.Title = fmt.Sprintf("[Greedy] %s", s.Preview.Title)
+		a.Description = s.Preview.Description
 	}
-	a.Description = sourceHTML
 
 	// debugging info
 	elapsed := time.Since(start)
