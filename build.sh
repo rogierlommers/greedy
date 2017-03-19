@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # config
-VERSION="1.0"
+VERSION=`git rev-parse HEAD`
 LDFLAGS="-X github.com/rogierlommers/greedy/internal/common.CommitHash=`git rev-parse HEAD` -X github.com/rogierlommers/greedy/internal/common.BuildDate=`date +'%d-%B-%Y/%T'`"
 BINARY="./target/greedy-${VERSION}"
 
