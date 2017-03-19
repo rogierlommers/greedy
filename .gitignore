@@ -13,3 +13,4 @@ greedy.iml
 /bin
 greedy
 /internal/render/back-back-static.rice-box.go
+internal/render/rice-box.go

@@ -11,6 +11,8 @@ Greedy uses a local database file ([boltdb](https://github.com/boltdb/bolt)) as 
 - It is recommended to mount the database file, so you can create local backups. With the above command, the articles are saved in directory `/tmp/greedy`
 
 ###### push new version
+First build binary `./build.sh`
+
 - docker build -t rogierlommers/greedy .
 - docker push rogierlommers/greedy:latest
 
