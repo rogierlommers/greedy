@@ -5,7 +5,7 @@ Greedy allows you to run your own collection of `urls to read`. For example: you
 Greedy uses a local database file ([boltdb](https://github.com/boltdb/bolt)) as it's storage. You can specify the location of the database file by setting the `databasefile` environment variable. See environment section below for more information.
 
 # Running in a docker container
-`docker run -v /tmp/greedy:/greedy-data -p 8080:9001 --name greedy rogierlommers/greedy`
+`docker run -v /srv/services/greedy:/greedy-data -p 9001:8080 --name greedy rogierlommers/greedy`
 
 - Greedy by default runs on port 8080, the above command will bind the container to your (local) port 9001
 - It is recommended to mount the database file, so you can create local backups. With the above command, the articles are saved in directory `/tmp/greedy`
