@@ -174,6 +174,7 @@ func (a *Article) Scrape() error {
 	if err != nil {
 		a.Title = fmt.Sprintf("[Greedy] scrape failed: %q", a.URL)
 		a.Description = fmt.Sprintf("Scraping failed for url %q", a.URL)
+		log.Errorf("scrape error: %s", err)
 	} else {
 		a.Title = fmt.Sprintf("[Greedy] %s", s.Preview.Title)
 		a.Description = s.Preview.Description

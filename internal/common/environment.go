@@ -20,9 +20,9 @@ var (
 
 	// Databasefile contains path to storage
 	Databasefile     string
-	FeedsAuthorName  = "your name"
-	FeedsAuthorEmail = "your-email@address.com"
-	FeedsLink        = "your-site.com"
+	FeedsAuthorName  = "Rogier Lommers"
+	FeedsAuthorEmail = "rogier@lommers.org"
+	FeedsLink        = "http://www.lommers.org"
 )
 
 // ReadEnvironment reads properies form environment. If no environment
