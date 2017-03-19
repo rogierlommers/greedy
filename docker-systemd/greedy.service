@@ -1,0 +1,13 @@
+[Unit]
+Description=Greedy service
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+ExecStart=/usr/bin/docker run -v /srv/services/greedy:/greedy-data -p 9001:8080 --name greedy rogierlommers/greedy
+ExecStop=/usr/bin/docker stop -t 2 greedy
+ExecStopPost=/usr/bin/docker rm -f greedy
+
+[Install]
+WantedBy=default.target
