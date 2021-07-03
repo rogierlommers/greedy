@@ -1,6 +1,4 @@
 FROM alpine
-
-MAINTAINER Rogier Lommers <rogier@lommers.org>
 LABEL description="Greedy, a personal readinglist"
 
 # add binary
