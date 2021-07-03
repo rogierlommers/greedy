@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"net/http"
 
-	log "github.com/Sirupsen/logrus"
+	"github.com/Sirupsen/logrus"
 	"github.com/gorilla/mux"
 	"github.com/rogierlommers/greedy/internal/articles"
 	"github.com/rogierlommers/greedy/internal/common"
+	"github.com/rogierlommers/greedy/internal/reminders"
 	"github.com/rogierlommers/greedy/internal/render"
 )
 
@@ -15,6 +16,7 @@ func main() {
 	// read environment vars and setup http client
 	common.ReadEnvironment()
 	articles.NewClient()
+	reminders.NewClient()
 
 	// initialize bolt storage
 	articles.Open()
@@ -34,16 +36,18 @@ func main() {
 	router.HandleFunc("/add", articles.AddArticle)
 	router.HandleFunc("/rss", articles.DisplayRSS)
 	router.HandleFunc("/export", articles.ExportCSV)
+	router.HandleFunc("/remind-url", reminders.AddReminderByURL)
+	router.HandleFunc("/remind-text", reminders.AddReminderByText)
 
 	// schedule cleanup routing
 	articles.ScheduleCleanup()
 
 	// start server
 	http.Handle("/", router)
-	log.Infof("deamon running on host %s and port %d", common.Host, common.Port)
+	logrus.Infof("deamon running on host %s and port %d", common.Host, common.Port)
 
 	err := http.ListenAndServe(fmt.Sprintf("%s:%d", common.Host, common.Port), nil)
 	if err != nil {
-		log.Panicf("daemon could not bind on interface: %s, port: %d", common.Host, common.Port)
+		logrus.Panicf("daemon could not bind on interface: %s, port: %d", common.Host, common.Port)
 	}
 }

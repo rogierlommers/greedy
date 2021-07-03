@@ -6,20 +6,16 @@ import (
 )
 
 var (
-	// BuildDate is the date when the greedy binary has been build
-	BuildDate string
-
-	// CommitHash shows the GIT commit hash at build time
-	CommitHash string
-
-	// Port where servers runs ons
-	Port int
-
-	// Host where server runs on
-	Host string
-
-	// Databasefile contains path to storage
+	BuildDate        string
+	CommitHash       string
+	Port             int
+	Host             string
 	Databasefile     string
+	ToEmail          string
+	FromEmail        string
+	SMTPHost         string
+	SMTPUser         string
+	SMTPPassword     string
 	FeedsAuthorName  = "Rogier Lommers"
 	FeedsAuthorEmail = "rogier@lommers.org"
 	FeedsLink        = "http://www.lommers.org"
@@ -38,6 +34,12 @@ func ReadEnvironment() {
 
 	Port = viper.GetInt("port")
 	Databasefile = viper.GetString("databasefile")
+	ToEmail = viper.GetString("to_email")
+	FromEmail = viper.GetString("from_email")
+	SMTPHost = viper.GetString("smtp_host")
+	SMTPUser = viper.GetString("smtp_user")
+	SMTPPassword = viper.GetString("smtp_password")
+
 	Host = viper.GetString("host")
 
 	log.Infof("environment loaded [host: %s], [port: %d], [databasefile: %s]", Host, Port, Databasefile)
