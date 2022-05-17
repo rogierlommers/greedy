@@ -7,8 +7,8 @@ import (
 	"strconv"
 	"time"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/badoux/goscraper"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/boltdb/bolt"
 	"github.com/gorilla/feeds"

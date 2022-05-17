@@ -8,10 +8,10 @@ import (
 	"net/http"
 	"time"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/dustin/go-humanize"
 	"github.com/rogierlommers/greedy/internal/common"
 	"github.com/rogierlommers/greedy/internal/render"
+	log "github.com/sirupsen/logrus"
 )
 
 // AddArticle stores new article into database

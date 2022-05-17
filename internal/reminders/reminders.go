@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"net/smtp"
 
-	"github.com/Sirupsen/logrus"
 	"github.com/rogierlommers/greedy/internal/common"
 	"github.com/rogierlommers/greedy/internal/render"
+	"github.com/sirupsen/logrus"
 )
 
 var r *Reminder

@@ -4,8 +4,8 @@ import (
 	"html/template"
 	"net/http"
 
-	"github.com/GeertJohan/go.rice"
-	log "github.com/Sirupsen/logrus"
+	rice "github.com/GeertJohan/go.rice"
+	log "github.com/sirupsen/logrus"
 )
 
 var staticBox *rice.Box

@@ -3,8 +3,6 @@
 github.com/GeertJohan/go.rice
 github.com/GeertJohan/go.rice/embedded
 # github.com/Sirupsen/logrus v0.11.6-0.20170317143214-10f801ebc38b
-## explicit
-github.com/Sirupsen/logrus
 # github.com/badoux/goscraper v0.0.0-20170322173343-0213ced70878
 ## explicit
 github.com/badoux/goscraper

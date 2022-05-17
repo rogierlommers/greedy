@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/Sirupsen/logrus"
 	"github.com/gorilla/mux"
 	"github.com/rogierlommers/greedy/internal/articles"
 	"github.com/rogierlommers/greedy/internal/common"
 	"github.com/rogierlommers/greedy/internal/reminders"
 	"github.com/rogierlommers/greedy/internal/render"
+	"github.com/sirupsen/logrus"
 )
 
 func main() {

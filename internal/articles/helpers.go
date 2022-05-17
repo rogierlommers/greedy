@@ -4,7 +4,7 @@ import (
 	"encoding/binary"
 	"net/url"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 )
 
 func getHostnameFromUrl(addedUrl string) (hostname string) {
