@@ -47,6 +47,9 @@
                 <a href="javascript:location.href='{{ .serverLocation }}/add?url='+encodeURIComponent(window.location.href)">
                     <button type="button">greedy</button>
                 </a>
+                <a href="javascript:location.href='{{ .serverLocation }}/remind-url?url='+encodeURIComponent(window.location.href)">
+                    <button type="button">remind</button>
+                </a>
             </p>
 
             <table>
@@ -72,10 +75,6 @@
                 <tr>
                     <td>Crawl count since start</td>
                     <td>{{ .CrawlCount }}</td>
-                </tr>
-                <tr>
-                    <td>Build version</td>
-                    <td>{{ .BuildVersion }}</td>
                 </tr>
 
             </table>

@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/badoux/goscraper"
-	"github.com/sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/boltdb/bolt"
 	"github.com/gorilla/feeds"
@@ -23,9 +23,10 @@ const (
 )
 
 var (
-	db   *bolt.DB
-	open bool
-	s    Stats
+	db         *bolt.DB
+	open       bool
+	httpClient *http.Client
+	s          Stats
 )
 
 // Article holds information about saved URL
@@ -37,12 +38,19 @@ type Article struct {
 	Added       time.Time
 }
 
+// NewClient creates http client with timeout
+func NewClient() {
+	httpClient = &http.Client{
+		Timeout: time.Duration(5) * time.Second,
+	}
+}
+
 // Open creates database and opens it
 func Open() (err error) {
 	config := &bolt.Options{Timeout: 1 * time.Second}
 	db, err = bolt.Open(common.Databasefile, 0600, config)
 	if err != nil {
-		logrus.Panicf("error creating bolt database: %s", err)
+		log.Panicf("error creating bolt database: %s", err)
 	}
 
 	// create initial bucket (if not exists)
@@ -54,7 +62,7 @@ func Open() (err error) {
 		return nil
 	})
 
-	logrus.Infof("bucket initialized with %d records", count())
+	log.Infof("bucket initialized with %d records", count())
 	open = true
 	return nil
 }
@@ -66,7 +74,7 @@ func Close() {
 }
 
 func getArticles(amount int) (articleList []Article) {
-	articleList = make([]Article, 0)
+	articleList = make([]Article, 0, 0)
 
 	db.View(func(tx *bolt.Tx) error {
 		c := tx.Bucket([]byte(bucketName)).Cursor()
@@ -132,7 +140,7 @@ func DisplayRSS(w http.ResponseWriter, r *http.Request) {
 
 	rss, err := feed.ToAtom()
 	if err != nil {
-		logrus.Errorf("error while generating RSS feed: %s", err)
+		log.Errorf("error while generating RSS feed: %s", err)
 		return
 	}
 	w.Write([]byte(rss))
@@ -160,13 +168,13 @@ func decode(data []byte) (*Article, error) {
 func (a *Article) Scrape() error {
 	// time function duration
 	start := time.Now()
-	logrus.Infof("start scraping article [id: %d] [url: %s]", a.ID, a.URL)
+	log.Infof("start scraping article [id: %d] [url: %s]", a.ID, a.URL)
 
 	s, err := goscraper.Scrape(a.URL, 5)
 	if err != nil {
 		a.Title = fmt.Sprintf("[Greedy] scrape failed: %q", a.URL)
 		a.Description = fmt.Sprintf("Scraping failed for url %q", a.URL)
-		logrus.Errorf("scrape error: %s", err)
+		log.Errorf("scrape error: %s", err)
 	} else {
 		a.Title = fmt.Sprintf("[Greedy] %s", s.Preview.Title)
 		a.Description = s.Preview.Description
@@ -174,7 +182,7 @@ func (a *Article) Scrape() error {
 
 	// debugging info
 	elapsed := time.Since(start)
-	logrus.Infof("scraping done [id: %d] [title: %q] [elapsed: %s]", a.ID, a.Title, elapsed)
+	log.Infof("scraping done [id: %d] [title: %q] [elapsed: %s]", a.ID, a.Title, elapsed)
 	return nil
 }
 
@@ -196,13 +204,13 @@ func (a *Article) Save() error {
 
 		// Generate ID for the article.
 		id, _ := articles.NextSequence()
-		logrus.Infof("new sequence article: %d", id)
+		log.Infof("new sequence article: %d", id)
 		a.ID = int(id)
 
 		// scrape
 		err := a.Scrape()
 		if err != nil {
-			logrus.Errorf("scraping error: %s", err)
+			log.Errorf("scraping error: %s", err)
 		}
 
 		enc, err := a.encode()
@@ -230,7 +238,7 @@ func cleanUp(numberToKeep int) int {
 			if count > numberToKeep {
 				err := c.Delete()
 				if err != nil {
-					logrus.Errorf("error deleting record while cleanup: %q", err)
+					log.Errorf("error deleting record while cleanup: %q", err)
 				} else {
 					deleted++
 				}
@@ -244,10 +252,10 @@ func cleanUp(numberToKeep int) int {
 // ScheduleCleanup removes old records
 func ScheduleCleanup() {
 	go func() {
-		logrus.Infof("scheduled cleanup, every %d seconds, remove more than %d records", scheduleCleanup, keep)
+		log.Infof("scheduled cleanup, every %d seconds, remove more than %d records", scheduleCleanup, keep)
 		for {
 			deleted := cleanUp(keep)
-			logrus.Infof("deleted %d records from database", deleted)
+			log.Infof("deleted %d records from database", deleted)
 			time.Sleep(scheduleCleanup * time.Second)
 		}
 	}()

@@ -4,13 +4,13 @@ import (
 	"encoding/binary"
 	"net/url"
 
-	"github.com/sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 )
 
 func getHostnameFromUrl(addedUrl string) (hostname string) {
 	u, err := url.Parse(addedUrl)
 	if err != nil {
-		logrus.Errorf("error looking up hostname [url: %s] [err: %s]", addedUrl, err)
+		log.Errorf("error looking up hostname [url: %s] [err: %s]", addedUrl, err)
 	}
 	return u.Host
 }
