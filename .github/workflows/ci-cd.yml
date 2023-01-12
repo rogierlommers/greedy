@@ -1,0 +1,107 @@
+name: Build and push image
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build-binary:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+
+      - name: Install go-rice
+        run: go install github.com/GeertJohan/go.rice@latest
+      
+      - name: Make rice package
+        run: rice embed-go -i ./internal/render/
+
+      - name: Build binary
+        run: GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -ldflags "-s -X github.com/rogierlommers/greedy/internal/common.BuildVersion=`date +'%d-%B-%Y/%T'`" -a -installsuffix cgo -o ./bin/greedy main.go
+        # run: CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o ./bin/resume ./src/*.go
+
+      - name: List files in ./bin directory
+        run: |
+          ls -lhr ./bin
+      
+      # - uses: actions/upload-artifact@master
+      #   with:
+      #     name: compiled-binary
+      #     path: ./bin/resume
+
+  # build-and-push-image:
+  #   runs-on: ubuntu-latest
+  #   needs: build-binary
+  #   steps:
+  #     - uses: actions/checkout@v3
+
+  #     - uses: actions/download-artifact@master
+  #       with:
+  #         name: compiled-binary
+  #         path: ./bin/resume
+
+  #     - name: List files in ./bin directory
+  #       run: |
+  #         ls -lhr ./bin
+
+  #     - name: List files in current directory
+  #       run: |
+  #         pwd
+  #         ls -lhr .
+
+  #     - name: Login to Docker Hub
+  #       uses: docker/login-action@v2
+  #       with:
+  #         username: ${{ secrets.DOCKERHUB_USERNAME }}
+  #         password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  #     - name: Build and push
+  #       uses: docker/build-push-action@v3
+  #       with:
+  #         context: .
+  #         push: true
+  #         tags: rogierlommers/resume:latest
+
+  # pull-and-run-latest:
+  #   name: "Pull latest image and run"
+  #   runs-on: ubuntu-latest
+  #   needs: build-and-push-image
+  #   # inspiration: https://blog.benoitblanchon.fr/github-action-run-ssh-commands/
+  #   steps:
+
+  #     - name: Tailscale
+  #       uses: tailscale/github-action@main
+  #       with:
+  #         authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+  #         version: 1.34.1
+  #         # get keys here: https://login.tailscale.com/admin/settings/keys
+  #         # these will expire after 90 days
+  #         # be sure to enable reusable and ephemeral
+
+  #     - name: Configure SSH
+  #       run: |
+  #         mkdir -p ~/.ssh/
+  #         echo "$SSH_KEY" > ~/.ssh/ssh.key
+  #         chmod 600 ~/.ssh/ssh.key
+  #         cat >>~/.ssh/config <<END
+  #         Host services
+  #           HostName $(tailscale ip -6 services)
+  #           User $SSH_USER
+  #           IdentityFile ~/.ssh/ssh.key
+  #           StrictHostKeyChecking no
+  #           Port 22
+  #         END
+  #       env:
+  #         SSH_USER: ${{ secrets.SSH_USER }}
+  #         SSH_KEY: ${{ secrets.SSH_KEY }}
+
+  #     - name: Run docker-compose commands
+  #       run: ssh services 'cd /srv/local/services && docker compose kill resume && docker system prune --all --force && docker compose up resume -d'
+
+  #     - name: Run tailscale logouut
+  #       run: sudo tailscale logout

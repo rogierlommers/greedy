@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	rice "github.com/GeertJohan/go.rice"
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 )
 
 var staticBox *rice.Box
@@ -23,12 +23,12 @@ func CreateStaticBox() {
 func DisplayPage(w http.ResponseWriter, r *http.Request, dynamicData interface{}) {
 	templateString, err := staticBox.String("index.tmpl")
 	if err != nil {
-		log.Panicf("render error: %s", err)
+		logrus.Panicf("render error: %s", err)
 	}
 
 	tmplMessage, err := template.New("messsage").Parse(templateString)
 	if err != nil {
-		log.Panicf("render error: %s", err)
+		logrus.Panicf("render error: %s", err)
 	}
 
 	tmplMessage.Execute(w, dynamicData)

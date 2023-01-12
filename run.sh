@@ -1,8 +1,4 @@
 #!/bin/bash
 
-GREEDY_TO_EMAIL="" \
-GREEDY_FROM_EMAIL="" \
-GREEDY_SMTP_HOST="" \
-GREEDY_SMTP_USER="" \
-GREEDY_SMTP_PASSWORD="" \
+DEV="true" \
 go run *.go

@@ -7,7 +7,6 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/rogierlommers/greedy/internal/articles"
 	"github.com/rogierlommers/greedy/internal/common"
-	"github.com/rogierlommers/greedy/internal/reminders"
 	"github.com/rogierlommers/greedy/internal/render"
 	"github.com/sirupsen/logrus"
 )
@@ -15,8 +14,6 @@ import (
 func main() {
 	// read environment vars and setup http client
 	common.ReadEnvironment()
-	articles.NewClient()
-	reminders.NewClient()
 
 	// initialize bolt storage
 	articles.Open()
@@ -24,9 +21,6 @@ func main() {
 
 	// initialize mux router
 	router := mux.NewRouter()
-
-	// selfdiagnose
-	common.SetupSelfdiagnose()
 
 	// setup statics
 	render.CreateStaticBox()
@@ -36,8 +30,6 @@ func main() {
 	router.HandleFunc("/add", articles.AddArticle)
 	router.HandleFunc("/rss", articles.DisplayRSS)
 	router.HandleFunc("/export", articles.ExportCSV)
-	router.HandleFunc("/remind-url", reminders.AddReminderByURL)
-	router.HandleFunc("/remind-text", reminders.AddReminderByText)
 
 	// schedule cleanup routing
 	articles.ScheduleCleanup()

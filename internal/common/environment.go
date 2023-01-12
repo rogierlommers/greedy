@@ -1,24 +1,21 @@
 package common
 
 import (
-	log "github.com/sirupsen/logrus"
+	"os"
+
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
 var (
-	BuildDate        string
+	BuildVersion     string
 	CommitHash       string
 	Port             int
 	Host             string
 	Databasefile     string
-	ToEmail          string
-	FromEmail        string
-	SMTPHost         string
-	SMTPUser         string
-	SMTPPassword     string
-	FeedsAuthorName  = "Rogier Lommers"
-	FeedsAuthorEmail = "rogier@lommers.org"
-	FeedsLink        = "http://www.lommers.org"
+	FeedsAuthorName  = "Greedy | your personal reading list"
+	FeedsAuthorEmail = ""
+	FeedsLink        = ""
 )
 
 // ReadEnvironment reads properies form environment. If no environment
@@ -34,14 +31,13 @@ func ReadEnvironment() {
 
 	Port = viper.GetInt("port")
 	Databasefile = viper.GetString("databasefile")
-	ToEmail = viper.GetString("to_email")
-	FromEmail = viper.GetString("from_email")
-	SMTPHost = viper.GetString("smtp_host")
-	SMTPUser = viper.GetString("smtp_user")
-	SMTPPassword = viper.GetString("smtp_password")
-
 	Host = viper.GetString("host")
 
-	log.Infof("environment loaded [host: %s], [port: %d], [databasefile: %s]", Host, Port, Databasefile)
-	log.Infof("greedy info [builddate: %s], [git commit hash: %s]", BuildDate, CommitHash)
+	logrus.Infof("environment loaded [host: %s], [port: %d], [databasefile: %s]", Host, Port, Databasefile)
+	logrus.Infof("greedy info [builddate: %s], [git commit hash: %s]", BuildVersion, CommitHash)
+
+	if os.Getenv("DEV") == "true" {
+		logrus.Info("DEVELOPMENT_MODE")
+		BuildVersion = "development"
+	}
 }

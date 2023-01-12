@@ -11,7 +11,7 @@ import (
 	"github.com/dustin/go-humanize"
 	"github.com/rogierlommers/greedy/internal/common"
 	"github.com/rogierlommers/greedy/internal/render"
-	log "github.com/sirupsen/logrus"
+	"github.com/sirupsen/logrus"
 )
 
 // AddArticle stores new article into database
@@ -34,7 +34,7 @@ func AddArticle(w http.ResponseWriter, r *http.Request) {
 
 	err := newArticle.Save()
 	if err != nil {
-		log.Warn("error saving article", "hostname", getHostnameFromUrl(queryParam), "id", newArticle.ID)
+		logrus.Warn("error saving article", "hostname", getHostnameFromUrl(queryParam), "id", newArticle.ID)
 	}
 
 	// finally output confirmation page
@@ -51,7 +51,7 @@ func IndexPage(w http.ResponseWriter, r *http.Request) {
 	renderObject := map[string]interface{}{
 		"IsLandingPage":      "true",
 		"serverLocation":     host,
-		"buildversion":       common.BuildDate,
+		"BuildVersion":       common.BuildVersion,
 		"statsHTML":          template.HTML(getStatsHTML()),
 		"amount":             count(),
 		"LastCrawlTimestamp": humanize.Time(s.LastCrawled),
@@ -75,7 +75,7 @@ func ExportCSV(w http.ResponseWriter, r *http.Request) {
 
 	wr.Flush()
 	w.Header().Set("Content-Type", "text/csv")
-	w.Header().Set("Content-Disposition", "attachment;filename=go-read-articles.csv")
+	w.Header().Set("Content-Disposition", "attachment;filename=greedy-articles.csv")
 	w.Write(b.Bytes())
 }
 
