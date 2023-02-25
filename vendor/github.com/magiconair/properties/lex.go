@@ -1,4 +1,4 @@
-// Copyright 2017 Frank Schroeder. All rights reserved.
+// Copyright 2018 Frank Schroeder. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 //
@@ -128,18 +128,6 @@ func (l *lexer) acceptRun(valid string) {
 	l.backup()
 }
 
-// acceptRunUntil consumes a run of runes up to a terminator.
-func (l *lexer) acceptRunUntil(term rune) {
-	for term != l.next() {
-	}
-	l.backup()
-}
-
-// hasText returns true if the current parsed text is not empty.
-func (l *lexer) isNotEmpty() bool {
-	return l.pos > l.start
-}
-
 // lineNumber reports which line we're on, based on the position of
 // the previous item returned by nextItem. Doing it this way
 // means we don't have to worry about peek double counting.
@@ -196,9 +184,8 @@ func lexBeforeKey(l *lexer) stateFn {
 		return lexComment
 
 	case isWhitespace(r):
-		l.acceptRun(whitespace)
 		l.ignore()
-		return lexKey
+		return lexBeforeKey
 
 	default:
 		l.backup()

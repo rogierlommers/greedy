@@ -4,7 +4,6 @@ import (
 	"encoding/xml"
 	"fmt"
 	"net/url"
-	"strconv"
 	"time"
 )
 
@@ -52,11 +51,12 @@ type AtomEntry struct {
 	Source      string `xml:"source,omitempty"`
 	Published   string `xml:"published,omitempty"`
 	Contributor *AtomContributor
-	Link        *AtomLink    // required if no child 'content' elements
+	Links       []AtomLink   // required if no child 'content' elements
 	Summary     *AtomSummary // required if content has src or content is base64
 	Author      *AtomAuthor  // required if feed lacks an author
 }
 
+// Multiple links with different rel can coexist
 type AtomLink struct {
 	//Atom 1.0 <link rel="enclosure" type="audio/mpeg" title="MP3" href="http://www.example.org/myaudiofile.mp3" length="1234" />
 	XMLName xml.Name `xml:"link"`
@@ -80,7 +80,7 @@ type AtomFeed struct {
 	Link        *AtomLink
 	Author      *AtomAuthor `xml:"author,omitempty"`
 	Contributor *AtomContributor
-	Entries     []*AtomEntry
+	Entries     []*AtomEntry `xml:"entry"`
 }
 
 type Atom struct {
@@ -90,7 +90,7 @@ type Atom struct {
 func newAtomEntry(i *Item) *AtomEntry {
 	id := i.Id
 	// assume the description is html
-	c := &AtomContent{Content: i.Description, Type: "html"}
+	s := &AtomSummary{Content: i.Description, Type: "html"}
 
 	if len(id) == 0 {
 		// if there's no id set, try to create one, either from data or just a uuid
@@ -110,19 +110,25 @@ func newAtomEntry(i *Item) *AtomEntry {
 		name, email = i.Author.Name, i.Author.Email
 	}
 
+	link_rel := i.Link.Rel
+	if link_rel == "" {
+		link_rel = "alternate"
+	}
 	x := &AtomEntry{
 		Title:   i.Title,
-		Link:    &AtomLink{Href: i.Link.Href, Rel: i.Link.Rel, Type: i.Link.Type},
-		Content: c,
+		Links:   []AtomLink{{Href: i.Link.Href, Rel: link_rel, Type: i.Link.Type}},
 		Id:      id,
 		Updated: anyTimeFormat(time.RFC3339, i.Updated, i.Created),
+		Summary: s,
 	}
 
-	intLength, err := strconv.ParseInt(i.Link.Length, 10, 64)
+	// if there's a content, assume it's html
+	if len(i.Content) > 0 {
+		x.Content = &AtomContent{Content: i.Content, Type: "html"}
+	}
 
-	if err == nil && (intLength > 0 || i.Link.Type != "") {
-		i.Link.Rel = "enclosure"
-		x.Link = &AtomLink{Href: i.Link.Href, Rel: i.Link.Rel, Type: i.Link.Type, Length: i.Link.Length}
+	if i.Enclosure != nil && link_rel != "enclosure" {
+		x.Links = append(x.Links, AtomLink{Href: i.Enclosure.Url, Rel: "enclosure", Type: i.Enclosure.Type, Length: i.Enclosure.Length})
 	}
 
 	if len(name) > 0 || len(email) > 0 {
@@ -152,12 +158,12 @@ func (a *Atom) AtomFeed() *AtomFeed {
 	return feed
 }
 
-// return an XML-Ready object for an Atom object
+// FeedXml returns an XML-Ready object for an Atom object
 func (a *Atom) FeedXml() interface{} {
 	return a.AtomFeed()
 }
 
-// return an XML-ready object for an AtomFeed object
+// FeedXml returns an XML-ready object for an AtomFeed object
 func (a *AtomFeed) FeedXml() interface{} {
 	return a
 }

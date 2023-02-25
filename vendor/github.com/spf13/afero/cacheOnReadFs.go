@@ -64,20 +64,19 @@ func (u *CacheOnReadFs) cacheStatus(name string) (state cacheState, fi os.FileIn
 		return cacheHit, lfi, nil
 	}
 
-	if err == syscall.ENOENT {
+	if err == syscall.ENOENT || os.IsNotExist(err) {
 		return cacheMiss, nil, nil
 	}
-	var ok bool
-	if err, ok = err.(*os.PathError); ok {
-		if err == os.ErrNotExist {
-			return cacheMiss, nil, nil
-		}
-	}
+
 	return cacheMiss, nil, err
 }
 
 func (u *CacheOnReadFs) copyToLayer(name string) error {
 	return copyToLayer(u.base, u.layer, name)
+}
+
+func (u *CacheOnReadFs) copyFileToLayer(name string, flag int, perm os.FileMode) error {
+	return copyFileToLayer(u.base, u.layer, name, flag, perm)
 }
 
 func (u *CacheOnReadFs) Chtimes(name string, atime, mtime time.Time) error {
@@ -120,6 +119,27 @@ func (u *CacheOnReadFs) Chmod(name string, mode os.FileMode) error {
 		return err
 	}
 	return u.layer.Chmod(name, mode)
+}
+
+func (u *CacheOnReadFs) Chown(name string, uid, gid int) error {
+	st, _, err := u.cacheStatus(name)
+	if err != nil {
+		return err
+	}
+	switch st {
+	case cacheLocal:
+	case cacheHit:
+		err = u.base.Chown(name, uid, gid)
+	case cacheStale, cacheMiss:
+		if err := u.copyToLayer(name); err != nil {
+			return err
+		}
+		err = u.base.Chown(name, uid, gid)
+	}
+	if err != nil {
+		return err
+	}
+	return u.layer.Chown(name, uid, gid)
 }
 
 func (u *CacheOnReadFs) Stat(name string) (os.FileInfo, error) {
@@ -196,7 +216,7 @@ func (u *CacheOnReadFs) OpenFile(name string, flag int, perm os.FileMode) (File,
 	switch st {
 	case cacheLocal, cacheHit:
 	default:
-		if err := u.copyToLayer(name); err != nil {
+		if err := u.copyFileToLayer(name, flag, perm); err != nil {
 			return nil, err
 		}
 	}
@@ -210,7 +230,7 @@ func (u *CacheOnReadFs) OpenFile(name string, flag int, perm os.FileMode) (File,
 			bfi.Close() // oops, what if O_TRUNC was set and file opening in the layer failed...?
 			return nil, err
 		}
-		return &UnionFile{base: bfi, layer: lfi}, nil
+		return &UnionFile{Base: bfi, Layer: lfi}, nil
 	}
 	return u.layer.OpenFile(name, flag, perm)
 }
@@ -256,7 +276,7 @@ func (u *CacheOnReadFs) Open(name string) (File, error) {
 	if err != nil && bfile == nil {
 		return nil, err
 	}
-	return &UnionFile{base: bfile, layer: lfile}, nil
+	return &UnionFile{Base: bfile, Layer: lfile}, nil
 }
 
 func (u *CacheOnReadFs) Mkdir(name string, perm os.FileMode) error {
@@ -291,5 +311,5 @@ func (u *CacheOnReadFs) Create(name string) (File, error) {
 		bfh.Close()
 		return nil, err
 	}
-	return &UnionFile{base: bfh, layer: lfh}, nil
+	return &UnionFile{Base: bfh, Layer: lfh}, nil
 }

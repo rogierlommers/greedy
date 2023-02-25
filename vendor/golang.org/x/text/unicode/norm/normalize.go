@@ -18,19 +18,20 @@ import (
 // A Form denotes a canonical representation of Unicode code points.
 // The Unicode-defined normalization and equivalence forms are:
 //
-//   NFC   Unicode Normalization Form C
-//   NFD   Unicode Normalization Form D
-//   NFKC  Unicode Normalization Form KC
-//   NFKD  Unicode Normalization Form KD
+//	NFC   Unicode Normalization Form C
+//	NFD   Unicode Normalization Form D
+//	NFKC  Unicode Normalization Form KC
+//	NFKD  Unicode Normalization Form KD
 //
 // For a Form f, this documentation uses the notation f(x) to mean
 // the bytes or string x converted to the given form.
 // A position n in x is called a boundary if conversion to the form can
 // proceed independently on both sides:
-//   f(x) == append(f(x[0:n]), f(x[n:])...)
 //
-// References: http://unicode.org/reports/tr15/ and
-// http://unicode.org/notes/tn5/.
+//	f(x) == append(f(x[0:n]), f(x[n:])...)
+//
+// References: https://unicode.org/reports/tr15/ and
+// https://unicode.org/notes/tn5/.
 type Form int
 
 const (
@@ -324,7 +325,6 @@ func (f *formInfo) quickSpan(src input, i, end int, atEOF bool) (n int, ok bool)
 		// have an overflow for runes that are starters (e.g. with U+FF9E).
 		switch ss.next(info) {
 		case ssStarter:
-			ss.first(info)
 			lastSegStart = i
 		case ssOverflow:
 			return lastSegStart, false
@@ -441,6 +441,8 @@ func (f Form) nextBoundary(src input, nsrc int, atEOF bool) int {
 			}
 			return -1
 		}
+		// TODO: Using streamSafe to determine the boundary isn't the same as
+		// using BoundaryBefore. Determine which should be used.
 		if s := ss.next(info); s != ssSuccess {
 			return i
 		}
@@ -505,15 +507,14 @@ func decomposeSegment(rb *reorderBuffer, sp int, atEOF bool) int {
 	if info.size == 0 {
 		return 0
 	}
-	if rb.nrune > 0 {
-		if s := rb.ss.next(info); s == ssStarter {
-			goto end
-		} else if s == ssOverflow {
-			rb.insertCGJ()
+	if s := rb.ss.next(info); s == ssStarter {
+		// TODO: this could be removed if we don't support merging.
+		if rb.nrune > 0 {
 			goto end
 		}
-	} else {
-		rb.ss.first(info)
+	} else if s == ssOverflow {
+		rb.insertCGJ()
+		goto end
 	}
 	if err := rb.insertFlush(rb.src, sp, info); err != iSuccess {
 		return int(err)
