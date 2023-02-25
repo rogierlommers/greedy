@@ -10,10 +10,18 @@ import (
 	"strings"
 )
 
+// AddInternalHandlers registers HandleSelfdiagnose on "/internal/selfdiagnose{.html,.xml,.json}"
 func AddInternalHandlers() {
+	http.HandleFunc("/internal/selfdiagnose", HandleSelfdiagnose)
 	http.HandleFunc("/internal/selfdiagnose.html", HandleSelfdiagnose)
 	http.HandleFunc("/internal/selfdiagnose.xml", HandleSelfdiagnose)
 	http.HandleFunc("/internal/selfdiagnose.json", HandleSelfdiagnose)
+}
+
+func Handler() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		HandleSelfdiagnose(w, r)
+	})
 }
 
 // HandleSelfdiagnose runs all registered tasks and reports a HTML,JSON or XML report depending on the requested format.

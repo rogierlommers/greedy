@@ -7,15 +7,20 @@ package feeds
 import (
 	"encoding/xml"
 	"fmt"
-	"strconv"
 	"time"
 )
 
 // private wrapper around the RssFeed which gives us the <rss>..</rss> xml
-type rssFeedXml struct {
-	XMLName xml.Name `xml:"rss"`
-	Version string   `xml:"version,attr"`
-	Channel *RssFeed
+type RssFeedXml struct {
+	XMLName          xml.Name `xml:"rss"`
+	Version          string   `xml:"version,attr"`
+	ContentNamespace string   `xml:"xmlns:content,attr"`
+	Channel          *RssFeed
+}
+
+type RssContent struct {
+	XMLName xml.Name `xml:"content:encoded"`
+	Content string   `xml:",cdata"`
 }
 
 type RssImage struct {
@@ -56,7 +61,7 @@ type RssFeed struct {
 	SkipDays       string   `xml:"skipDays,omitempty"`
 	Image          *RssImage
 	TextInput      *RssTextInput
-	Items          []*RssItem
+	Items          []*RssItem `xml:"item"`
 }
 
 type RssItem struct {
@@ -64,9 +69,10 @@ type RssItem struct {
 	Title       string   `xml:"title"`       // required
 	Link        string   `xml:"link"`        // required
 	Description string   `xml:"description"` // required
-	Author      string   `xml:"author,omitempty"`
-	Category    string   `xml:"category,omitempty"`
-	Comments    string   `xml:"comments,omitempty"`
+	Content     *RssContent
+	Author      string `xml:"author,omitempty"`
+	Category    string `xml:"category,omitempty"`
+	Comments    string `xml:"comments,omitempty"`
 	Enclosure   *RssEnclosure
 	Guid        string `xml:"guid,omitempty"`    // Id used
 	PubDate     string `xml:"pubDate,omitempty"` // created or updated
@@ -94,12 +100,18 @@ func newRssItem(i *Item) *RssItem {
 		Guid:        i.Id,
 		PubDate:     anyTimeFormat(time.RFC1123Z, i.Created, i.Updated),
 	}
-
-	intLength, err := strconv.ParseInt(i.Link.Length, 10, 64)
-
-	if err == nil && (intLength > 0 || i.Link.Type != "") {
-		item.Enclosure = &RssEnclosure{Url: i.Link.Href, Type: i.Link.Type, Length: i.Link.Length}
+	if len(i.Content) > 0 {
+		item.Content = &RssContent{Content: i.Content}
 	}
+	if i.Source != nil {
+		item.Source = i.Source.Href
+	}
+
+	// Define a closure
+	if i.Enclosure != nil && i.Enclosure.Type != "" && i.Enclosure.Length != "" {
+		item.Enclosure = &RssEnclosure{Url: i.Enclosure.Url, Type: i.Enclosure.Type, Length: i.Enclosure.Length}
+	}
+
 	if i.Author != nil {
 		item.Author = i.Author.Name
 	}
@@ -118,6 +130,11 @@ func (r *Rss) RssFeed() *RssFeed {
 		}
 	}
 
+	var image *RssImage
+	if r.Image != nil {
+		image = &RssImage{Url: r.Image.Url, Title: r.Image.Title, Link: r.Image.Link, Width: r.Image.Width, Height: r.Image.Height}
+	}
+
 	channel := &RssFeed{
 		Title:          r.Title,
 		Link:           r.Link.Href,
@@ -126,6 +143,7 @@ func (r *Rss) RssFeed() *RssFeed {
 		PubDate:        pub,
 		LastBuildDate:  build,
 		Copyright:      r.Copyright,
+		Image:          image,
 	}
 	for _, i := range r.Items {
 		channel.Items = append(channel.Items, newRssItem(i))
@@ -133,14 +151,18 @@ func (r *Rss) RssFeed() *RssFeed {
 	return channel
 }
 
-// return an XML-Ready object for an Rss object
+// FeedXml returns an XML-Ready object for an Rss object
 func (r *Rss) FeedXml() interface{} {
 	// only generate version 2.0 feeds for now
 	return r.RssFeed().FeedXml()
 
 }
 
-// return an XML-ready object for an RssFeed object
+// FeedXml returns an XML-ready object for an RssFeed object
 func (r *RssFeed) FeedXml() interface{} {
-	return &rssFeedXml{Version: "2.0", Channel: r}
+	return &RssFeedXml{
+		Version:          "2.0",
+		Channel:          r,
+		ContentNamespace: "http://purl.org/rss/1.0/modules/content/",
+	}
 }
