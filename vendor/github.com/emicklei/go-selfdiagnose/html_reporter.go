@@ -61,7 +61,7 @@ var htmlTemplate = template.Must(template.New("Page").Parse(`
 		{{.CSS}}	
 	</style>
 	<table>
-		<tr class="odd">
+		<tr class="header">
 			<th>Comment</th>
 			<th>Result</th>
 			<th>Message</th>

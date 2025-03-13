@@ -5,13 +5,13 @@ func css() string {
 	return `
 body, table {
 	font-family: 'Lucida Sans Typewriter', 'Lucida Console', monaco, 'Bitstream Vera Sans Mono', monospace;
-	font-size: 10px;
+	font-size: 12px;
 }
 .odd {
-	background-color: #E6ECE9;
+	background-color: #B7E9BC;
 }
 .even {
-	background-color: #DBE4DF;
+	background-color: #C7F9CC;
 }
 
 .odd.failed.warning {
@@ -28,7 +28,8 @@ body, table {
 	background-color: #FF8282;
 }
 .header {
-	background-color: #d6d6d6
+	background-color: #22577A;
+	color: #fff
 }
 `
 }
