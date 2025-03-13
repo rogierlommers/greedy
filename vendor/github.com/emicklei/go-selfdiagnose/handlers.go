@@ -5,6 +5,7 @@ package selfdiagnose
 // that can be found in the LICENSE file.
 
 import (
+	"io"
 	"net/http"
 	"strconv"
 	"strings"
@@ -12,6 +13,11 @@ import (
 
 // AddInternalHandlers registers HandleSelfdiagnose on "/internal/selfdiagnose{.html,.xml,.json}"
 func AddInternalHandlers() {
+	AddInternalHandlersTo(http.DefaultServeMux)
+}
+
+// AddInternalHandlersTo registers HandleSelfdiagnose on "/internal/selfdiagnose{.html,.xml,.json}"
+func AddInternalHandlersTo(mux *http.ServeMux) {
 	http.HandleFunc("/internal/selfdiagnose", HandleSelfdiagnose)
 	http.HandleFunc("/internal/selfdiagnose.html", HandleSelfdiagnose)
 	http.HandleFunc("/internal/selfdiagnose.xml", HandleSelfdiagnose)
@@ -24,8 +30,26 @@ func Handler() http.Handler {
 	})
 }
 
+var basicAuthUser, basicAuthPassword string
+
+// SetBasicAuth add Basic Auth protection to all handlers.
+func SetBasicAuthentication(user, pwd string) {
+	basicAuthUser, basicAuthPassword = user, pwd
+}
+
 // HandleSelfdiagnose runs all registered tasks and reports a HTML,JSON or XML report depending on the requested format.
 func HandleSelfdiagnose(w http.ResponseWriter, r *http.Request) {
+	// auth is enabled if user is set
+	if basicAuthUser != "" {
+		u, p, ok := r.BasicAuth()
+		if !ok || u != basicAuthUser || p != basicAuthPassword {
+			w.Header().Add("WWW-Authenticate", "Basic realm=Protected Area")
+			w.WriteHeader(http.StatusUnauthorized)
+			io.WriteString(w, "401: Not Authorized")
+			return
+		}
+	}
+
 	ctx := NewContext()
 	// prepare for ReportHttpRequest
 	ctx.Variables["http.request"] = r
