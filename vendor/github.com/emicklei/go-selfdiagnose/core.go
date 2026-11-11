@@ -7,7 +7,7 @@ package selfdiagnose
 import "time"
 
 // VERSION is used for including it in a report.
-const VERSION = "v1.11.1"
+const VERSION = "v1.11.3"
 
 var since = time.Now()
 

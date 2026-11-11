@@ -116,6 +116,8 @@ func buildResultTable(results []*Result) resultTable {
 			if len(each.Severity) > 0 {
 				row.RowStyle += string(each.Severity)
 				row.Severity = string(each.Severity)
+			} else {
+				row.RowStyle += "warning"
 			}
 		}
 		if each.Passed {
