@@ -64,7 +64,7 @@ func (r ArgumentList) Run(ctx *selfdiagnose.Context, result *selfdiagnose.Result
 	for _, element := range r {
 		arguments += element + "<br/>"
 	}
-	result.Reason = fmt.Sprintf(arguments)
+	result.Reason = arguments
 }
 
 func (r ArgumentList) Comment() string {
